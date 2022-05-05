@@ -1,6 +1,4 @@
 import Head from 'next/head';
-import Footer from '../components/Footer';
-import Navbar from "../components/Navbar";
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser } from '../Redux/userSlice';
@@ -45,7 +43,7 @@ const Register = () => {
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin={true} />
                 <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
             </Head>
-            <Navbar />
+            {/* <Navbar /> */}
             <ToastContainer toastStyle={{ backgroundColor: "#F9DBE0", color:"black",  boxShadow:"none" }}/>
 
             <main className="w-full h-screen  register_gradient ">
@@ -65,9 +63,6 @@ const Register = () => {
 
                 </section>
             </main>
-            <footer>
-                <Footer />
-            </footer>
         </>
     )
 }

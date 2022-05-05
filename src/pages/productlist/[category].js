@@ -1,7 +1,4 @@
 import Head from 'next/head';
-import Announcement from '../../components/Announcement';
-import Footer from '../../components/Footer';
-import Navbar from "../../components/Navbar";
 import Newsletter from '../../components/Newsletter';
 import Products from '../../components/Products';
 import { useRouter } from 'next/dist/client/router';
@@ -41,20 +38,20 @@ const productlist = () => {
     return (
         <>
             <Head>
-                <title>{category && category.toString().toUpperCase() } </title>
+                <title>{category && category.toString().toUpperCase()} </title>
                 <link rel="icon" href="/favicon.png" />
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin={true} />
                 <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
             </Head>
             <main>
-                <Navbar />
-                <Announcement />
+                {/* <Announcement />
+                <Navbar /> */}
                 <ToastContainer toastStyle={{ backgroundColor: "#7C3AED", boxShadow: "none" }} />
 
                 <section>
                     {/* title  */}
-                    <h1 className="m-5 font-bold text-xl sm:text-3xl">{ category && category.toString().toUpperCase() }</h1>
+                    <h1 className="m-5 font-bold text-xl sm:text-3xl">{category && category.toString().toUpperCase()}</h1>
                     {/* filtercontainer  */}
                     <div className="flex m-5 justify-between my-5 mb-10 items-center">
                         <div className="flex sm:flex-row sm:space-x-3 flex-col space-y-2 sm:space-y-0 ">
@@ -116,9 +113,6 @@ const productlist = () => {
                     <Newsletter />
                 </section>
             </main>
-            <footer>
-                <Footer />
-            </footer>
         </>
     )
 }

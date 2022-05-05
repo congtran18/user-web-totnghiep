@@ -1,8 +1,5 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import Announcement from '../../components/Announcement';
-import Footer from '../../components/Footer';
-import Navbar from '../../components/Navbar';
 import Newsletter from '../../components/Newsletter';
 import axios from "axios";
 import { useState, useEffect } from 'react';
@@ -134,8 +131,8 @@ const Product = ({ product }) => {
                 <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
             </Head>
             <main>
-                <Navbar />
-                <Announcement />
+                {/* <Navbar />
+                <Announcement /> */}
                 <ToastContainer toastStyle={{ backgroundColor: "#7C3AED", boxShadow: "none" }} />
 
                 <section className="flex sm:p-10 py-8 px-5 sm:max-w-[80%] w-full mx-auto flex-col sm:flex-row ">
@@ -190,9 +187,6 @@ const Product = ({ product }) => {
                     <Newsletter />
                 </section>
             </main>
-            <footer>
-                <Footer />
-            </footer>
         </>
     )
 }

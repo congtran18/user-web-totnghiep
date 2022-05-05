@@ -9,6 +9,7 @@ import { useState } from "react";
 import { VscPackage } from "react-icons/vsc";
 import { FiHeart } from "react-icons/fi";
 import { AiOutlineControl } from "react-icons/ai";
+import { BiLogOut } from "react-icons/bi";
 import { resetWishlist } from '../Redux/wishlistSlice';
 import Image from "next/image";
 
@@ -34,25 +35,25 @@ const Navbar = () => {
 
 
     return (
-        <header className="flex sm:h-20 h-14 sm:px-5 px-2 py-5 justify-between items-center shadow-md " >
-            <div className="flex-grow  flex items-center sm:justify-between sm:w-48">
-                <Link href="/productlist/women"><a className="items-center tracking-wide text-xs sm:text-base  hover:bg-themePink transition-all rounded-lg py-1 px-2 uppercase">All Products</a></Link>
-                <Link href="/productlist/top"><a className="items-center tracking-wide text-xs sm:text-base  hidden sm:inline-flex hover:bg-themePink transition-all rounded-lg py-1 px-2 uppercase" >Tops</a></Link>
-                <Link href="/productlist/dress"><a className="items-center tracking-wide text-xs sm:text-base hidden sm:inline-flex hover:bg-themePink transition-all rounded-lg py-1 px-2 uppercase">Dresses</a></Link>
-                <Link href="/productlist/footwear"><a className="items-center tracking-wide hidden sm:inline-flex text-xs sm:text-base uppercase hover:bg-themePink transition-all rounded-lg py-1 px-2">Footwear</a></Link>
+        <header className="flex sm:h-18 h-14 sm:px-5 px-2 py-5 justify-between items-center shadow-md " >
+            <div className="flex-grow flex items-center ">
+                <Link href="/"><h2 className='text-gray-800 font-heading uppercase font-bold mx-5 text-xl cursor-pointer'>DO AN TN</h2></Link>
+                <Link href="/products"><a className="link" >Mua sách</a></Link>
+                <Link href="/productlist/top"><a className="link" >Mua khóa học</a></Link>
+                <Link href="/productlist/dress"><a className="link">Học tiếng anh</a></Link>
+                <Link href="/productlist/footwear"><a className="link">Giảng viên</a></Link>
             </div>
-            <div className="hidden flex-grow items-center md:flex justify-center cursor-pointer ">
+            {/* <div className="hidden flex-grow items-center md:flex justify-center cursor-pointer ">
                 <Link href="/"><Image src="/Images/martinilogo.jpg" objectFit='contain' height={55} width={150}/></Link>
-            </div>
+            </div> */}
             <div className="flex flex-grow items-center md:hidden justify-center cursor-pointer ">
                 <Link href="/"><Image src="/Images/mlogo.png" objectFit='cover' height={50} width={70}/></Link>
             </div>
             <div className="flex-grow items-center flex sm:space-x-7 space-x-4 sm:justify-end justify-end sm:tracking-wide sm:text-base text-xs relative">
-                {!user ? <>
-                    <Link href="/register" >REGISTER</Link>
-                    <Link href="/signin" >SIGN IN</Link>
-                </> :
-                    <button type="button" onClick={handleLogout}>SIGN OUT</button>
+                {!user && <>
+                    <Link href="/register" >Đăng ký</Link>
+                    <Link href="/signin" >Đăng nhập</Link>
+                </> 
                 }
                 {/* user logo or avatar  */}
                 {user && <div className="sm:h-10 sm:w-10 h-7 w-7 cursor-pointer font-medium rounded-full bg-themePink flex items-center justify-center text-center" onClick={() => setProfiletoggle(!profiletoggle)}>{user.username.slice(0, 1).toUpperCase()}</div>}
@@ -61,8 +62,9 @@ const Navbar = () => {
                         <p className="text-xs sm:text-[14px] tracking-wide mb-2">Welcome <strong>{user?.username.toUpperCase()}</strong></p>
                         <hr />
                     { user.isAdmin && <div className="w-full flex items-center my-3 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={() => router.push('/dashboard')}><AiOutlineControl size="1.1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">Dashboard</p></div>}
-                        <div className="w-full flex items-center my-3 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={() => router.push('/orders')}><VscPackage size="1.1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">My Orders</p></div>
-                        <div className="w-full flex items-center my-2 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={() => router.push('/wishlist')}><FiHeart size="1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">Wishlist ({wishlist.length})</p></div>
+                        <div className="w-full flex items-center my-3 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={() => router.push('/orders')}><VscPackage size="1.1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">Account</p></div>
+                        <div className="w-full flex items-center my-2 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={() => router.push('/wishlist')}><FiHeart size="1.1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">Wishlist ({wishlist.length})</p></div>
+                        <div className="w-full flex items-center my-2 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={handleLogout}><BiLogOut size="1.1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">Logout</p></div>
                     </div>}
 
                 <BsBag fontSize="1.5rem" cursor="pointer" className="sm:w-7 w-[18px]" onClick={() => router.push('/cart')} />

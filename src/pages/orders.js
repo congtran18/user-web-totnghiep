@@ -1,9 +1,6 @@
 import { useSelector } from "react-redux";
 import { Redirect } from "./signin";
 import Head from 'next/head';
-import Announcement from "../components/Announcement";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
 import { FaCartArrowDown } from "react-icons/fa";
 import Image from 'next/image';
 import { useEffect, useState } from "react";
@@ -54,8 +51,8 @@ const orders = () => {
                 <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
             </Head>
             <main>
-                <Announcement />
-                <Navbar />
+                {/* <Announcement />
+                <Navbar /> */}
 
                 {/* orders section  */}
                 <section className="sm:w-[90%] w-[95%] h-full flex flex-wrap items-center mx-auto my-10 ">
@@ -116,9 +113,6 @@ const orders = () => {
                     </section>
                 </section>
             </main>
-            <footer>
-                <Footer />
-            </footer>
         </>
     )
 }

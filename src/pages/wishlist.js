@@ -1,9 +1,6 @@
 import { Redirect } from "./signin";
 import { useSelector, useDispatch } from "react-redux";
 import Head from 'next/head';
-import Announcement from "../components/Announcement";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
 import { ToastContainer } from 'react-toastify';
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -87,8 +84,8 @@ const wishlist = () => {
             <main>
                 <ToastContainer toastStyle={{ backgroundColor: "#FF0000", boxShadow: "none" }} />
 
-                <Announcement />
-                <Navbar />
+                {/* <Announcement />
+                <Navbar /> */}
 
                 {/* wishlist section  */}
                 <section className="w-[90%] mx-auto h-full flex flex-col items-center my-10">
@@ -125,9 +122,6 @@ const wishlist = () => {
 
                 </section>
             </main>
-            <footer>
-                <Footer />
-            </footer>
         </>
     )
 }

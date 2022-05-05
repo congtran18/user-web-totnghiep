@@ -1,8 +1,5 @@
 import Head from 'next/head';
 import { useState, useEffect } from "react";
-import Announcement from '../components/Announcement';
-import Footer from '../components/Footer';
-import Navbar from '../components/Navbar';
 import Image from "next/image";
 import { VscAdd, VscRemove } from "react-icons/vsc";
 import { BsHeart } from "react-icons/bs";
@@ -78,8 +75,6 @@ const Cart = () => {
                 <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
             </Head>
             <main>
-                <Navbar />
-                <Announcement />
                 <ToastContainer toastStyle={{ backgroundColor: "#D22B2B", boxShadow: "none" }} />
 
                 <section className="bg-[whitesmoke] w-full ">
@@ -205,9 +200,6 @@ const Cart = () => {
                 </section>
                 <div className="w-full h-5 bg-white shadow-md" />
             </main>
-            <footer>
-                <Footer />
-            </footer>
         </>
     )
 }
