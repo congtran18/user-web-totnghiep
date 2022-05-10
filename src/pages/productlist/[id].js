@@ -15,7 +15,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 export const getStaticPaths = async () => {
-    const response = await axios.get('https://martiniapi.herokuapp.com/api/product');
+    const response = await axios.get('http://localhost:5001/api/product');
 
     const data = response.data.data.product;
 
@@ -36,25 +36,16 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async (context) => {
 
     const id = context.params.id
-    const response = null
 
-    try {
-        response = await axios.get(`https://martiniapi.herokuapp.com/api/product/find/${id}`)
-        const data = response.data.data;
+    const response = await axios.get(`http://localhost:5001/api/product/${id}`)
+    const data = response.data.data;
 
-        return {
-            props: {
-                product: data,
-            }
-        }
-    } catch (error) {
-        console.log(error);
-        return {
-            props: {
-                error
-            }
+    return {
+        props: {
+            product: data,
         }
     }
+
 }
 
 const Product = ({ product }) => {
