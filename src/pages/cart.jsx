@@ -9,7 +9,7 @@ import StripeCheckout from "react-stripe-checkout";
 import axios from "axios";
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router'
-import { deleteProduct, decreaseQuantity, increaseQuantity, getTotals, saveStripeData } from '../Redux/cartSlice';
+import { decreaseQuantity, increaseQuantity, getTotals, saveStripeData } from '../Redux/cartSlice';
 
 
 
@@ -50,10 +50,6 @@ const Cart = () => {
         // this function will return a token which we will send to the sever to verify and the process the payment 
         setStripeClientToken(token)
 
-    }
-
-    function handleDelete(index) {
-        dispatch(deleteProduct(index))
     }
 
     function decQuantity(index) {
@@ -115,7 +111,6 @@ const Cart = () => {
                                             <div className="flex-1 flex sm:space-x-0 relative ">
                                                 {/* image  */}
                                                 {/* large screen  */}
-                                                <MdDelete size="1.5rem" cursor="pointer" className="inline-flex sm:hidden absolute right-0" onClick={() => handleDelete(index)} />
 
                                                 <div className="sm:inline-flex hidden cursor-pointer" onClick={()=>router.push(`/products/${product?._id}`)}>
                                                     <Image src={product.img} width="150rem" height="140rem" objectFit="contain" />

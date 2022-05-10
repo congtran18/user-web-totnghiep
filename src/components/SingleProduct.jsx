@@ -45,7 +45,6 @@ const SingleProduct = ({ product }) => {
         if (size !== null) {
             setPopupmessage(false)
             setAddpopup(false)
-            // dispatch(addProduct({ ...product, color, size }))
         }
         else {
             setPopupmessage(true)
