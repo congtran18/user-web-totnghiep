@@ -15,29 +15,38 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 export const getStaticPaths = async () => {
-    const response = await axios.get('http://localhost:5001/api/product');
-    const data = response.data.data.product;
+    try {
+        const response = await axios.get('http://localhost:5001/api/product');
 
-    const paths = data?.map((element) => {
-        return {
-            params: {
-                id: element._id
+        const data = response.data.data.product;
+
+        const paths = data?.map((element) => {
+            return {
+                params: {
+                    id: element._id
+                }
             }
-        }
-    })
+        })
 
-    return {
-        paths: paths,
-        fallback: false
+        return {
+            paths: paths,
+            fallback: false
+        }
+    } catch (e) {
+        console.log(e)
+        return {
+            paths: e,
+        }
     }
 };
 
 export const getStaticProps = async (context) => {
 
     const id = context.params.id
+    const response = null
 
     try {
-        const response = await axios.get(`http://localhost:5001/api/product/${id}`)
+        response = await axios.get(`http://localhost:5001/api/product/${id}`)
         const data = response.data.data;
 
         return {
@@ -56,7 +65,7 @@ export const getStaticProps = async (context) => {
 }
 
 const Product = ({ product }) => {
-    
+
     const dispatch = useDispatch();
     const cart = useSelector((state) => state.cart);
     const wishlist = useSelector((state) => state.wishlist.products);
@@ -68,11 +77,11 @@ const Product = ({ product }) => {
     }, [cart, dispatch])
 
 
-   
+
     function handleAddToCart() {
         dispatch(addProduct({ ...product }))
     };
-    
+
     async function handleAddToWishlist() {
         const myObj = {
             userId: user?.id,
@@ -80,7 +89,7 @@ const Product = ({ product }) => {
                 _id: product?._id,
                 realname: product?.realname,
                 status: product?.status,
-                mainImage : product?.mainImage,
+                mainImage: product?.mainImage,
                 cost: product?.cost
             }]
         };
@@ -118,9 +127,9 @@ const Product = ({ product }) => {
                 <section className="flex sm:p-10 py-8 px-5 sm:max-w-[80%] w-full mx-auto flex-col sm:flex-row ">
                     {/* image container  */}
                     {product.mainImage &&
-                    <div className="flex-1 self-center sm:self-start  my-2 sm:my-3 mb-4 sm:mb-0">
-                        <Image src={product?.mainImage} height="420rem" width="320rem" objectFit="cover" />
-                    </div>}
+                        <div className="flex-1 self-center sm:self-start  my-2 sm:my-3 mb-4 sm:mb-0">
+                            <Image src={product?.mainImage} height="420rem" width="320rem" objectFit="cover" />
+                        </div>}
                     {/* info container  */}
                     <div className="flex-1 ">
                         {/* title  */}
@@ -135,8 +144,8 @@ const Product = ({ product }) => {
                             {/* amount container  */}
 
                             {/* add to cart button  */}
-                            <button type="button" className="bg-themePink sm:p-3 p-2 tracking-wide font-medium text-sm sm:text-base hover:bg-themePink transition-all flex-1 flex items-center justify-center" onClick={handleAddToCart}><BsBag style={{marginRight:"8px"}}/>ADD TO CART</button>
-                            <button type="button" className="border sm:p-3 p-2 tracking-wide font-medium text-sm sm:text-base hover:border-black transition-all flex-1 flex items-center justify-center disabled:pointer-events-none disabled:bg-gray-200 disabled:text-white" onClick={handleAddToWishlist} disabled={wishlist?.findIndex((item)=>item._id===product._id) >=0} ><FiHeart style={{marginRight:"8px"}}/>WISHLIST</button>
+                            <button type="button" className="bg-themePink sm:p-3 p-2 tracking-wide font-medium text-sm sm:text-base hover:bg-themePink transition-all flex-1 flex items-center justify-center" onClick={handleAddToCart}><BsBag style={{ marginRight: "8px" }} />ADD TO CART</button>
+                            <button type="button" className="border sm:p-3 p-2 tracking-wide font-medium text-sm sm:text-base hover:border-black transition-all flex-1 flex items-center justify-center disabled:pointer-events-none disabled:bg-gray-200 disabled:text-white" onClick={handleAddToWishlist} disabled={wishlist?.findIndex((item) => item._id === product._id) >= 0} ><FiHeart style={{ marginRight: "8px" }} />WISHLIST</button>
                         </div>
 
                         <p className="hidden sm:inline-flex text-gray-500 tracking-wide text-sm sm:text-base mb-4 font-normal text-justify">{product?.description}</p>
