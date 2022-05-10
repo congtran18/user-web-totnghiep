@@ -9,7 +9,6 @@ import { DataGrid } from '@mui/x-data-grid';
 import Image from "next/image";
 import Link from "next/link";
 import { MdDelete } from "react-icons/md";
-import { ToastContainer } from 'react-toastify';
 
 
 
@@ -95,7 +94,6 @@ const allproducts = () => {
             <AdminNavbar toggle={hamburgerToggle} setToggle={setHamburgerToggle} />
             <main className="flex w-full h-full ">
                 <AdminSidebar toggle={hamburgerToggle} />
-                <ToastContainer toastStyle={{ backgroundColor: "#D22B2B", boxShadow: "none" }} />
 
                 {/* right side section  */}
                 <div className="flex-grow h-screen w-screen ">

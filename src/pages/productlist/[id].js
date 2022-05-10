@@ -15,8 +15,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 export const getStaticPaths = async () => {
-    const response = await axios.get('https://martiniapi.herokuapp.com/api/product');
-    const data = response.data;
+    const response = await axios.get('http://localhost:5001/api/product');
+    const data = response.data.data.product;
 
     const paths = data?.map((element) => {
         return {
@@ -25,18 +25,20 @@ export const getStaticPaths = async () => {
             }
         }
     })
+
     return {
         paths: paths,
         fallback: false
     }
 };
 
-export const getStaticProps = async () => {
+export const getStaticProps = async (context) => {
 
-    const id = "61642ff4bce65c198245aef5"
+    const id = context.params.id
+
     try {
-        const response = await axios.get(`https://martiniapi.herokuapp.com/api/product/find/61642ff4bce65c198245aef5`)
-        const data = response.data;
+        const response = await axios.get(`http://localhost:5001/api/product/${id}`)
+        const data = response.data.data;
 
         return {
             props: {
@@ -54,9 +56,7 @@ export const getStaticProps = async () => {
 }
 
 const Product = ({ product }) => {
-
-    const [color, setColor] = useState(product.color);
-    const [size, setSize] = useState(product.size[0]);
+    
     const dispatch = useDispatch();
     const cart = useSelector((state) => state.cart);
     const wishlist = useSelector((state) => state.wishlist.products);
@@ -70,7 +70,7 @@ const Product = ({ product }) => {
 
    
     function handleAddToCart() {
-        dispatch(addProduct({ ...product, color, size }))
+        dispatch(addProduct({ ...product }))
     };
     
     async function handleAddToWishlist() {
@@ -78,15 +78,15 @@ const Product = ({ product }) => {
             userId: user?.id,
             products: [{
                 _id: product?._id,
-                title: product?.title,
-                brand: product?.brand,
-                img: product?.img,
-                price: product?.price
+                realname: product?.realname,
+                status: product?.status,
+                mainImage : product?.mainImage,
+                cost: product?.cost
             }]
         };
         try {
             if (!user) {
-                toast.info('Please Signin first')
+                toast.info('Hãy đăng nhập')
             } else {
                 const response = await axios.post('https://martiniapi.herokuapp.com/api/wishlist', myObj, {
                     headers: {
@@ -94,7 +94,7 @@ const Product = ({ product }) => {
                     }
                 });
                 dispatch(addToWishlist(product))
-                toast.success('Product added to wishlist')
+                toast.success('Sản phẩm đã được thêm vào danh sách yêu thích')
             }
 
         } catch (error) {
@@ -105,7 +105,7 @@ const Product = ({ product }) => {
     return (
         <>
             <Head>
-                <title>Buy {product.brand } {product.title}</title>
+                <title>Buy {product.type.realname} {product.realname}</title>
                 <link rel="icon" href="/favicon.png" />
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin={true} />
@@ -114,39 +114,21 @@ const Product = ({ product }) => {
             <main>
                 {/* <Navbar />
                 <Announcement /> */}
+
                 <section className="flex sm:p-10 py-8 px-5 sm:max-w-[80%] w-full mx-auto flex-col sm:flex-row ">
                     {/* image container  */}
+                    {product.mainImage &&
                     <div className="flex-1 self-center sm:self-start  my-2 sm:my-3 mb-4 sm:mb-0">
-                        <Image src={product?.img} height="420rem" width="320rem" objectFit="cover" />
-                    </div>
+                        <Image src={product?.mainImage} height="420rem" width="320rem" objectFit="cover" />
+                    </div>}
                     {/* info container  */}
                     <div className="flex-1 ">
                         {/* title  */}
-                        <h1 className="font-semibold sm:my-2 my-2 text-xl sm:text-3xl tracking-wide">{product?.brand.toUpperCase()}</h1>
+                        <h1 className="font-semibold sm:my-2 my-2 text-xl sm:text-3xl tracking-wide">{product?.status.toUpperCase()}</h1>
                         <h1 ></h1>
-                        <h1 className="font-normal sm:mb-5 mb-3 text-[15px] sm:text-[25px] tracking-wide text-gray-600">{product?.title}</h1>
-                        <p className="text-2xl sm:text-3xl tracking-wide font-extralight mb-5 sm:mb-7">&#8377; {product?.price}</p>
+                        <h1 className="font-normal sm:mb-5 mb-3 text-[15px] sm:text-[25px] tracking-wide text-gray-600">{product?.realname}</h1>
+                        <p className="text-2xl sm:text-3xl tracking-wide font-extralight mb-5 sm:mb-7">&#8377; {product?.cost}</p>
                         {/* description  */}
-
-                        {/* filter  */}
-                        <div className="flex mb-8    space-x-4 items-center">
-                            <label htmlFor="color" className="flex items-center font-medium text-sm sm:text-base">Color</label>
-
-                            <select name="color" id="color" className="py-1.5 px-2  border border-black outline-none text-xs sm:text-sm  tracking-wide mr-2" onChange={(e) => setColor(e.target.value)}>
-                                {product?.color?.map((scolor) => (
-                                    <option value={scolor} key={scolor}>{scolor.toUpperCase()}</option>
-                                ))}
-
-                            </select>
-                            <label htmlFor="size" className="flex items-center font-medium text-sm sm:text-base">Size</label>
-                            <select name="size" id="size" className="py-1.5 px-2 border border-black outline-none text-xs sm:text-sm  tracking-wide mr-2" onChange={(e) => setSize(e.target.value)}>
-                                {product?.size?.map((indisize) => (
-                                    <option value={indisize} key={indisize}>{indisize.toUpperCase()}</option>
-
-                                ))}
-
-                            </select>
-                        </div>
 
                         {/* add to cart container  */}
                         <div className="flex items-center sm:mb-9 space-x-6">
@@ -157,11 +139,11 @@ const Product = ({ product }) => {
                             <button type="button" className="border sm:p-3 p-2 tracking-wide font-medium text-sm sm:text-base hover:border-black transition-all flex-1 flex items-center justify-center disabled:pointer-events-none disabled:bg-gray-200 disabled:text-white" onClick={handleAddToWishlist} disabled={wishlist?.findIndex((item)=>item._id===product._id) >=0} ><FiHeart style={{marginRight:"8px"}}/>WISHLIST</button>
                         </div>
 
-                        <p className="hidden sm:inline-flex text-gray-500 tracking-wide text-sm sm:text-base mb-4 font-normal text-justify">{product?.desc}</p>
+                        <p className="hidden sm:inline-flex text-gray-500 tracking-wide text-sm sm:text-base mb-4 font-normal text-justify">{product?.description}</p>
                         {/* price  */}
                     </div>
                 </section>
-                <p className="inline-flex sm:hidden px-7 text-justify text-gray-500 tracking-wide text-xs  sm:text-base mb-4 font-normal">{product?.desc}</p>
+                <p className="inline-flex sm:hidden px-7 text-justify text-gray-500 tracking-wide text-xs  sm:text-base mb-4 font-normal">{product?.description}</p>
                 <section>
                     <Newsletter />
                 </section>

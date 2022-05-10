@@ -7,7 +7,6 @@ import { useState } from "react"
 import { useRouter } from 'next/router';
 import Image from "next/image";
 import { editProduct } from '../../Redux/productSlice';
-import { ToastContainer } from 'react-toastify';
 
 
 const adminProduct = () => {
@@ -68,7 +67,6 @@ const adminProduct = () => {
             <AdminNavbar toggle={hamburgerToggle} setToggle={setHamburgerToggle} />
             <main className="flex w-full h-full ">
                 <AdminSidebar toggle={hamburgerToggle} />
-                <ToastContainer toastStyle={{ backgroundColor: "##FFFF00", boxShadow: "none" }} />
 
                 <section className="flex flex-col w-screen h-screen my-1 p-6">
                     <div className="flex w-full items-center justify-between pb-3 border-b border-purple-600">

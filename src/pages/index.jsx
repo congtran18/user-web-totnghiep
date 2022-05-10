@@ -3,16 +3,13 @@ import Banner from '../components/Banner';
 import Categories from '../components/Categories';
 import Newsletter from '../components/Newsletter';
 import StaticUtility from '../components/StaticUtility'
-import Products from '../components/Products';
+import NewProduct from '../components/NewProduct';
 import Link from "next/link";
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getTotals } from '../Redux/cartSlice';
 import axios from "axios";
 import { getWishlist } from '../Redux/wishlistSlice';
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
 
 export default function Home() {
 
@@ -54,25 +51,14 @@ export default function Home() {
       <main>
         <Banner />
         {/* <Categories /> */}
-        <h1 className="text-center tracking-wider font-medium mt-7 mb-6 bg-themePink p-2.5 text-base sm:text-xl ">Sản phẩm mới</h1>
-        <Products />
-        <Link href="/productlist/women" >
-          <a className="flex items-center justify-center underline tracking-wide py-3 px-5 mx-auto bg-themePink hover:font-medium transition w-max">Xem tất cả sản phẩm</a>
+        <h1 className="text-center tracking-wider font-medium mt-10 mb-10 bg-themePink p-2.5 text-base sm:text-xl ">Sản phẩm mới</h1>
+        <NewProduct />
+        <Link href="/productlist" >
+          <a className="flex items-center justify-center underline tracking-wide py-3 px-5 mx-auto bg-themePink hover:font-medium transition w-max my-6">Xem tất cả sản phẩm</a>
         </Link>
         <h1 className="text-center tracking-wider font-medium mt-7 bg-themePink p-2.5 text-base sm:text-xl ">Dịch vụ</h1>
         <StaticUtility />
         <Newsletter />
-        <ToastContainer
-          position='bottom-right'
-          autoClose={1500}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
       </main>
     </>
 

@@ -4,9 +4,8 @@ import AdminNavbar from '../../components/AdminNavbar';
 import AdminSidebar from '../../components/AdminSidebar';
 import { Redirect } from "../signin";
 import { useState, useEffect } from "react";
-import { DataGrid } from "@material-ui/data-grid";
+import { DataGrid } from '@mui/x-data-grid';
 import { MdDelete } from "react-icons/md";
-import { ToastContainer } from 'react-toastify';
 import axios from "axios";
 import { format } from "timeago.js";
 import { toast } from "react-toastify";
@@ -137,7 +136,6 @@ const users = () => {
             <AdminNavbar toggle={hamburgerToggle} setToggle={setHamburgerToggle} />
             <main className="flex w-full h-full ">
                 <AdminSidebar toggle={hamburgerToggle} />
-                <ToastContainer toastStyle={{ backgroundColor: "#D22B2B", boxShadow: "none" }} />
                 <div className="flex-grow h-screen w-screen">
                     {allusers && <DataGrid
                         rows={allusers}

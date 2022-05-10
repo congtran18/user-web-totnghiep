@@ -10,7 +10,6 @@ import axios from "axios";
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router'
 import { deleteProduct, decreaseQuantity, increaseQuantity, getTotals, saveStripeData } from '../Redux/cartSlice';
-import { ToastContainer } from 'react-toastify';
 
 
 
@@ -75,7 +74,6 @@ const Cart = () => {
                 <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
             </Head>
             <main>
-                <ToastContainer toastStyle={{ backgroundColor: "#D22B2B", boxShadow: "none" }} />
 
                 <section className="bg-[whitesmoke] w-full ">
                     {/* wrapper div  */}

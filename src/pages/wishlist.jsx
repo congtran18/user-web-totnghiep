@@ -1,7 +1,6 @@
 import { Redirect } from "./signin";
 import { useSelector, useDispatch } from "react-redux";
 import Head from 'next/head';
-import { ToastContainer } from 'react-toastify';
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { CgCloseO } from "react-icons/cg";
@@ -82,7 +81,6 @@ const wishlist = () => {
                 <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
             </Head>
             <main>
-                <ToastContainer toastStyle={{ backgroundColor: "#FF0000", boxShadow: "none" }} />
 
                 {/* <Announcement />
                 <Navbar /> */}

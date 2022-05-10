@@ -1,72 +1,62 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import SingleProduct from "./SingleProduct";
 import Image from "next/image";
-import { useRouter } from "next/router";
+import { useRouter } from 'next/dist/client/router';
+import { useGetProductsQuery } from '../Redux/productSlice'
+import Pagination from '@mui/material/Pagination'
 
+const Products = ({ params, handlePageChange }) => {
 
-
-const Products = ({ category, filter, sort }) => {
-
-    const [products, setproducts] = useState([]);
-    const [filteredProducts, setFilteredProducts] = useState([]);
     const router = useRouter();
+    const { query } = router;
 
-    useEffect(() => {
-        async function getProducts() {
-            try {
-                const response = await axios.get(category ? `https://martiniapi.herokuapp.com/api/product?category=${category}` : `https://martiniapi.herokuapp.com/api/product`);
-                setproducts(response.data)
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        getProducts()
-    }, [category]);
+    const { data, isLoading , isFetching, isError } = useGetProductsQuery(params)
 
-    useEffect(() => {
-        category && setFilteredProducts(
-            products.filter((item) =>
-                Object.entries(filter).every(([key, value]) =>
-                    item[key].includes(value)
-                )
-            )
+    console.log("isError",isError)
+
+    console.log("data", data)
+
+    let body = null
+
+    if (isLoading) {
+        body = (
+            <img src="/Images/loading.gif" alt="loading" className="text-center flex items-center justify-center mx-auto mt-3 " />
         )
-    }, [category, filter, products]);
+    } else if (data && data.data.product?.length === 0) {
+        <div className="h-full w-full flex items-center justify-center flex-col my-12">
+            <Image src="/Images/blank.svg" objectFit="contain" width="300rem" height="300rem" />
+            <p className="my-8 text-gray-700 tracking-wide text-sm sm:text-lg font-medium capitalize">No products found for </p>
+            <button type="button" onClick={() => router.push('/productlist/women')} className="bg-themePink py-2.5 px-5 w-max mx-auto text-sm sm:text-lg transition shadow-md hover:font-medium">Browse Products</button>
+        </div>
+    }
+    else {
+        body = (
+            <>
+                <section className="flex flex-wrap items-center gap-3 ml-2">
+                    {data && data.data.product?.map((product) => (
+                        <SingleProduct key={product._id} product={product} />
+                    ))}
 
-    useEffect(() => {
-        if (sort === "Newest") {
-            setFilteredProducts((prev) => (
-                [...prev].sort((a,b)=>a.createdAt - b.createdAt)
-            ))
-        } else if (sort === "low") {
-            setFilteredProducts((prev) => (
-                [...prev].sort((a,b)=>a.price - b.price)
-            ))
-        } else {
-            setFilteredProducts((prev) => (
-                [...prev].sort((a,b)=>b.price - a.price)
-            ))
-        }
-    },[sort])
+                </section>
+                <div className="flex flex-row flex-nowrap justify-center mt-10 mb-5" >
+                    <Pagination
+                        page={Number(query.page) || 1}
+                        count={data.data.total || 1}
+                        onChange={handlePageChange}
+                        showFirstButton
+                        showLastButton
+                        color="primary"
+                    />
+                </div>
+            </>
+        )
+    }
 
 
 
     return (
         <>
-
-            <section className="flex mx-4 sm:my-4 my-2 flex-wrap items-center sm:justify-between justify-center ">
-                {category ? filteredProducts?.map((product) => (
-                    <SingleProduct key={product._id} product={product} />
-                )) : products?.slice(0, 8).map((product) => (
-                    <SingleProduct key={product._id} product={product} />
-                ))}
-                {filteredProducts?.length === 0 && products?.length === 0 && <div className="h-full w-full flex items-center justify-center flex-col my-12">
-                    <Image src="/Images/blank.svg" objectFit="contain" width="300rem" height="300rem" />
-                    <p className="my-8 text-gray-700 tracking-wide text-sm sm:text-lg font-medium capitalize">No products found for  {category} category.</p>
-                    <button type="button" onClick={() => router.push('/productlist/women')} className="bg-themePink py-2.5 px-5 w-max mx-auto text-sm sm:text-lg transition shadow-md hover:font-medium">Browse Products</button>
-                </div>}
-            </section>
+            {body}
         </>
     )
 }

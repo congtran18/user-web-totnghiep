@@ -2,7 +2,6 @@ import Head from 'next/head';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser } from '../Redux/userSlice';
-import { ToastContainer } from 'react-toastify';
 import { Redirect } from './signin';
 
 
@@ -44,7 +43,6 @@ const Register = () => {
                 <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
             </Head>
             {/* <Navbar /> */}
-            <ToastContainer toastStyle={{ backgroundColor: "#F9DBE0", color:"black",  boxShadow:"none" }}/>
 
             <main className="w-full h-screen  register_gradient ">
                 <section className="sm:p-7 p-5 sm:w-[45%] w-[80%] bg-gray-100 opacity-75 border-black border">

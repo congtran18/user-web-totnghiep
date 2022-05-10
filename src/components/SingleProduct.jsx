@@ -1,27 +1,38 @@
 import Image from "next/image";
-import { BsEye, BsBag } from "react-icons/bs";
-import { FiHeart } from "react-icons/fi";
+import { BsCheck } from "react-icons/bs";
+import { AiOutlineHeart } from "react-icons/ai";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
-import { addProduct } from "../Redux/cartSlice";
 import { useState } from "react";
-import { ToastContainer } from 'react-toastify';
 import { getWishlist } from "../Redux/wishlistSlice";
 import axios from "axios";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
-
+const costFormat = (cost) => {
+    var costlength;
+    if ((cost.length / 3 - parseInt(cost.length / 3)) > 0) {
+        costlength = parseInt(cost.length / 3);
+    } else {
+        costlength = parseInt(cost.length / 3) - 1;
+    }
+    for (let i = 1; i <= costlength; i++) {
+        cost = [cost.slice(0, ((-3 * i) - (i - 1))), ".", cost.slice((-3 * i) - (i - 1))].join('');
+    }
+    return cost;
+}
 
 const SingleProduct = ({ product }) => {
 
 
-    const [color] = useState(product.color);
+    // const [color] = useState(product.color);
     const [size, setSize] = useState(null);
     const [addpopup, setAddpopup] = useState(false);
     const [popupmessage, setPopupmessage] = useState(false);
     const wishlist = useSelector((state) => state.wishlist.products);
     const user = useSelector((state) => state.user.currentUser);
+
+    const [currentImage, setCurrentImage] = useState(product.mainImage && product.mainImage)
 
 
     const dispatch = useDispatch();
@@ -34,7 +45,7 @@ const SingleProduct = ({ product }) => {
         if (size !== null) {
             setPopupmessage(false)
             setAddpopup(false)
-            dispatch(addProduct({ ...product, color, size }))
+            // dispatch(addProduct({ ...product, color, size }))
         }
         else {
             setPopupmessage(true)
@@ -113,52 +124,30 @@ const SingleProduct = ({ product }) => {
 
     return (
         <>
-            <ToastContainer toastStyle={{ backgroundColor: "#7C3AED", boxShadow: "none" }} />
-            <div className="m-5 p-3  w-64 flex flex-col items-center justify-center relative  ">
+            <Link href={`/productlist/${product?._id}`} >
+                <a className="my-5 w-80 flex flex-col items-center justify-center cursor-pointer relative opacity-100 transition border-4 shadow-lg">
 
-                {/* product image  */}
-                <Image src={product.img} height="310rem" width="240rem" objectFit="cover" className="z-20" />
-                {/* product info div  */}
-                {addpopup ? <div className="flex items-center justify-center flex-col text-center h-full w-full absolute top-0 left-0 z-30  opacity-100  transition border shadow-lg bg-[whitesmoke] bg-opacity-90" >
-                    <h1 className="font-semibold mb-5 sm:text-xl text-lg tracking-wide">Select Size</h1>
-                    {product.size.map((item, index) => (<div className="flex sm:h-10 sm:w-10 h-8 w-8 bg-white rounded-full shadow-md p-2 items-center text-center justify-center sm:m-2 m-1 cursor-pointer hover:bg-themePink hover:transform  hover:scale-110 focus:bg-themePink" key={index} tabIndex={index} onClick={() => setSize(item)} >{item}</div>))}
-                    <div className="flex items-center  w-full ">
-                        <button onClick={handleClose} className="font-bold mt-5   tracking-wide transition active:animate-ping flex-1 bg-themePink sm:p-3 p-2 " type='button'>Close</button>
-                        <button onClick={handleAddtocart} className="font-bold mt-5  tracking-wide transition active:animate-ping flex-1 bg-themePink sm:p-3 p-2  " type='button'>Add to Cart</button>
-
+                    {/* product image  */}
+                    {product.mainImage && <Image onMouseOver={() => setCurrentImage(product.slideImage[0] ? product.slideImage[0].data : product.mainImage)} onMouseOut={() => setCurrentImage(product.mainImage)} src={currentImage} height="280rem" width="320rem" objectFit="cover" className="z-20" />}
+                    {/* product info div  */}
+                    {/* details  */}
+                    <div className="flex flex-wrap flex-col items-center my-3 justify-between">
+                        <h1 className="text-18 sm:text-18 font-semibold ">{product?.realname}</h1>
+                        <div className="flex items-center">
+                            <BsCheck className="text-lg text-gray-600" />
+                            <p className="text-xs sm:text-sm font-light text-gray-600 tracking-wide đtext-center  mb-1">{product?.type.realname}</p>
+                        </div>
+                        <p className="text-xs sm:text-sm font-semibold ">{costFormat(product?.cost.toString())}đ</p>
+                        <button
+                            className="mt-2"
+                        >
+                            <AiOutlineHeart className="text-xl  text-[#19110B]" />
+                        </button>
                     </div>
-                    {popupmessage && <p className="mt-3 text-sm text-red-500 tracking-wide font-medium">Select size first</p>}
-                </div> :
-                    <div className="flex justify-center items-center h-full w-full absolute top-0 left-0 z-30  opacity-0 hover:opacity-100 transition hover:border hover:shadow-lg">
-                        {/* three icons  */}
-                        <button type="button" className="h-12 w-12 rounded-full bg-white flex justify-center items-center mx-1  hover:bg-themePink hover:transform  hover:scale-110 transition  active:animate-ping disabled:pointer-events-none disabled:bg-gray-200 disabled:text-red-600" onClick={handleAddToWishlist} disabled={wishlist?.findIndex((item) => item._id === product._id) >= 0} >
-                            <FiHeart size="1.3rem" />
-
-                        </button>
-                        <Link href={`/products/${product?._id}`} >
-                            <a >
-                                <div className="h-12 w-12 rounded-full bg-white flex justify-center items-center mx-1 cursor-pointer hover:bg-themePink hover:transform  hover:scale-110  transition active:animate-ping ">
-                                    <BsEye size="1.3rem" />
-
-                                </div>
-                            </a>
-                        </Link>
-                        <button className="h-12 w-12 rounded-full bg-white flex justify-center items-center mx-1 cursor-pointer hover:bg-themePink hover:transform  hover:scale-110 transition active:animate-ping" type="button" onClick={handleClick}>
-                            <BsBag size="1.3rem" />
-                        </button>
-
-                    </div>}
-                {/* details  */}
-                <div className="flex flex-wrap flex-col items-center my-3  ">
-                    <h1 className="text-xs sm:text-sm font-semibold ">{product?.brand}</h1>
-                    <p className="text-xs sm:text-sm font-light text-gray-500 tracking-wide text-center  mb-1">{product?.title}</p>
-                    <p className="text-xs sm:text-sm font-semibold ">&#8377; {product?.price}</p>
-                </div>
-                {/* addpopup  */}
 
 
-            </div>
-
+                </a>
+            </Link>
 
 
         </>

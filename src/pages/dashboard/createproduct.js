@@ -5,7 +5,6 @@ import AdminSidebar from '../../components/AdminSidebar';
 import { Redirect } from "../signin";
 import { useState} from "react";
 import { addProduct } from '../../Redux/productSlice';
-import { ToastContainer } from 'react-toastify';
 
 
 
@@ -65,7 +64,6 @@ const createproduct = () => {
             <AdminNavbar toggle={hamburgerToggle} setToggle={setHamburgerToggle} />
             <main className="flex w-full h-full ">
                 <AdminSidebar toggle={hamburgerToggle} />
-                <ToastContainer toastStyle={{ backgroundColor: "#00FF00", boxShadow: "none" }} />
 
                 <section className="flex flex-col w-screen h-screen my-1 p-6">
                     <div className="flex w-full items-center justify-between pb-3 border-b border-purple-600">

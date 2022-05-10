@@ -10,7 +10,7 @@ const Footer = () => {
                 {/* left side div  */}
                 <div className="flex-1 flex flex-col p-6 ">
                     {/* logo  */}
-                    <h1 className="font-bold text-xl sm:text-3xl sm:mb-8 mb-3">MARTINI.</h1>
+                    <h1 className="font-bold text-xl sm:text-3xl sm:mb-8 mb-3">DO AN TN</h1>
 
                     {/* description  */}
                     <p className="font-medium text-gray-600 tracking-wide text-xs sm:text-base mb-5 text-justify">Martini is a contemporary label moving at the speed of the high-street whilst maintaining luxurious quality and craftsmanship. Creating ready-to-wear from a new perspective, Martini offers a fresh and unique mix of femininity with a modern edge.</p>

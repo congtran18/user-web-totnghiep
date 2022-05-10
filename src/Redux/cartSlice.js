@@ -1,8 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
-
-
 
 export const cartSlice = createSlice({
     name: "cart",
@@ -22,31 +19,13 @@ export const cartSlice = createSlice({
                 const productToAdd = { ...action.payload, productQuantity: 1 }
                 state.products.push(productToAdd)
             }
-            toast.success('Added to cart', {
-                position: "top-center",
-                autoClose: 1500,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            })
+            toast.success('Added to cart')
         },
         deleteProduct: (state, action) => {
 
             const productIndex = action.payload;
             state.products.splice(productIndex, 1)
-            toast.info('Item Removed', {
-                position: "top-center",
-                autoClose: 1500,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            })
+            toast.info('Item Removed')
         },
         decreaseQuantity: (state, action) => {
             const productindex = action.payload;
@@ -55,16 +34,7 @@ export const cartSlice = createSlice({
                 state.products[productindex].productQuantity -= 1
             } else {
                 state.products.splice(productindex, 1)
-                toast.info('Item Removed', {
-                    position: "top-center",
-                    autoClose: 1500,
-                    hideProgressBar: true,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored"
-                })
+                toast.info('Item Removed')
             }
         },
         increaseQuantity: (state, action) => {
