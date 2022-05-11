@@ -30,7 +30,7 @@ export const getStaticPaths = async () => {
 
     return {
         paths: paths,
-        fallback: true
+        fallback: false
     }
 };
 
@@ -53,7 +53,7 @@ export const getStaticProps = async (context) => {
         console.log(error);
         return {
             props: {
-                error
+                product: null
             }
         }
     }
