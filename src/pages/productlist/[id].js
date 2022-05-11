@@ -15,7 +15,8 @@ import 'react-toastify/dist/ReactToastify.css';
 
 
 export const getStaticPaths = async () => {
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/product`);
+    // const response = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/product`);
+    const response = await axios.get('https://server-web-totnghiep.herokuapp.com/api/product');
 
     const data = response.data.data.product;
 
@@ -35,14 +36,25 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async (context) => {
 
-    const id = context.params.id
+    try {
 
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/product/${id}`)
-    const data = response.data.data;
+        const id = context.params.id
 
-    return {
-        props: {
-            product: data,
+        const response = await axios.get(`https://server-web-totnghiep.herokuapp.com/api/product/${id}`)
+        const data = response.data.data;
+
+        return {
+            props: {
+                product: data,
+            }
+        }
+
+    } catch (error) {
+        console.log(error);
+        return {
+            props: {
+                error
+            }
         }
     }
 

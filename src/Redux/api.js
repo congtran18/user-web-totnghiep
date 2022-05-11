@@ -2,7 +2,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_DB_URL,
+  baseURL: 'https://server-web-totnghiep.herokuapp.com/api',
   headers: {
     'Content-Type': 'application/json',
   },
