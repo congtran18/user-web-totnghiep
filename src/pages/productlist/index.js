@@ -18,7 +18,7 @@ export async function getStaticProps() {
     //     },
     //   };
 
-    let types = await axios.get("https://server-web-totnghiep.herokuapp.com/api/typeProduct");
+    let types = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/typeProduct`);
 
     types = types.data.data
 

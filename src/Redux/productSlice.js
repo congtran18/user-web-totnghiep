@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-const baseUrl = 'https://server-web-totnghiep.herokuapp.com/api'
+const baseUrl = process.env.NEXT_PUBLIC_DB_URL
 
 export const apiSlice = createApi({
     reducerPath: 'apiSlice',
