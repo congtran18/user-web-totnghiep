@@ -1,15 +1,14 @@
 import Head from 'next/head';
-import Banner from '../components/Banner';
-import Categories from '../components/Categories';
-import Newsletter from '../components/Newsletter';
-import StaticUtility from '../components/StaticUtility'
-import NewProduct from '../components/NewProduct';
+import Banner from 'components/Banner';
+import Newsletter from 'components/Newsletter';
+import StaticUtility from 'components/StaticUtility'
+import NewProduct from 'components/NewProduct';
 import Link from "next/link";
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { getTotals } from '../Redux/cartSlice';
+import { getTotals } from 'features/cartSlice';
 import axios from "axios";
-import { getWishlist } from '../Redux/wishlistSlice';
+import { getWishlist } from 'features/wishlistSlice';
 
 export default function Home() {
 

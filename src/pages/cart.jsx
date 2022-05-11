@@ -9,7 +9,7 @@ import StripeCheckout from "react-stripe-checkout";
 import axios from "axios";
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'next/router'
-import { decreaseQuantity, increaseQuantity, getTotals, saveStripeData } from '../Redux/cartSlice';
+import { decreaseQuantity, increaseQuantity, getTotals, saveStripeData } from '../features/cartSlice';
 
 
 

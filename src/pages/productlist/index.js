@@ -1,12 +1,11 @@
 import Head from 'next/head';
-import Newsletter from '../../components/Newsletter';
-import Products from '../../components/Products';
+import Newsletter from 'components/Newsletter';
+import Products from 'components/Products';
 import { useRouter } from 'next/dist/client/router';
 import { useState } from 'react';
-import FilterBy from "../../components/FilterProduct/FilterBy"
-import SearchBox from "../../components/FilterProduct/SearchBox"
+import FilterBy from "components/FilterProduct/FilterBy"
+import SearchBox from "components/FilterProduct/SearchBox"
 import axios from "axios";
-import Cookies from 'js-cookie'
 import { toast } from "react-toastify";
 
 export async function getStaticProps() {

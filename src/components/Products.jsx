@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import SingleProduct from "./SingleProduct";
 import Image from "next/image";
 import { useRouter } from 'next/dist/client/router';
-import { useGetProductsQuery } from '../Redux/productSlice'
+import { useGetProductsQuery } from '../features/productSlice'
 import Pagination from '@mui/material/Pagination'
 
 const Products = ({ params, handlePageChange }) => {

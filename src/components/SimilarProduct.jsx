@@ -12,11 +12,11 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 
-const NewProduct = () => {
+const SimilarProduct = ({ typeProduct }) => {
 
     const router = useRouter();
 
-    const { data } = useGetProductsQuery({ "page": 1 })
+    const { data } = useGetProductsQuery({ "type": typeProduct })
 
     const handleClickSimilarProduct = (product) => {
         router.push(`/productlist/${product?._id}`);
@@ -96,4 +96,4 @@ const NewProduct = () => {
     )
 }
 
-export default NewProduct
+export default SimilarProduct

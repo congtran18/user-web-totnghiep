@@ -4,23 +4,10 @@ import { AiOutlineHeart } from "react-icons/ai";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
-import { getWishlist } from "../Redux/wishlistSlice";
+import { getWishlist } from "features/wishlistSlice";
 import axios from "axios";
 import { toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
-
-const costFormat = (cost) => {
-    var costlength;
-    if ((cost.length / 3 - parseInt(cost.length / 3)) > 0) {
-        costlength = parseInt(cost.length / 3);
-    } else {
-        costlength = parseInt(cost.length / 3) - 1;
-    }
-    for (let i = 1; i <= costlength; i++) {
-        cost = [cost.slice(0, ((-3 * i) - (i - 1))), ".", cost.slice((-3 * i) - (i - 1))].join('');
-    }
-    return cost;
-}
+import CostFormat from 'helper/CostFormat'
 
 const SingleProduct = ({ product }) => {
 
@@ -134,11 +121,10 @@ const SingleProduct = ({ product }) => {
                         <h1 className="text-18 sm:text-18 font-semibold ">{product?.realname}</h1>
                         <div className="flex items-center">
                             <BsCheck className="text-lg text-gray-600" />
-                            <p className="text-xs sm:text-sm font-light text-gray-600 tracking-wide đtext-center  mb-1">{product?.type.realname}</p>
+                            <p className="text-xs sm:text-sm font-light text-gray-600 tracking-wide text-center  mb-1">{product?.type.realname}</p>
                         </div>
-                        <p className="text-xs sm:text-sm font-semibold ">{costFormat(product?.cost.toString())}đ</p>
+                        <p className="text-xs sm:text-sm font-semibold ">{CostFormat(product?.cost.toString())}đ</p>
                         <button
-                            className="mt-2"
                         >
                             <AiOutlineHeart className="text-xl  text-[#19110B]" />
                         </button>

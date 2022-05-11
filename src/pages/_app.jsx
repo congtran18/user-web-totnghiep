@@ -1,7 +1,7 @@
 import 'tailwindcss/tailwind.css';
 import "../styles/global.css";
 import { Provider } from "react-redux";
-import { store, persistor } from "../Redux/store";
+import { store, persistor } from "../features/store";
 import Router from 'next/router';
 import { PersistGate } from 'redux-persist/integration/react';
 import ProgressBar from '@badrap/bar-of-progress';

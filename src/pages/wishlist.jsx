@@ -4,7 +4,7 @@ import Head from 'next/head';
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { CgCloseO } from "react-icons/cg";
-import { deleteFromWishlist, getWishlist } from "../Redux/wishlistSlice";
+import { deleteFromWishlist, getWishlist } from "features/wishlistSlice";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";

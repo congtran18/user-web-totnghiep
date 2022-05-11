@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { registerUser } from '../Redux/userSlice';
+import { registerUser } from '../features/userSlice';
 import { Redirect } from './signin';
 
 

@@ -9,8 +9,8 @@ export const apiSlice = createApi({
         getProducts: builder.query({
             query: (params) => {
                 return {
-                    url: `product?limit=8`,
-                    params: params,
+                    url: `product`,
+                    params: {...params, "limit":8},
                 }
             },
         }),

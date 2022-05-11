@@ -1,25 +1,23 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import Newsletter from '../../components/Newsletter';
+import Newsletter from 'components/Newsletter';
 import axios from "axios";
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addProduct, getTotals } from '../../Redux/cartSlice';
-import { addToWishlist } from "../../Redux/wishlistSlice";
+import { addProduct, getTotals } from 'features/cartSlice';
+import CostFormat from 'helper/CostFormat'
+import { addToWishlist } from "features/wishlistSlice";
 import { BsBag } from "react-icons/bs";
 import { FiHeart } from "react-icons/fi";
-import { toast } from "react-toastify";
-import 'react-toastify/dist/ReactToastify.css';
-
-
-
+import { BsCheck } from "react-icons/bs";
+import SimilarProduct from 'components/SimilarProduct';
+import ImageGallery from 'react-image-gallery';
+import "react-image-gallery/styles/css/image-gallery.css";
 
 export const getStaticPaths = async () => {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/product`);
 
     const data = response.data.data.product;
-
-    console.log("data", data)
 
     const paths = data?.map((element) => {
         return {
@@ -28,8 +26,6 @@ export const getStaticPaths = async () => {
             }
         }
     })
-
-    console.log("paths",paths)
 
     return {
         paths: paths,
@@ -69,6 +65,45 @@ const Product = ({ product }) => {
     const cart = useSelector((state) => state.cart);
     const wishlist = useSelector((state) => state.wishlist.products);
     const user = useSelector((state) => state.user.currentUser);
+    const slideImage = []
+
+    const setupSlideImage = () => {
+
+        slideImage.push(
+            {
+                original: product.mainImage,
+                thumbnail: product.mainImage,
+                originalHeight: 400,
+                originalWidth: 200
+            }
+        )
+
+        product.slideImage.length > 0 && product.slideImage.map((image) => {
+            return (
+                slideImage.push(
+                    {
+                        original: image.data,
+                        thumbnail: image.data,
+                    }
+                )
+            )
+        })
+
+    }
+
+    setupSlideImage()
+
+    const properties = {
+        thumbnailPosition: "left",
+        useBrowserFullscreen: false,
+        originalHeight: "10%",
+        showIndex: true,
+        useTranslate3D: false,
+        slideOnThumbnailOver: true,
+        // showBullets: true,
+        showPlayButton: false,
+        items: slideImage
+    };
 
     useEffect(() => {
         dispatch(getTotals())
@@ -123,19 +158,28 @@ const Product = ({ product }) => {
                 {/* <Navbar />
                 <Announcement /> */}
 
-                <section className="flex sm:p-10 py-8 px-5 sm:max-w-[80%] w-full mx-auto flex-col sm:flex-row ">
+                <section className="flex sm:p-10 py-8 px-5 sm:max-w-[90%] w-full mx-auto flex-col sm:flex-row justify-between gap-10">
                     {/* image container  */}
                     {product.mainImage &&
-                        <div className="flex-1 self-center sm:self-start  my-2 sm:my-3 mb-4 sm:mb-0">
-                            <Image src={product?.mainImage} height="420rem" width="320rem" objectFit="cover" />
+                        <div className="flex-1 self-center sm:self-start items-start my-2 sm:my-3 mb-4 sm:mb-0">
+                            <ImageGallery {...properties} />
                         </div>}
                     {/* info container  */}
                     <div className="flex-1 ">
                         {/* title  */}
-                        <h1 className="font-semibold sm:my-2 my-2 text-xl sm:text-3xl tracking-wide">{product?.status.toUpperCase()}</h1>
-                        <h1 ></h1>
-                        <h1 className="font-normal sm:mb-5 mb-3 text-[15px] sm:text-[25px] tracking-wide text-gray-600">{product?.realname}</h1>
-                        <p className="text-2xl sm:text-3xl tracking-wide font-extralight mb-5 sm:mb-7">&#8377; {product?.cost}</p>
+                        <h1 className="font-semibold sm:my-2 my-2 text-xl sm:text-3xl tracking-wide">{product?.realname.toUpperCase()}</h1>
+                        <div className="flex items-center my-4">
+                            <BsCheck className="text-lg text-gray-600" />
+                            <p className="text-xs sm:text-xl font-light text-gray-600 tracking-wide text-center">{product?.type.realname}</p>
+                        </div>
+                        <div className="flex items-center my-5 gap-4">
+                            {product.include && product.include.map((item) => {
+                                return (
+                                    <div className="border border-red-400 border-2 p-1">{item}</div>
+                                )
+                            })}
+                        </div>
+                        <p className="text-2xl sm:text-3xl tracking-wide font-extralight mb-5 sm:mb-7"> {CostFormat(product?.cost.toString())}vnđ</p>
                         {/* description  */}
 
                         {/* add to cart container  */}
@@ -152,6 +196,10 @@ const Product = ({ product }) => {
                     </div>
                 </section>
                 <p className="inline-flex sm:hidden px-7 text-justify text-gray-500 tracking-wide text-xs  sm:text-base mb-4 font-normal">{product?.description}</p>
+                <section>
+                    <h1 className="text-center tracking-wider font-medium mt-14 mb-10 bg-themePink p-2.5 text-base sm:text-xl ">Sản phẩm liên quan</h1>
+                    <SimilarProduct typeProduct = {product?.type._id} />
+                </section>
                 <section>
                     <Newsletter />
                 </section>

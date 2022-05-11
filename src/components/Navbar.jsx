@@ -4,13 +4,13 @@ import { BsBag } from "react-icons/bs";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
-import { logout } from "../Redux/userSlice";
+import { logout } from "features/userSlice";
 import { useState } from "react";
 import { VscPackage } from "react-icons/vsc";
 import { FiHeart } from "react-icons/fi";
 import { AiOutlineControl } from "react-icons/ai";
 import { BiLogOut } from "react-icons/bi";
-import { resetWishlist } from '../Redux/wishlistSlice';
+import { resetWishlist } from 'features/wishlistSlice';
 import Image from "next/image";
 import { useSession, signIn, signOut } from 'next-auth/react';
 
