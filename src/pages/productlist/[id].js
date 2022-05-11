@@ -20,6 +20,8 @@ export const getStaticPaths = async () => {
 
     const data = response.data.data.product;
 
+    console.log("data", data)
+
     const paths = data?.map((element) => {
         return {
             params: {
@@ -27,6 +29,8 @@ export const getStaticPaths = async () => {
             }
         }
     })
+
+    console.log("paths",paths)
 
     return {
         paths: paths,
