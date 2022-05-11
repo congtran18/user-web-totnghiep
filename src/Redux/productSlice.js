@@ -1,11 +1,10 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
-const baseUrl = "http://localhost:5001/api"
-
+const baseUrl = process.env.NEXT_PUBLIC_DB_URL
 
 export const apiSlice = createApi({
     reducerPath: 'apiSlice',
-    baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:5001/api" }),
+    baseQuery: fetchBaseQuery({ baseUrl }),
     endpoints: (builder) => ({
         getProducts: builder.query({
             query: (params) => {
