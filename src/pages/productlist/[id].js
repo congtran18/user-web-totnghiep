@@ -89,22 +89,22 @@ const Product = ({ product }) => {
                 cost: product?.cost
             }]
         };
-        try {
-            if (!user) {
-                toast.info('Hãy đăng nhập')
-            } else {
-                const response = await axios.post('https://martiniapi.herokuapp.com/api/wishlist', myObj, {
-                    headers: {
-                        'auth-token': user?.authToken
-                    }
-                });
-                dispatch(addToWishlist(product))
-                toast.success('Sản phẩm đã được thêm vào danh sách yêu thích')
-            }
+        // try {
+        //     if (!user) {
+        //         toast.info('Hãy đăng nhập')
+        //     } else {
+        //         const response = await axios.post('https://martiniapi.herokuapp.com/api/wishlist', myObj, {
+        //             headers: {
+        //                 'auth-token': user?.authToken
+        //             }
+        //         });
+        //         dispatch(addToWishlist(product))
+        //         toast.success('Sản phẩm đã được thêm vào danh sách yêu thích')
+        //     }
 
-        } catch (error) {
-            console.log(error);
-        }
+        // } catch (error) {
+        //     console.log(error);
+        // }
     };
 
     return (
