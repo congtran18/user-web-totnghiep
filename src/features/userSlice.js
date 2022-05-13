@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import api from "./api"
 import { toast } from "react-toastify";
 import Cookies from 'js-cookie'
+import { signOut } from 'next-auth/react';
 
 const user = JSON.stringify(Cookies.get("userInfo"));
 
@@ -19,6 +20,7 @@ export const loginUser = createAsyncThunk("/auth/login", async (user, thunkAPI) 
         const response = await api.post("/auth/login", user);
 
         Cookies.set("userInfo", JSON.stringify(response.data));
+        Cookies.set('foo', 'bar')
 
         return response.data
 
@@ -56,7 +58,13 @@ export const registerUser = createAsyncThunk(
 
 
 export const logout = createAsyncThunk("/auth/logout", async () => {
-    Cookies.remove("userInfo")
+    if (Cookies.get("userInfo")) {
+        Cookies.remove("userInfo")
+    } else {
+        Cookies.remove("isloggin")
+        signOut()
+    }
+
 });
 
 
@@ -111,7 +119,7 @@ export const userSlice = createSlice({
                 state.user = null;
                 toast.success("Đăng xuất thành công!");
             });
-},
+    },
 
 
 });

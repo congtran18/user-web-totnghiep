@@ -1,5 +1,5 @@
 
-import React from 'react'
+import React, { useEffect, useRef, useMemo } from 'react'
 import { BsBag } from "react-icons/bs";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,17 +8,17 @@ import { logout } from "features/userSlice";
 import { useState } from "react";
 import { VscPackage } from "react-icons/vsc";
 import { FiHeart } from "react-icons/fi";
-import { AiOutlineControl } from "react-icons/ai";
 import { BiLogOut } from "react-icons/bi";
 import { resetWishlist } from 'features/wishlistSlice';
 import Image from "next/image";
 import { useSession, signIn, signOut } from 'next-auth/react';
-
+import { toast } from "react-toastify";
+import CredentialsProvider from "next-auth/providers/credentials"
+import Cookies from 'js-cookie'
 
 
 const Navbar = () => {
 
-    const { data: session } = useSession();
     // get quantity from the cart state in redux store using useselector hook 
     const router = useRouter();
     const dispatch = useDispatch();
@@ -27,7 +27,25 @@ const Navbar = () => {
         (state) => state.user
     );
 
-    const userData = user ? (user.user ? user.user : JSON.parse(JSON.parse(user)).user) : null
+    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+    const dataUser = useRef()
+
+    const { data: session, loading } = useSession();
+
+    useEffect(() => {
+        console.log("vo day1")
+        if (session && !Cookies.get("isloggin")) {
+            Cookies.set("isloggin", true)
+            console.log("vo day2")
+        }
+    }, [session])
+
+
+    // dataUser = session && session.user.email.match(mailformat) && session.user.email
+
+
+    // const userData = user ? (user.user ? user.user : JSON.parse(JSON.parse(user)).user) : null
 
     const wishlist = useSelector((state) => state.wishlist.products);
 
@@ -35,10 +53,9 @@ const Navbar = () => {
     const [profiletoggle, setProfiletoggle] = useState(false);
 
     function handleLogout() {
-        // dispatch(logout());
-        signOut()
+        dispatch(logout());
+        // signOut()
         dispatch(resetWishlist());
-        router.push('/signin')
     }
 
 
@@ -55,13 +72,13 @@ const Navbar = () => {
                 <Link href="/"><Image src="/Images/martinilogo.jpg" objectFit='contain' height={55} width={150}/></Link>
             </div> */}
             <div className="flex flex-grow items-center md:hidden justify-center cursor-pointer ">
-                <Link href="/"><Image src="/Images/mlogo.png" objectFit='cover' height={50} width={70}/></Link>
+                <Link href="/"><Image src="/Images/mlogo.png" objectFit='cover' height={50} width={70} /></Link>
             </div>
             <div className="flex-grow items-center flex sm:space-x-7 space-x-4 sm:justify-end justify-end sm:tracking-wide sm:text-base text-xs relative">
                 {!session && <>
                     <Link href="/register" >Đăng ký</Link>
                     <Link href="/signin" >Đăng nhập</Link>
-                </> 
+                </>
                 }
                 {/* user logo or avatar  */}
                 {session && <div className="sm:h-10 sm:w-10 h-7 w-7 cursor-pointer font-medium rounded-full bg-themePink flex items-center justify-center text-center" onClick={() => setProfiletoggle(!profiletoggle)}>{session.user.name.slice(0, 1).toUpperCase()}</div>}

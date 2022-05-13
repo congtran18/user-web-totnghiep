@@ -111,12 +111,26 @@ const SingleProduct = ({ product }) => {
     return (
         <>
             <Link href={`/productlist/${product?._id}`} >
-                <a className="my-5 w-80 flex flex-col items-center justify-center cursor-pointer relative opacity-100 transition border-4 shadow-lg">
+                <a className="my-5 w-80 flex flex-col items-center justify-center cursor-pointer relative opacity-100 transition border-4 shadow-lg overflow-hidden">
 
                     {/* product image  */}
                     {product.mainImage && <Image onMouseOver={() => setCurrentImage(product.slideImage[0] ? product.slideImage[0].data : product.mainImage)} onMouseOut={() => setCurrentImage(product.mainImage)} src={currentImage} height="280rem" width="320rem" objectFit="cover" className="z-20" />}
                     {/* product info div  */}
                     {/* details  */}
+                    {product.status && (
+                        product.status === "Nổi bật" ?
+                            <div className="absolute top-[5px] right-[-26px] text-black z-30  bg-blue-400 font-medium h-[30px] w-[95px] flex items-center justify-center rotate-[45deg]">
+                                <p className="text-sm">{product.status}</p>
+                                {/* <p className="uppercase text-[9px] font-semibold -rotate-90 ">
+                                    off
+                                </p> */}
+                            </div> : (product.status === "Mới" && <div className="absolute top-[5px] right-[-26px] text-black z-30  bg-red-400 font-medium h-[30px] w-[95px] flex items-center justify-center rotate-[45deg]">
+                                <p className="text-sm">{product.status}</p>
+                                {/* <p className="uppercase text-[9px] font-semibold -rotate-90 ">
+                                    off
+                                </p> */}
+                            </div>)
+                    )}
                     <div className="flex flex-wrap flex-col items-center my-3 justify-between">
                         <h1 className="text-18 sm:text-18 font-semibold ">{product?.realname}</h1>
                         <div className="flex items-center">

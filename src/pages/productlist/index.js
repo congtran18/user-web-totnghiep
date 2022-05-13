@@ -10,13 +10,6 @@ import { toast } from "react-toastify";
 
 export async function getStaticProps() {
 
-    //   const token = JSON.parse(JSON.parse(Cookies.get("persist:root")).auth).user.accessToken;
-    //   const config = {
-    //     headers: {
-    //       Authorization: `Bearer ${token}`,
-    //     },
-    //   };
-
     let types = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/typeProduct`);
 
     types = types.data.data

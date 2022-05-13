@@ -5,12 +5,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { loginUser } from 'features/userSlice';
 import { useRouter } from 'next/router';
 import { FcGoogle } from "react-icons/fc";
-import InputField from 'components/Form-control/InputField';
+import { FaFacebook } from "react-icons/fa";
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { toast } from "react-toastify";
-import {  signIn } from 'next-auth/react';
+import { signIn, useSession } from 'next-auth/react';
+
 
 export function Redirect({ to }) {
     const router = useRouter();
@@ -34,13 +35,13 @@ const SigninSchema = yup.object().shape({
 
 const Signin = () => {
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const dispatch = useDispatch();
     const { isFetching } = useSelector((state) => state.user);
     const { user, isLoading, isError, isSuccess, message } = useSelector(
         (state) => state.user
     );
+
+    const { data: session } = useSession();
 
     const {
         register,
@@ -49,16 +50,26 @@ const Signin = () => {
     } = useForm({ resolver: yupResolver(SigninSchema) });
 
 
-    function handleLogin(data) {
+    async function handleLogin(data) {
         try {
-            signIn()
+            await dispatch(loginUser(data))
         } catch (e) {
             toast.error("Kiểm tra lại thông tin đăng nhập")
         }
     }
 
+    async function handleLoginGoogle(e) {
+        e.preventDefault()
+        signIn("google", { callbackUrl: '/' })
+    }
+
+    async function handleLoginFacebook(e) {
+        e.preventDefault()
+        signIn("facebook", { callbackUrl: '/' })    
+    }
+
     //  to redirect the user to homepage if logged in 
-    if (user) {
+    if (user || session) {
         return <Redirect to="/" />
     }
 
@@ -79,9 +90,9 @@ const Signin = () => {
                     {/* form  */}
                     <form className="flex  flex-col" onSubmit={handleSubmit(handleLogin)} >
 
-                        <input {...register("email")} placeholder="Email" className="flex-1 min-w-[40%] my-2 border border-black sm:p-2 p-2 mx-2 outline-none text-sm sm:text-base rounded-md" onChange={(e) => setEmail(e.target.value)} />
+                        <input {...register("email")} placeholder="Email" className="flex-1 min-w-[40%] my-2 border border-black sm:p-2 p-2 mx-2 outline-none text-sm sm:text-base rounded-md" />
                         {errors.email && <p className='text-sm text-red-600 mx-2'>{errors.email.message}</p>}
-                        <input {...register("password")} type="password" placeholder="Password" className="flex-1 min-w-[40%] my-2 border border-black sm:p-2 p-2 mx-2 outline-none text-sm sm:text-base rounded-md" onChange={(e) => setPassword(e.target.value)} />
+                        <input {...register("password")} type="password" placeholder="Password" className="flex-1 min-w-[40%] my-2 border border-black sm:p-2 p-2 mx-2 outline-none text-sm sm:text-base rounded-md" />
                         {errors.password && <p className='text-sm text-red-600 mx-2'>{errors.password.message}</p>}
                         <button className="w-32 sm:p-2 p-2 bg-themePink tracking-wide hover:font-medium transition-all text-sm sm:text-base self-center sm:self-start mt-4 mb-2 disabled:bg-gray-200 disabled:cursor-not-allowed" disabled={isFetching}>Đăng nhập</button>
                     </form>
@@ -91,9 +102,8 @@ const Signin = () => {
                         <Link href="/register">Tạo tài khoản</Link>
                     </div>
 
-                    <button className="w-full h-10 bg-blue-200 mt-4" >Đăng nhập bằng Google</button>
-                    <button className="w-full h-10 bg-blue-200 mt-2" >Đăng nhập bằng Facebook</button>
-
+                    <button onClick={handleLoginGoogle} className="flex w-full h-11 bg-blue-200 mt-4 items-center"  ><FcGoogle size="32" className = "ml-5"/><p className="ml-[16%]">Đăng nhập bằng Google</p></button>
+                    <button onClick={handleLoginFacebook} className="flex w-full h-11 bg-blue-200 mt-2 items-center" ><FaFacebook size="32" className = "ml-5"/><p className="ml-[16%]">Đăng nhập bằng Facebook</p></button>
                 </section>
             </main>
         </>

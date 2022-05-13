@@ -18,8 +18,6 @@ import storageReducer from "./storageSlice"
 // import productReducer from "./productSlice";
 import storage from 'redux-persist/lib/storage'
 
-const expireInMinutes = 0.1;
-
 const persistConfig = {
   key: 'root',
   blacklist: ['user', 'apiSlice'],
