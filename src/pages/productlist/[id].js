@@ -158,7 +158,7 @@ const Product = ({ product }) => {
                 {/* <Navbar />
                 <Announcement /> */}
 
-                <section className="flex sm:p-10 py-8 px-5 sm:max-w-[90%] w-full mx-auto flex-col sm:flex-row justify-between gap-10">
+                <section className="flex sm:p-10 py-8 px-5 sm:max-w-[90%] w-full mx-auto flex-col sm:flex-row justify-between gap-11">
                     {/* image container  */}
                     {product.mainImage &&
                         <div className="flex-1 self-center sm:self-start items-start my-2 sm:my-3 mb-4 sm:mb-0">

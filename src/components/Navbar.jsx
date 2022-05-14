@@ -27,6 +27,8 @@ const Navbar = () => {
         (state) => state.user
     );
 
+    const [ImageUser, setImageUser] = useState("");
+
     var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
     const dataUser = useRef()
@@ -37,9 +39,11 @@ const Navbar = () => {
         console.log("vo day1")
         if (session && !Cookies.get("isloggin")) {
             Cookies.set("isloggin", true)
-            console.log("vo day2")
+            setImageUser(session.user.image)
         }
     }, [session])
+
+    console.log("ImageUser",session && session.user.image)
 
 
     // dataUser = session && session.user.email.match(mailformat) && session.user.email
@@ -75,13 +79,15 @@ const Navbar = () => {
                 <Link href="/"><Image src="/Images/mlogo.png" objectFit='cover' height={50} width={70} /></Link>
             </div>
             <div className="flex-grow items-center flex sm:space-x-7 space-x-4 sm:justify-end justify-end sm:tracking-wide sm:text-base text-xs relative">
-                {!session && <>
+                {!session && !Cookies.get("isloggin") &&<>
                     <Link href="/register" >Đăng ký</Link>
                     <Link href="/signin" >Đăng nhập</Link>
                 </>
                 }
                 {/* user logo or avatar  */}
-                {session && <div className="sm:h-10 sm:w-10 h-7 w-7 cursor-pointer font-medium rounded-full bg-themePink flex items-center justify-center text-center" onClick={() => setProfiletoggle(!profiletoggle)}>{session.user.name.slice(0, 1).toUpperCase()}</div>}
+                {session && session.user.image ? <div className={`sm:h-10 sm:w-10 h-7 w-7 cursor-pointer font-medium rounded-full flex items-center justify-center bg-top bg-cover bg-[url('${session.user.image && session.user.image}')]`} onClick={() => setProfiletoggle(!profiletoggle)}></div> :
+                (session && <div className="sm:h-10 sm:w-10 h-7 w-7 cursor-pointer font-medium rounded-full bg-themePink flex items-center justify-center text-center" onClick={() => setProfiletoggle(!profiletoggle)}>{session.user.name.slice(0, 1).toUpperCase()}</div>)
+                }
                 {session && profiletoggle &&
                     <div className="absolute flex flex-col sm:w-48 w-40 drop-shadow-md p-3 sm:right-0 sm:top-14 right-0 top-10 z-50 rounded-lg bg-white transition-all ">
                         <p className="text-xs sm:text-[14px] tracking-wide mb-2">Welcome <strong>{session.user.name.toUpperCase()}</strong></p>

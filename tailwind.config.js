@@ -17,7 +17,7 @@ module.exports = {
 				heading: ['Lora', 'serif'],
 			},
       backgroundImage: {
-        'registerImg': "url('https://images.pexels.com/photos/6984661/pexels-photo-6984661.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940')"
+        'registerImg': "url('https://images.pexels.com/photos/6984661/pexels-photo-6984661.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940')",
       },
       flex: {
         '3': '3 3 0%',
