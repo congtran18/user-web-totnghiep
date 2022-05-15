@@ -36,8 +36,7 @@ const SigninSchema = yup.object().shape({
 const Signin = () => {
 
     const dispatch = useDispatch();
-    const { isFetching } = useSelector((state) => state.user);
-    const { user, isLoading, isError, isSuccess, message } = useSelector(
+    const { user } = useSelector(
         (state) => state.user
     );
 
@@ -52,6 +51,7 @@ const Signin = () => {
 
     async function handleLogin(data) {
         try {
+            console.log("vo day hahahahahaha")
             await dispatch(loginUser(data))
         } catch (e) {
             toast.error("Kiểm tra lại thông tin đăng nhập")
@@ -65,7 +65,7 @@ const Signin = () => {
 
     async function handleLoginFacebook(e) {
         e.preventDefault()
-        signIn("facebook", { callbackUrl: '/' })    
+        signIn("facebook", { callbackUrl: '/' })
     }
 
     //  to redirect the user to homepage if logged in 
@@ -94,16 +94,20 @@ const Signin = () => {
                         {errors.email && <p className='text-sm text-red-600 mx-2'>{errors.email.message}</p>}
                         <input {...register("password")} type="password" placeholder="Password" className="flex-1 min-w-[40%] my-2 border border-black sm:p-2 p-2 mx-2 outline-none text-sm sm:text-base rounded-md" />
                         {errors.password && <p className='text-sm text-red-600 mx-2'>{errors.password.message}</p>}
-                        <button className="w-32 sm:p-2 p-2 bg-themePink tracking-wide hover:font-medium transition-all text-sm sm:text-base self-center sm:self-start mt-4 mb-2 disabled:bg-gray-200 disabled:cursor-not-allowed" disabled={isFetching}>Đăng nhập</button>
+                        <button className="w-32 sm:p-2 p-2 bg-themePink tracking-wide hover:font-medium transition-all text-sm sm:text-base self-center sm:self-start mt-4 mb-2 disabled:bg-gray-200 disabled:cursor-not-allowed ml-2">Đăng nhập</button>
                     </form>
                     {/* links  */}
                     <div className="flex items-center sm:space-x-5 space-y-2  sm:space-y-0 mt-4 text-gray-500 font-light text-sm sm:text-base tracking-wide underline transition-all flex-col sm:flex-row ">
                         <Link href="#">Quên mật khẩu</Link>
                         <Link href="/register">Tạo tài khoản</Link>
                     </div>
-
-                    <button onClick={handleLoginGoogle} className="flex w-full h-11 bg-blue-200 mt-4 items-center"  ><FcGoogle size="32" className = "ml-5"/><p className="ml-[16%]">Đăng nhập bằng Google</p></button>
-                    <button onClick={handleLoginFacebook} className="flex w-full h-11 bg-blue-200 mt-2 items-center" ><FaFacebook size="32" className = "ml-5"/><p className="ml-[16%]">Đăng nhập bằng Facebook</p></button>
+                    <div class="flex items-center mt-3">
+                        <div class="flex-grow bg bg-gray-400 h-0.5"></div>
+                        <div class="flex-grow-0 mx-2 text-xl dark:text-black">or</div>
+                        <div class="flex-grow bg bg-gray-400 h-0.5"></div>
+                    </div>
+                    <button onClick={handleLoginGoogle} className="flex w-full h-11 bg-blue-200 mt-4 items-center"  ><FcGoogle size="32" className="ml-5" /><p className="ml-[16%]">Đăng nhập bằng Google</p></button>
+                    <button onClick={handleLoginFacebook} className="flex w-full h-11 bg-blue-200 mt-2 items-center" ><FaFacebook size="32" className="ml-5" /><p className="ml-[16%]">Đăng nhập bằng Facebook</p></button>
                 </section>
             </main>
         </>

@@ -1,5 +1,5 @@
 
-import React, { useEffect, useRef, useMemo } from 'react'
+import React, { useEffect } from 'react'
 import { BsBag } from "react-icons/bs";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,11 +11,8 @@ import { FiHeart } from "react-icons/fi";
 import { BiLogOut } from "react-icons/bi";
 import { resetWishlist } from 'features/wishlistSlice';
 import Image from "next/image";
-import { useSession, signIn, signOut } from 'next-auth/react';
-import { toast } from "react-toastify";
-import CredentialsProvider from "next-auth/providers/credentials"
+import { useSession, signIn, signOut, getSession } from 'next-auth/react';
 import Cookies from 'js-cookie'
-
 
 const Navbar = () => {
 
@@ -27,38 +24,39 @@ const Navbar = () => {
         (state) => state.user
     );
 
-    const [ImageUser, setImageUser] = useState("");
+    const [userData, setUserData] = useState(null)
 
-    var mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
-    const dataUser = useRef()
-
-    const { data: session, loading } = useSession();
+    const { data: session } = useSession();
 
     useEffect(() => {
-        console.log("vo day1")
         if (session && !Cookies.get("isloggin")) {
             Cookies.set("isloggin", true)
-            setImageUser(session.user.image)
         }
-    }, [session])
-
-    console.log("ImageUser",session && session.user.image)
+        if (user) {
+            setUserData(user.user ? user.user : JSON.parse(JSON.parse(user)).user)
+        } else {
+            setUserData(null)
+        }
+    }, [session, user])
 
 
     // dataUser = session && session.user.email.match(mailformat) && session.user.email
 
-
-    // const userData = user ? (user.user ? user.user : JSON.parse(JSON.parse(user)).user) : null
 
     const wishlist = useSelector((state) => state.wishlist.products);
 
     // state for toggleling user profile 
     const [profiletoggle, setProfiletoggle] = useState(false);
 
-    function handleLogout() {
+    const handleLogout = async () => {
         dispatch(logout());
         // signOut()
+        await new Promise((res) => {
+            setTimeout(() => {
+                res();
+            }, 300);
+        });
+        // router.push('/signin')
         dispatch(resetWishlist());
     }
 
@@ -79,18 +77,17 @@ const Navbar = () => {
                 <Link href="/"><Image src="/Images/mlogo.png" objectFit='cover' height={50} width={70} /></Link>
             </div>
             <div className="flex-grow items-center flex sm:space-x-7 space-x-4 sm:justify-end justify-end sm:tracking-wide sm:text-base text-xs relative">
-                {!session && !Cookies.get("isloggin") &&<>
+                {!user && !session && !Cookies.get("isloggin") && <>
                     <Link href="/register" >Đăng ký</Link>
                     <Link href="/signin" >Đăng nhập</Link>
                 </>
                 }
                 {/* user logo or avatar  */}
-                {session && session.user.image ? <div className={`sm:h-10 sm:w-10 h-7 w-7 cursor-pointer font-medium rounded-full flex items-center justify-center bg-top bg-cover bg-[url('${session.user.image && session.user.image}')]`} onClick={() => setProfiletoggle(!profiletoggle)}></div> :
-                (session && <div className="sm:h-10 sm:w-10 h-7 w-7 cursor-pointer font-medium rounded-full bg-themePink flex items-center justify-center text-center" onClick={() => setProfiletoggle(!profiletoggle)}>{session.user.name.slice(0, 1).toUpperCase()}</div>)
-                }
-                {session && profiletoggle &&
+                {(session) && < Image onClick={() => setProfiletoggle(!profiletoggle)} src={session.user.image} height="40rem" width="40rem" objectFit="cover" className="cursor-pointer rounded-full flex items-center justify-center" />}
+                {(userData) && < Image onClick={() => setProfiletoggle(!profiletoggle)} src={userData.imageUrl} height="40rem" width="40rem" objectFit="cover" className="cursor-pointer rounded-full flex items-center justify-center" />}
+                {(userData || session) && profiletoggle &&
                     <div className="absolute flex flex-col sm:w-48 w-40 drop-shadow-md p-3 sm:right-0 sm:top-14 right-0 top-10 z-50 rounded-lg bg-white transition-all ">
-                        <p className="text-xs sm:text-[14px] tracking-wide mb-2">Welcome <strong>{session.user.name.toUpperCase()}</strong></p>
+                        <p className="text-xs sm:text-[14px] tracking-wide mb-2">Welcome <strong>{session ? session.user.name.toUpperCase() : userData.fullName.toUpperCase()}</strong></p>
                         <hr />
                         <div className="w-full flex items-center my-3 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={() => router.push('/orders')}><VscPackage size="1.1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">Tài khoản</p></div>
                         <div className="w-full flex items-center my-2 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={() => router.push('/wishlist')}><FiHeart size="1.1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">Yêu thích ({wishlist.length})</p></div>

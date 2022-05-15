@@ -1,6 +1,5 @@
 import { useGetProductsQuery } from 'features/productSlice'
 import { useRouter } from "next/router";
-import { useRef } from "react";
 import Image from "next/image";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
