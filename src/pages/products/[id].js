@@ -4,8 +4,8 @@ import Newsletter from '../../components/Newsletter';
 import axios from "axios";
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addProduct, getTotals } from '../../Redux/cartSlice';
-import { addToWishlist } from "../../Redux/wishlistSlice";
+import { addProduct, getTotals } from '../../features/cartSlice';
+import { addToWishlist } from "../../features/wishlistSlice";
 import { BsBag } from "react-icons/bs";
 import { FiHeart } from "react-icons/fi";
 import { toast } from "react-toastify";
@@ -116,9 +116,9 @@ const Product = ({ product }) => {
                 <Announcement /> */}
                 <section className="flex sm:p-10 py-8 px-5 sm:max-w-[80%] w-full mx-auto flex-col sm:flex-row ">
                     {/* image container  */}
-                    <div className="flex-1 self-center sm:self-start  my-2 sm:my-3 mb-4 sm:mb-0">
+                    {/* <div className="flex-1 self-center sm:self-start  my-2 sm:my-3 mb-4 sm:mb-0">
                         <Image src={product?.img} height="420rem" width="320rem" objectFit="cover" />
-                    </div>
+                    </div> */}
                     {/* info container  */}
                     <div className="flex-1 ">
                         {/* title  */}
