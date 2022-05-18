@@ -25,7 +25,7 @@ const Products = ({ params, handlePageChange }) => {
         <div className="h-full w-full flex items-center justify-center flex-col my-12">
             <Image src="/Images/blank.svg" objectFit="contain" width="300rem" height="300rem" />
             <p className="my-8 text-gray-700 tracking-wide text-sm sm:text-lg font-medium capitalize">No products found for </p>
-            <button type="button" onClick={() => router.push('/productlist/women')} className="bg-themePink py-2.5 px-5 w-max mx-auto text-sm sm:text-lg transition shadow-md hover:font-medium">Browse Products</button>
+            <button type="button" onClick={() => router.push('/productlist')} className="bg-themePink py-2.5 px-5 w-max mx-auto text-sm sm:text-lg transition shadow-md hover:font-medium">Danh sách sản phẩm</button>
         </div>
     }
     else {

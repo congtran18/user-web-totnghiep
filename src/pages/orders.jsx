@@ -97,7 +97,7 @@ const orders = () => {
                         {data && data.length === 0 && <div className="flex items-center justify-center w-full h-full my-16 flex-col">
                             <Image src="/Images/order.svg" objectFit="contain" width="300rem" height="200rem" />
                             <p className="my-10 text-sm sm:text-lg tracking-wide text-center text-gray-700">There are no orders. Browser products to make a purchase.</p>
-                            <button type="button" onClick={() => router.push('/productlist/women')} className="bg-themePink py-2.5 px-5 w-max mx-auto text-base sm:text-lg transition shadow-md hover:font-medium">Browse Products</button>
+                            <button type="button" onClick={() => router.push('/productlist')} className="bg-themePink py-2.5 px-5 w-max mx-auto text-base sm:text-lg transition shadow-md hover:font-medium">Danh sách sản phẩm</button>
                         </div>}
                         {/* main order div  */}
                         {data && data.map((order, index) => (
