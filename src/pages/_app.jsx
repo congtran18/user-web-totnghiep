@@ -23,7 +23,6 @@ Router.events.on('routeChangeError', progress.finish);
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
 
   return (
-    <ThemeProvider enableSystem={true} attribute="class">
       <SessionProvider session={session}>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
@@ -33,7 +32,6 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
           </PersistGate>
         </Provider>
       </SessionProvider>
-    </ThemeProvider>
   );
 }
 

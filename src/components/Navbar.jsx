@@ -128,8 +128,6 @@ const Navbar = () => {
                         <div className="w-full flex items-center my-2 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={handleLogout}><BiLogOut size="1.1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">Đăng xuất</p></div>
                     </div>}
 
-                {renderThemeChanger()}
-
                 <BsBag fontSize="1.5rem" cursor="pointer" className="sm:w-7 w-[18px]" onClick={() => router.push('/cart')} />
 
                 {/* custom badge for cart quantity  */}
