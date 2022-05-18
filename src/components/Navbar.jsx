@@ -11,8 +11,10 @@ import { FiHeart } from "react-icons/fi";
 import { BiLogOut } from "react-icons/bi";
 import { resetWishlist } from 'features/wishlistSlice';
 import Image from "next/image";
-import { useSession, signIn, signOut, getSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import Cookies from 'js-cookie'
+import { useTheme } from "next-themes";
+import { BsFillMoonFill, BsFillSunFill } from "react-icons/bs";
 
 const Navbar = () => {
 
@@ -28,9 +30,15 @@ const Navbar = () => {
 
     const { data: session } = useSession();
 
+    const { systemTheme, theme, setTheme } = useTheme();
+    const [mounted, setMounted] = useState(false);
+
     useEffect(() => {
         if (session && !Cookies.get("isloggin")) {
             Cookies.set("isloggin", true)
+        }
+        if(!session && Cookies.get("isloggin")){
+            Cookies.remove("isloggin")
         }
         if (user) {
             setUserData(user.user ? user.user : JSON.parse(JSON.parse(user)).user)
@@ -39,9 +47,35 @@ const Navbar = () => {
         }
     }, [session, user])
 
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
-    // dataUser = session && session.user.email.match(mailformat) && session.user.email
+    const renderThemeChanger = () => {
+        if (!mounted) return null;
 
+        const currentTheme = theme === "system" ? systemTheme : theme;
+
+        if (currentTheme === "dark") {
+            return (
+                <BsFillSunFill
+                    size={18}
+                    className="mx-2 md:mx-5"
+                    role="button"
+                    onClick={() => setTheme("light")}
+                />
+            );
+        } else {
+            return (
+                <BsFillMoonFill
+                    size={18}
+                    className="mx-2 md:mx-5"
+                    role="button"
+                    onClick={() => setTheme("dark")}
+                />
+            );
+        }
+    };
 
     const wishlist = useSelector((state) => state.wishlist.products);
 
@@ -89,10 +123,12 @@ const Navbar = () => {
                     <div className="absolute flex flex-col sm:w-48 w-40 drop-shadow-md p-3 sm:right-0 sm:top-14 right-0 top-10 z-50 rounded-lg bg-white transition-all ">
                         <p className="text-xs sm:text-[14px] tracking-wide mb-2">Welcome <strong>{session ? session.user.name.toUpperCase() : userData.fullName.toUpperCase()}</strong></p>
                         <hr />
-                        <div className="w-full flex items-center my-3 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={() => router.push('/orders')}><VscPackage size="1.1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">Tài khoản</p></div>
+                        <div className="w-full flex items-center my-3 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={() => router.push('/orders')}><VscPackage size="1.1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">Hóa đơn</p></div>
                         <div className="w-full flex items-center my-2 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={() => router.push('/wishlist')}><FiHeart size="1.1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">Yêu thích ({wishlist.length})</p></div>
                         <div className="w-full flex items-center my-2 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={handleLogout}><BiLogOut size="1.1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">Đăng xuất</p></div>
                     </div>}
+
+                {renderThemeChanger()}
 
                 <BsBag fontSize="1.5rem" cursor="pointer" className="sm:w-7 w-[18px]" onClick={() => router.push('/cart')} />
 

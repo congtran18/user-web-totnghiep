@@ -1,5 +1,6 @@
 import Head from 'next/head';
-import Image from 'next/image';
+import { GrFormSubtract } from "react-icons/gr";
+import { GrFormAdd } from "react-icons/gr";
 import Newsletter from 'components/Newsletter';
 import axios from "axios";
 import { useState, useEffect } from 'react';
@@ -66,6 +67,16 @@ const Product = ({ product }) => {
     const wishlist = useSelector((state) => state.wishlist.products);
     const user = useSelector((state) => state.user.currentUser);
     const slideImage = []
+    const [counter, setCounter] = useState(1);
+
+    const incrementHandler = () => {
+        setCounter((prevCounter) => prevCounter + 1); // NOT MUTATE STATE
+      };
+    
+      const decrementHandler = () => {
+        setCounter((prevCounter) => (counter > 1 ? prevCounter - 1 : 1));
+      };
+    
 
     const setupSlideImage = () => {
 
@@ -182,12 +193,28 @@ const Product = ({ product }) => {
                         <p className="text-2xl sm:text-3xl tracking-wide font-extralight mb-5 sm:mb-7"> {CostFormat(product?.cost.toString())}vnđ</p>
                         {/* description  */}
 
+                        <div className="flex items-center justify-between mb-10">
+                            <div className="flex items-center gap-5 text-lg">
+                                <p className="">Số lượng:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+                                <p className="font-semibold">{counter}</p>
+                            </div>
+                            <div className="flex items-center gap-[22px] px-[15px] py-[13px] bg-background-grayfa">
+                                <button onClick={decrementHandler}>
+                                    <GrFormSubtract className="text-2xl" />
+                                </button>
+                                <div>{counter}</div>
+                                <button onClick={incrementHandler}>
+                                    <GrFormAdd className="text-2xl" />
+                                </button>
+                            </div>
+                        </div>
+
                         {/* add to cart container  */}
                         <div className="flex items-center sm:mb-9 space-x-6">
                             {/* amount container  */}
 
                             {/* add to cart button  */}
-                            <button type="button" className="bg-themePink sm:p-3 p-2 tracking-wide font-medium text-sm sm:text-base hover:bg-themePink transition-all flex-1 flex items-center justify-center" onClick={handleAddToCart}><BsBag style={{ marginRight: "8px" }} />ADD TO CART</button>
+                            <button type="button" className="bg-emerald-700 sm:p-3 p-2 tracking-wide font-medium text-sm text-white m:text-base hover:bg-emerald-200 hover:text-black transition-all flex-1 flex items-center justify-center" onClick={handleAddToCart}><BsBag style={{ marginRight: "8px" }} />THÊM VÀO GIỎ HÀNG</button>
                             <button type="button" className="border sm:p-3 p-2 tracking-wide font-medium text-sm sm:text-base hover:border-black transition-all flex-1 flex items-center justify-center disabled:pointer-events-none disabled:bg-gray-200 disabled:text-white" onClick={handleAddToWishlist} disabled={wishlist?.findIndex((item) => item._id === product._id) >= 0} ><FiHeart style={{ marginRight: "8px" }} />WISHLIST</button>
                         </div>
 
@@ -198,7 +225,7 @@ const Product = ({ product }) => {
                 <p className="inline-flex sm:hidden px-7 text-justify text-gray-500 tracking-wide text-xs  sm:text-base mb-4 font-normal">{product?.description}</p>
                 <section>
                     <h1 className="text-center tracking-wider font-medium mt-14 mb-10 bg-themePink p-2.5 text-base sm:text-xl ">Sản phẩm liên quan</h1>
-                    <SimilarProduct typeProduct = {product?.type._id} />
+                    <SimilarProduct typeProduct={product?.type._id} />
                 </section>
                 <section>
                     <Newsletter />

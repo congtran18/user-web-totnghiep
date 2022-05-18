@@ -10,9 +10,7 @@ const Products = ({ params, handlePageChange }) => {
     const router = useRouter();
     const { query } = router;
 
-    const { data, isLoading , isFetching, isError } = useGetProductsQuery(params)
-
-    console.log("isError",isError)
+    const { data, isLoading, isFetching, isError } = useGetProductsQuery(params)
 
     console.log("data", data)
 
@@ -20,8 +18,9 @@ const Products = ({ params, handlePageChange }) => {
 
     if (isLoading) {
         body = (
-            <img src="/Images/loading.gif" alt="loading" className="text-center flex items-center justify-center mx-auto mt-3 " />
-        )
+            <div className="w-full">
+                <img src="/Images/loading2.gif" alt="loading" className="text-center flex items-center justify-center mx-auto mt-3 " />
+            </div>)
     } else if (data && data.data.product?.length === 0) {
         <div className="h-full w-full flex items-center justify-center flex-col my-12">
             <Image src="/Images/blank.svg" objectFit="contain" width="300rem" height="300rem" />

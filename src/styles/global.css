@@ -10,19 +10,56 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components {
-	.link {
-		@apply cursor-pointer uppercase font-sans text-gray-500 tracking-wide transition duration-150 hover:text-black text-sm mx-10 md:mx-5;
-	}
+/* @layer components {
+  .link {
+    @apply cursor-pointer uppercase font-sans text-gray-500 tracking-wide transition duration-150 hover: text-black text-sm mx-10 md:mx-5;
+  }
+} */
+/* 
+.button {
+  py-2 mx-1 w-2/4 md: w-full text-white text-xs font-sans uppercase tracking-wider md:text-base rounded-sm focus:outline-none bg-shop_ave duration-200 hover:bg-white hover:ring-1 hover:ring-shop_ave hover:text-shop_ave;
+} */
+
+.link {
+  cursor: pointer;
+  text-transform: uppercase;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  color: rgb(107 114 128);
+  letter-spacing: 0.025em;
+  transition-duration: 150ms;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  margin-left: 1rem; 
+  margin-right: 1rem; 
+}
+.link:hover{
+  color: rgb(0 0 0);
+}
+.custombutton {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  color: rgb(255 255 255);
+  font-size: 1rem;
+  line-height: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.025em;
+  border-radius: 0.125rem;
+  justify-content: center;
+  background-color: #333333;
+  transition-duration: 200ms;
+}
+
+.custombutton:hover {
+  background-color: rgb(255 255 255);
+  outline-width: 1px;
+  color: rgb(35, 8, 8);
+  box-shadow: var(--tw-ring-inset) 0 0 0 calc(1px + var(--tw-ring-offset-width)) var(--tw-ring-color);
 }
 
 .register_gradient {
-  background: linear-gradient(
-      rgba(255, 255, 255, 0.5),
-      rgba(255, 255, 255, 0.5)
-    ),
-    url("https://images.viblo.asia/630c4191-038a-48cf-b28a-8a9463686cc5.jpg")
-      center ;
+  background: linear-gradient(rgba(255, 255, 255, 0.5),
+      rgba(255, 255, 255, 0.5)),
+    url("https://images.viblo.asia/630c4191-038a-48cf-b28a-8a9463686cc5.jpg") center;
   background-size: cover;
   display: flex;
   justify-content: center;
@@ -30,12 +67,9 @@
 }
 
 .signin_gradient {
-  background: linear-gradient(
-      rgba(255, 255, 255, 0.5),
-      rgba(255, 255, 255, 0.5)
-    ),
-    url("https://cdn.weareuv.com/wp-content/uploads/2019/11/Image-article-11-12.jpg")
-      center;
+  background: linear-gradient(rgba(255, 255, 255, 0.5),
+      rgba(255, 255, 255, 0.5)),
+    url("https://cdn.weareuv.com/wp-content/uploads/2019/11/Image-article-11-12.jpg") center;
   background-size: cover;
   display: flex;
   justify-content: center;
@@ -43,24 +77,24 @@
 }
 
 
-.widgetBtn{
+.widgetBtn {
   padding: 4px 9px;
   border: none;
   border-radius: 11px;
 }
 
-.widgetBtn.shipped{
+.widgetBtn.shipped {
   background-color: #ebf1fe;
   color: #2a7ade;
 
 }
 
-.widgetBtn.pending{
+.widgetBtn.pending {
   background-color: #fff0f1;
   color: #d95087;
 }
 
-.widgetBtn.delivered{
+.widgetBtn.delivered {
   background-color: #e5faf2;
   color: #3bb077;
 }

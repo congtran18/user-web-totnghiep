@@ -1,47 +1,24 @@
 import Head from 'next/head';
-import { useSelector } from 'react-redux';
-import axios from "axios";
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
+import { resetCart } from 'features/cartSlice';
 
 const success = () => {
 
+    const dispatch = useDispatch();
     const router = useRouter();
-    const cart = useSelector((state) => state.cart);
-    let stripeData = useSelector((state) => state.cart.cartStripeData);
     const [orderId, setOrderId] = useState(null);
-    const currentUser = useSelector((state) => state.user.currentUser);
 
     useEffect(() => {
-        async function createorder() {
-            try {
-                const response = await axios.post('https://martiniapi.herokuapp.com/api/order', {
-                    userId: currentUser.id,
-                    products: cart.products.map((product) => ({ productId: product._id, quantity: product.productQuantity, brand: product.brand, title: product.title, img: product.img, size:product.size })),
-                    amount: cart.cartTotalAmount,
-                    address: stripeData?.billing_details.address
-
-                }, {
-                    headers: {
-                        'auth-token': currentUser.authToken
-                    }
-                })
-
-                setOrderId(response.data._id)
-            } catch (err) {
-                console.log(err);
-            }
-        };
-        createorder()
-    }, [cart, currentUser])
-
-
+        dispatch(resetCart())
+    }, [])
 
     return (
         <>
             <Head>
-                <title>Martini - Payment Successfull</title>
+                <title>Thanh toán thành công</title>
                 <link rel="icon" href="/favicon.png" />
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin={true} />

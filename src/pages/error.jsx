@@ -1,19 +1,11 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import Image from "next/image";
-import { useSelector } from 'react-redux';
-import { Redirect } from "./signin";
-
-
 
 const error = () => {
 
     const router = useRouter();
-    const stripeError = useSelector((state) => state.cart.cartStripeData);
 
-    if (stripeError !== "error") {
-        return <Redirect to="/"/>
-    }
     return (
         <>
             <Head>

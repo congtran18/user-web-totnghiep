@@ -6,13 +6,12 @@ export const cartSlice = createSlice({
     initialState: {
         products: [],
         cartTotalQuantity: 0,
-        cartTotalAmount: 0,
-        cartStripeData: null
+        cartTotalAmount: 0
     },
     reducers: {
         addProduct: (state, action) => {
             // first find the index of the product, if its already present in the cart or not 
-            const productindex = state.products.findIndex((product) => product._id === action.payload._id && product.size === action.payload.size);
+            const productindex = state.products.findIndex((product) => product._id === action.payload._id);
             if (productindex >= 0) {
                 state.products[productindex].productQuantity += 1
             } else {
@@ -25,7 +24,7 @@ export const cartSlice = createSlice({
 
             const productIndex = action.payload;
             state.products.splice(productIndex, 1)
-            toast.info('Item Removed')
+            toast.info('Đã xóa sản phẩm')
         },
         decreaseQuantity: (state, action) => {
             const productindex = action.payload;
@@ -34,7 +33,7 @@ export const cartSlice = createSlice({
                 state.products[productindex].productQuantity -= 1
             } else {
                 state.products.splice(productindex, 1)
-                toast.info('Item Removed')
+                toast.info('Đã xóa sản phẩm')
             }
         },
         increaseQuantity: (state, action) => {
@@ -45,8 +44,8 @@ export const cartSlice = createSlice({
             // use reduce method here 
             const { total, quantity } = state.products.reduce((accum, product) => {
                 // destructure price and quantity from product 
-                const { price, productQuantity } = product;
-                accum.total += price * productQuantity
+                const { cost, productQuantity } = product;
+                accum.total += cost * productQuantity
                 accum.quantity += productQuantity
                 return accum
             }, {
@@ -56,14 +55,14 @@ export const cartSlice = createSlice({
             state.cartTotalAmount = total
             state.cartTotalQuantity = quantity
         },
-        saveStripeData: (state, action) => {
-            state.cartStripeData = action.payload
-            
-        }
-
+        resetCart: (state) => {
+            state.products= [];
+            state.cartTotalQuantity= 0;
+            state.cartTotalAmount= 0;
+        },
     }
 });
 
 
-export const { addProduct, deleteProduct, decreaseQuantity, increaseQuantity, getTotals, saveStripeData } = cartSlice.actions;
+export const { addProduct, deleteProduct, decreaseQuantity, increaseQuantity, getTotals, resetCart } = cartSlice.actions;
 export default cartSlice.reducer;
