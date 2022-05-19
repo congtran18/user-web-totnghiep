@@ -47,7 +47,7 @@ const orders = () => {
         size,
         setSize,
         isReachingEnd,
-    } = usePaginateOrders(session && session.user.email)
+    } = usePaginateOrders(session ? session.user.email : user && user.email)
 
     const handleClickSimilarProduct = (id) => {
         router.push(`/productlist/${id}`);

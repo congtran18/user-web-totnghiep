@@ -168,7 +168,7 @@ const Cart = () => {
                                 {/* summary div  */}
                                 <div className="flex-1 p-5  sm:ml-5 h-[57vh]  mt-5 sm:mt-0 text-left bg-white border-double border-t-[7px] border-gray-600 sm:border-none shadow-md">
                                     {/* title  */}
-                                    <h1 className="text-base sm:text-2xl tracking-wide mb-8">ORDER SUMMARY</h1>
+                                    <h1 className="text-base sm:text-2xl tracking-wide mb-8">HÓA ĐƠN</h1>
                                     {/* summary item  */}
                                     <div className="my-4 flex justify-between">
                                         <h1>Số lượng</h1>

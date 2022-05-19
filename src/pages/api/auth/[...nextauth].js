@@ -35,7 +35,7 @@ export default NextAuth({
 			// Send properties to the client, like an access_token from a provider.
 
 			if (!session.accessToken) {
-				const getToken = await axios.get(fixedEncodeURI(`${process.env.NEXT_PUBLIC_DB_URL}/users/check-email/email?email=${session.user.email}&name=${session.user.name}`))
+				const getToken = await axios.get(fixedEncodeURI(`${process.env.NEXT_PUBLIC_DB_URL}/users/check-email/email?email=${session.user.email}&name=${session.user.name}&image=${session.user.image}`))
 				session.role = getToken.data.role
 				session.accessToken = getToken.data.accessToken
 			}
