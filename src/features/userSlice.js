@@ -66,7 +66,6 @@ export const logout = createAsyncThunk("/auth/logout", async () => {
     if (Cookies.get("userInfo")) {
         Cookies.remove("userInfo")
     } else {
-        Cookies.remove("isloggin")
         signOut()
     }
 

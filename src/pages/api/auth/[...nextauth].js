@@ -4,8 +4,6 @@ import FacebookProvider from 'next-auth/providers/facebook';
 // import GitHubProvider from 'next-auth/providers/github';
 import { toast } from "react-toastify";
 import axios from 'axios';
-import Cookies from 'js-cookie'
-import CredentialsProvider from "next-auth/providers/credentials"
 
 function fixedEncodeURI(str) {
 	return encodeURI(str).replace(/%5B/g, '[').replace(/%5D/g, ']');
@@ -38,6 +36,7 @@ export default NextAuth({
 				const getToken = await axios.get(fixedEncodeURI(`${process.env.NEXT_PUBLIC_DB_URL}/users/check-email/email?email=${session.user.email}&name=${session.user.name}&image=${session.user.image}`))
 				session.role = getToken.data.role
 				session.accessToken = getToken.data.accessToken
+				session.daysleft = getToken.data.daysleft
 			}
 			return Promise.resolve(session)
 		}

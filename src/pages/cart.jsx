@@ -16,7 +16,7 @@ import CostFormat from 'helper/CostFormat'
 import { useSession } from 'next-auth/react';
 import { loadStripe } from '@stripe/stripe-js';
 import { toast } from "react-toastify";
-const stripePromise = loadStripe('pk_test_51KcBufBq3agEdPRyoKhKR3gQqcye5Tqh1RZkKjUdyYrr1fGFUg24ERPYNmiSPfuph2ALjLfAaKPJBf9Ptwekehkq00FBCdw5VW');
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
 const Cart = () => {
     const cart = useSelector((state) => state.cart);
@@ -28,7 +28,18 @@ const Cart = () => {
         (state) => state.user
     );
 
-    const { data: session } = useSession();
+    const [userData, setUserData] = useState(null)
+
+    useEffect(() => {
+        if (user) {
+            setUserData(user.user ? user.user : JSON.parse(JSON.parse(user)).user)
+        }
+    }, [user])
+
+
+    const { data: session, status } = useSession();
+
+    const loading = status === "loading"
 
     const createCheckoutSession = async () => {
         if (!user && !session) {
@@ -39,7 +50,7 @@ const Cart = () => {
             const stripe = await stripePromise;
 
             // Call the backend to create a checkout session
-            const checkoutSession = await axios.post(`${process.env.NEXT_PUBLIC_DB_URL}/stripe`, {
+            const checkoutSession = await axios.post(`${process.env.NEXT_PUBLIC_DB_URL}/stripe/order`, {
                 items: cart.products.map((product) => {
                     return {
                         category : product.category.realname,
@@ -51,7 +62,7 @@ const Cart = () => {
                         quantity: product.productQuantity
                     }
                 }),
-                email: session ? session.user.email : user.email,                           
+                email: userData ? userData.email : !loading && session && session.user.email ,                           
             });
 
             // Redirect user to Stripe Checkout

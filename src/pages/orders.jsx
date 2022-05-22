@@ -3,12 +3,10 @@ import { Redirect } from "./signin";
 import Head from 'next/head';
 import { FaCartArrowDown } from "react-icons/fa";
 import Image from 'next/image';
-import { Component, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { format } from "date-fns";
 import { useRouter } from "next/router";
 import { useSession } from 'next-auth/react';
-import useSWR from 'swr'
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import CostFormat from 'helper/CostFormat'
@@ -17,7 +15,8 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import 'swiper/css/scrollbar';
 import moment from 'moment'
-import FilterOrder from 'components/FilterOrder'
+import SortOrder from 'components/FilterOrder/SortOrder'
+import FilterOrder from 'components/FilterOrder/FilterOrder'
 import { usePaginateOrders } from 'hooks/usePaginateOrders'
 import { toast } from "react-toastify";
 
@@ -29,14 +28,19 @@ const orders = () => {
         (state) => state.user
     );
 
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
     const router = useRouter();
     const { query } = router;
+    const [userData, setUserData] = useState(null)
 
-    // const { data, error } = useSWR(
-    //     `${process.env.NEXT_PUBLIC_DB_URL}/order/${session && session.user.email}`,
-    //     fetcher
-    // );
+    const loading = status === "loading" ? true : false
+
+
+    useEffect(() => {
+        if (user) {
+            setUserData(user.user ? user.user : JSON.parse(JSON.parse(user)).user)
+        }
+    }, [user])
 
     const {
         orders: data,
@@ -47,7 +51,7 @@ const orders = () => {
         size,
         setSize,
         isReachingEnd,
-    } = usePaginateOrders(session ? session.user.email : user && user.email)
+    } = usePaginateOrders(session ? session.user.email : userData && userData.email)
 
     const handleClickSimilarProduct = (id) => {
         router.push(`/productlist/${id}`);
@@ -59,9 +63,30 @@ const orders = () => {
             let newParams = {};
 
             if (id) {
-                newParams = { ...query, page: 1, sort: id };
+                newParams = { ...query, sort: id };
             } else {
-                const { sort, page, ...rest } = query;
+                const { sort, ...rest } = query;
+                newParams = rest;
+            }
+
+            router.push({
+                pathname: path,
+                query: newParams,
+            })
+        } catch (error) {
+            toast.error(error)
+        }
+    };
+
+    const handleFilter = (id) => {
+        try {
+            const path = router.pathname;
+            let newParams = {};
+
+            if (id) {
+                newParams = { ...query, type: id };
+            } else {
+                const { type, ...rest } = query;
                 newParams = rest;
             }
 
@@ -77,7 +102,7 @@ const orders = () => {
 
     let body = null
 
-    if (isLoading) {
+    if (isLoading || loading) {
         body = (
             <div className="w-full">
                 <img src="/Images/loading2.gif" alt="loading" className="text-center flex items-center justify-center mx-auto mt-3 " />
@@ -89,9 +114,14 @@ const orders = () => {
                 {/* inside main section  */}
                 <section className="flex  w-full h-full">
                     <div className="flex flex-col w-full py-6 px-6 flex-3">
-                        <div className="w-full">
+                        <div className="flex w-full justify-end">
                             {/* <p className="text-gray-700 text-sm sm:text-base">Showing <strong>All Orders</strong></p> */}
-                            {data && data.length > 0 && <FilterOrder onChange={handleSort} sort="sort" />}
+                            {data && data.length > 0 &&
+                                <>
+                                    <SortOrder onChange={handleSort} sort="sort" />
+                                    <FilterOrder onChange={handleFilter} type="type" />
+                                </>
+                            }
                         </div>
 
                         {data && data.length === 0 && <div className="flex items-center justify-center w-full h-full my-16 flex-col">
@@ -111,11 +141,12 @@ const orders = () => {
                                             <div className="flex flex-col w-full ml-6 text-gray-700">
                                                 <p className="text-xs sm:text-base font-medium tracking-wide">Ngày đặt: {moment(new Date(order.create_at)).format('DD/MM/YYYY')}</p>
                                                 <p className="text-xs sm:text-base font-medium tracking-wide">Giờ đặt: {moment(new Date(order.create_at)).format('HH:mm:ss')}</p>
-                                                <p className="font-medium text-xs sm:text-base">Trạng thái : <strong className="text-red-400">{order.status.toUpperCase()}</strong></p>
+                                                <p className="font-medium text-xs sm:text-base">Loại: {order.paymentMethod === "Sách" ? <strong className="text-red-400">{order.paymentMethod.toUpperCase()}</strong> : <strong className="text-blue-400">{order.paymentMethod.toUpperCase()}</strong>} </p>
+                                                {order.typeCourse && <p className="font-medium text-xs sm:text-base">Loại khóa học: <strong className="text-gray-500">{order.typeCourse.toUpperCase()}</strong></p>}
                                                 <p className="font-medium text-xs sm:text-base">Giá trị : <strong>{CostFormat((order.totalPrice * 230).toString())}đ</strong></p>
                                             </div>
                                         </div>
-                                        <Swiper
+                                        {order?.orderItems && <Swiper
                                             modules={[Navigation, Pagination, Scrollbar, A11y]}
                                             slidesPerView={3}
                                             navigation={{ clickable: true }}
@@ -136,9 +167,9 @@ const orders = () => {
                                                         </div>
                                                     </button>
                                                 </SwiperSlide>
-                                            ))
-                                            }
-                                        </Swiper>
+                                            ))}
+
+                                        </Swiper>}
                                     </div>
                                 </div>
                             </div>
@@ -148,6 +179,10 @@ const orders = () => {
                 </section>
             </>
         )
+    }
+
+    if (!user && !session && !loading) {
+        return <Redirect to="/" />
     }
 
     return (
@@ -179,9 +214,9 @@ const orders = () => {
                     >
                         {isLoadingMore
                             ? "Loading..."
-                                : isReachingEnd
-                                    ? "No more"
-                                    : `Tải thêm (${totalOrders - data.length})`}
+                            : isReachingEnd
+                                ? "No more"
+                                : `Tải thêm (${totalOrders - data.length})`}
                     </button>
                 </section>
             </main>

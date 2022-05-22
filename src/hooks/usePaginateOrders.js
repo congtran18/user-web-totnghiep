@@ -9,14 +9,14 @@ export const usePaginateOrders = (email) => {
     //     throw new Error("Path is required")
     //   }
     const router = useRouter();
-    const { sort } = router.query
+    const { sort, type } = router.query
     const PAGE_LIMIT = 3
 
     const getKey = (pageIndex, previousPageData) => {
         if (previousPageData && !previousPageData.data) return null
 
         // first page, we don't have `previousPageData`
-        return  `${process.env.NEXT_PUBLIC_DB_URL}/order/${email}?page=${pageIndex + 1}&limit=3&sort=${sort}`             // SWR key
+        return  `${process.env.NEXT_PUBLIC_DB_URL}/order/${email}?page=${pageIndex + 1}&limit=3&sort=${sort}&type=${type}`             // SWR key
     }
 
     const { data, error, size, setSize } = useSWRInfinite(

@@ -28,18 +28,14 @@ const Navbar = () => {
 
     const [userData, setUserData] = useState(null)
 
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
+
+    const loading = status === "loading" ? true : false
 
     const { systemTheme, theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
-        if (session && !Cookies.get("isloggin")) {
-            Cookies.set("isloggin", true)
-        }
-        if(!session && Cookies.get("isloggin")){
-            Cookies.remove("isloggin")
-        }
         if (user) {
             setUserData(user.user ? user.user : JSON.parse(JSON.parse(user)).user)
         } else {
@@ -100,9 +96,9 @@ const Navbar = () => {
             <div className="flex-grow flex items-center ">
                 <Link href="/"><h2 className='text-gray-800 font-heading uppercase font-bold mx-5 text-xl cursor-pointer'>DO AN TN</h2></Link>
                 <Link href="/productlist"><a className="link" >Mua sách</a></Link>
-                <Link href="/productlist/top"><a className="link" >Mua khóa học</a></Link>
+                <Link href="/course"><a className="link" >Mua khóa học</a></Link>
                 <Link href="/productlist/dress"><a className="link">Học tiếng anh</a></Link>
-                <Link href="/productlist/footwear"><a className="link">Giảng viên</a></Link>
+                <Link href="/productlist/footwear"><a className="link">Đăng ký dạy</a></Link>
             </div>
             {/* <div className="hidden flex-grow items-center md:flex justify-center cursor-pointer ">
                 <Link href="/"><Image src="/Images/martinilogo.jpg" objectFit='contain' height={55} width={150}/></Link>
@@ -111,13 +107,13 @@ const Navbar = () => {
                 <Link href="/"><Image src="/Images/mlogo.png" objectFit='cover' height={50} width={70} /></Link>
             </div>
             <div className="flex-grow items-center flex sm:space-x-7 space-x-4 sm:justify-end justify-end sm:tracking-wide sm:text-base text-xs relative">
-                {!user && !session && !Cookies.get("isloggin") && <>
+                {!user && !session && !loading && <>
                     <Link href="/register" >Đăng ký</Link>
                     <Link href="/signin" >Đăng nhập</Link>
                 </>
                 }
                 {/* user logo or avatar  */}
-                {(session) && < Image onClick={() => setProfiletoggle(!profiletoggle)} src={session.user.image} height="40rem" width="40rem" objectFit="cover" className="cursor-pointer rounded-full flex items-center justify-center" />}
+                {session && !loading && < Image onClick={() => setProfiletoggle(!profiletoggle)} src={session.user.image} height="40rem" width="40rem" objectFit="cover" className="cursor-pointer rounded-full flex items-center justify-center" />}
                 {(userData) && < Image onClick={() => setProfiletoggle(!profiletoggle)} src={userData.imageUrl} height="40rem" width="40rem" objectFit="cover" className="cursor-pointer rounded-full flex items-center justify-center" />}
                 {(userData || session) && profiletoggle &&
                     <div className="absolute flex flex-col sm:w-48 w-40 drop-shadow-md p-3 sm:right-0 sm:top-14 right-0 top-10 z-50 rounded-lg bg-white transition-all ">

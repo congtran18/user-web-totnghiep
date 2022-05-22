@@ -27,7 +27,6 @@ const productlist = ({ types }) => {
 
     // store the filters in a state with an empty object
     const [filters, setFilters] = useState({});
-    const [sort, setSort] = useState("Newest");
     const { query } = router;
 
     const handleTypeSort = (id) => {
