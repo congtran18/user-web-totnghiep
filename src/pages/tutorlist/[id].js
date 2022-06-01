@@ -17,7 +17,7 @@ export const getStaticPaths = async () => {
     const paths = data?.map((element) => {
         return {
             params: {
-                id: element._id
+                id: element.uid
             }
         }
     })
@@ -66,8 +66,6 @@ const Tutor = ({ tutor }) => {
         </div>
     }
 
-    console.log("tutor.uid", tutor.uid)
-
     return (
         <>
             <Head>
@@ -88,7 +86,7 @@ const Tutor = ({ tutor }) => {
                     <div className="m-auto w-[60rem] space-y-4">
                         <div className="mb-4">
                             {tutor && <ReactPlayer
-                                url={tutor.videoUrl}
+                                url={tutor?.videoUrl}
                                 playing={true}
                                 controls={true}
                                 playIcon
@@ -96,11 +94,11 @@ const Tutor = ({ tutor }) => {
                                 height='90%'
                             />}
                         </div>
-                        <div className="text-2xl flex font-bold">{tutor.fullName}</div>
-                        <div className="text-md flex">{tutor.infomation}</div>
+                        <div className="text-2xl flex font-bold">{tutor?.fullName}</div>
+                        <div className="text-md flex">{tutor?.infomation}</div>
                         <div className="flex items-center gap-2 my-2">
                             <div className="text-xl">Kinh nghiệm: </div>
-                            {tutor.status && tutor.status.map((item) => {
+                            {tutor?.status && tutor.status.map((item) => {
                                 return (
                                     <div className="text-white bg-red-500 border-1 rounded-md p-[4px]">{item === "New" ? "Mới gia nhập" : "Lâu năm"}</div>
                                 )
@@ -108,7 +106,7 @@ const Tutor = ({ tutor }) => {
                         </div>
                         <div className="flex items-center gap-2 my-2">
                             <div className="text-xl">Lĩnh vực hiểu biết: </div>
-                            {tutor.include && tutor.include.map((item) => {
+                            {tutor?.include && tutor.include.map((item) => {
                                 return (
                                     <div className="text-white bg-blue-500 border-1 rounded-md p-[4px]">{item}</div>
                                 )
@@ -125,7 +123,7 @@ const Tutor = ({ tutor }) => {
                         <div>
                             <div className="my-2 gap-1">
                                 <div className="text-xl">Các chứng chỉ: </div>
-                                {tutor.certificates && tutor.certificates.map((item) => {
+                                {tutor?.certificates && tutor.certificates.map((item) => {
                                     return (
                                         <div onClick={() => window.open(item.dataUrl.toString())} className="flex items-center gap-1 hover:underline hover:text-red-500 cursor-pointer my-1"><AiOutlineFileText />{item.name}</div>
                                     )
@@ -134,7 +132,7 @@ const Tutor = ({ tutor }) => {
                         </div>
                         <div>
                             <div className="text-xl mt-8 mb-4">Lịch làm việc </div>
-                            <CalendarScreen uidTutor={tutor.uid} action={false} />
+                            <CalendarScreen uidTutor={tutor?.uid} action={false} />
                         </div>
                     </div>
                 </div>
