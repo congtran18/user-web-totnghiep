@@ -3,12 +3,11 @@ import api from "./api"
 import { toast } from "react-toastify";
 import Cookies from 'js-cookie'
 import { signOut } from 'next-auth/react';
-import { useRouter } from 'next/router';
 
-const user = JSON.stringify(Cookies.get("userInfo"));
+const user = Cookies.get("userInfo") ? JSON.parse(Cookies.get("userInfo")) : null;
 
 const initialState = {
-    user: user ? user : null,
+    user: user,
     isError: false,
     isSuccess: false,
     isLoading: false,
@@ -66,6 +65,7 @@ export const logout = createAsyncThunk("/auth/logout", async () => {
     if (Cookies.get("userInfo")) {
         Cookies.remove("userInfo")
     } else {
+        Cookies.remove("sessionToken")
         signOut()
     }
 

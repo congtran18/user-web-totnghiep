@@ -3,7 +3,6 @@ import { Redirect } from "./signin";
 import Head from 'next/head';
 import { FaCartArrowDown } from "react-icons/fa";
 import Image from 'next/image';
-import { useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useSession } from 'next-auth/react';
@@ -20,8 +19,6 @@ import FilterOrder from 'components/FilterOrder/FilterOrder'
 import { usePaginateOrders } from 'hooks/usePaginateOrders'
 import { toast } from "react-toastify";
 
-const fetcher = async (url) => await axios.get(url).then(res => res.data);
-
 const orders = () => {
 
     const { user } = useSelector(
@@ -31,16 +28,8 @@ const orders = () => {
     const { data: session, status } = useSession();
     const router = useRouter();
     const { query } = router;
-    const [userData, setUserData] = useState(null)
 
     const loading = status === "loading" ? true : false
-
-
-    useEffect(() => {
-        if (user) {
-            setUserData(user.user ? user.user : JSON.parse(JSON.parse(user)).user)
-        }
-    }, [user])
 
     const {
         orders: data,
@@ -51,7 +40,7 @@ const orders = () => {
         size,
         setSize,
         isReachingEnd,
-    } = usePaginateOrders(session ? session.user.email : userData && userData.email)
+    } = usePaginateOrders(session ? session.user.email : user.user && user.user.email)
 
     const handleClickSimilarProduct = (id) => {
         router.push(`/productlist/${id}`);

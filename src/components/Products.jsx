@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from 'next/dist/client/router';
 import { useGetProductsQuery } from '../features/productSlice'
 import Pagination from '@mui/material/Pagination'
+import Skeleton from "./Skeleton"
 
 const Products = ({ params, handlePageChange }) => {
 
@@ -18,10 +19,21 @@ const Products = ({ params, handlePageChange }) => {
 
     if (isLoading) {
         body = (
-            <div className="w-full">
-                <img src="/Images/loading2.gif" alt="loading" className="text-center flex items-center justify-center mx-auto mt-3 " />
-            </div>)
-    } else if (data && data.data.product?.length === 0) {
+            // <div className="w-full">
+            //     <img src="/Images/loading2.gif" alt="loading" className="text-center flex items-center justify-center mx-auto mt-3 " />
+            // </div>
+            <>
+                <Skeleton />
+            </>
+        )
+    } else if (isFetching) {
+        body = (
+            <>
+                <Skeleton />
+            </>
+        )
+    }
+    else if (data && data.data.product?.length === 0) {
         <div className="h-full w-full flex items-center justify-center flex-col my-12">
             <Image src="/Images/blank.svg" objectFit="contain" width="300rem" height="300rem" />
             <p className="my-8 text-gray-700 tracking-wide text-sm sm:text-lg font-medium capitalize">No products found for </p>

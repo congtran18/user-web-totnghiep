@@ -9,12 +9,13 @@ import { useState } from "react";
 import { VscPackage } from "react-icons/vsc";
 import { FiHeart } from "react-icons/fi";
 import { BiLogOut } from "react-icons/bi";
+import {AiOutlineProfile} from "react-icons/ai";
 import { resetWishlist } from 'features/wishlistSlice';
 import Image from "next/image";
 import { useSession } from 'next-auth/react';
-import Cookies from 'js-cookie'
 import { useTheme } from "next-themes";
 import { BsFillMoonFill, BsFillSunFill } from "react-icons/bs";
+import Cookies from 'js-cookie'
 
 const Navbar = () => {
 
@@ -26,22 +27,12 @@ const Navbar = () => {
         (state) => state.user
     );
 
-    const [userData, setUserData] = useState(null)
-
     const { data: session, status } = useSession();
 
     const loading = status === "loading" ? true : false
 
     const { systemTheme, theme, setTheme } = useTheme();
     const [mounted, setMounted] = useState(false);
-
-    useEffect(() => {
-        if (user) {
-            setUserData(user.user ? user.user : JSON.parse(JSON.parse(user)).user)
-        } else {
-            setUserData(null)
-        }
-    }, [session, user])
 
     useEffect(() => {
         setMounted(true);
@@ -90,15 +81,25 @@ const Navbar = () => {
         dispatch(resetWishlist());
     }
 
+    if(session && !Cookies.get("session")){
+        Cookies.set("sessionToken", session.accessToken)
+    }
+
 
     return (
         <header className="flex sm:h-18 h-14 sm:px-5 px-2 py-5 justify-between items-center shadow-md " >
             <div className="flex-grow flex items-center ">
                 <Link href="/"><h2 className='text-gray-800 font-heading uppercase font-bold mx-5 text-xl cursor-pointer'>DO AN TN</h2></Link>
                 <Link href="/productlist"><a className="link" >Mua sách</a></Link>
-                <Link href="/course"><a className="link" >Mua khóa học</a></Link>
-                <Link href="/productlist/dress"><a className="link">Học tiếng anh</a></Link>
-                <Link href="/productlist/footwear"><a className="link">Đăng ký dạy</a></Link>
+                {(user && user.role !== "tutor" || session && session.role !== "tutor") && <div>
+                    <Link href="/course"><a className="link" >Mua khóa học</a></Link>
+                    <Link href="/tutorlist"><a className="link">Học tiếng anh</a></Link>
+                    <Link href="/registerStepOne"><a className="link">Đăng ký dạy</a></Link>
+                </div>}
+                {(user && user.role === "tutor" || session && session.role === "tutor") && <div>
+                    <Link href="/productlist"><a className="link" >Mua sách</a></Link>
+                    <Link href="/tutorCalendar"><a className="link" >Lịch dạy</a></Link>
+                </div>}
             </div>
             {/* <div className="hidden flex-grow items-center md:flex justify-center cursor-pointer ">
                 <Link href="/"><Image src="/Images/martinilogo.jpg" objectFit='contain' height={55} width={150}/></Link>
@@ -114,11 +115,12 @@ const Navbar = () => {
                 }
                 {/* user logo or avatar  */}
                 {session && !loading && < Image onClick={() => setProfiletoggle(!profiletoggle)} src={session.user.image} height="40rem" width="40rem" objectFit="cover" className="cursor-pointer rounded-full flex items-center justify-center" />}
-                {(userData) && < Image onClick={() => setProfiletoggle(!profiletoggle)} src={userData.imageUrl} height="40rem" width="40rem" objectFit="cover" className="cursor-pointer rounded-full flex items-center justify-center" />}
-                {(userData || session) && profiletoggle &&
+                {(user) && < Image onClick={() => setProfiletoggle(!profiletoggle)} src={user.user.imageUrl} height="40rem" width="40rem" objectFit="cover" className="cursor-pointer rounded-full flex items-center justify-center" />}
+                {(user || session) && profiletoggle &&
                     <div className="absolute flex flex-col sm:w-48 w-40 drop-shadow-md p-3 sm:right-0 sm:top-14 right-0 top-10 z-50 rounded-lg bg-white transition-all ">
-                        <p className="text-xs sm:text-[14px] tracking-wide mb-2">Welcome <strong>{session ? session.user.name.toUpperCase() : userData.fullName.toUpperCase()}</strong></p>
+                        <p className="text-xs sm:text-[14px] tracking-wide mb-2">Welcome <strong>{session ? session.user.name.toUpperCase() : user.user.fullName.toUpperCase()}</strong></p>
                         <hr />
+                        {(user && user.role === "tutor" || session && session.role === "tutor") && <div className="w-full flex items-center my-3 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={() => router.push('/tutorAccount')}><AiOutlineProfile size="1.1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">Tài khoản</p></div>}
                         <div className="w-full flex items-center my-3 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={() => router.push('/orders')}><VscPackage size="1.1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">Hóa đơn</p></div>
                         <div className="w-full flex items-center my-2 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={() => router.push('/wishlist')}><FiHeart size="1.1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">Yêu thích ({wishlist.length})</p></div>
                         <div className="w-full flex items-center my-2 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={handleLogout}><BiLogOut size="1.1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">Đăng xuất</p></div>

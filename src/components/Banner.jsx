@@ -10,7 +10,7 @@ const Banner = () => {
 					DO AN TN
 				</h1>
 				<button
-					onClick={() => router.push('/shop')}
+					onClick={() => router.push('/productlist')}
 					className='uppercase border-2 px-6 py-2 mt-4 font-sans text-white text-lg drop-shadow-md'
 				>
 					Shop Now

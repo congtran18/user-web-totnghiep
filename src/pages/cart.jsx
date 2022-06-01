@@ -28,15 +28,6 @@ const Cart = () => {
         (state) => state.user
     );
 
-    const [userData, setUserData] = useState(null)
-
-    useEffect(() => {
-        if (user) {
-            setUserData(user.user ? user.user : JSON.parse(JSON.parse(user)).user)
-        }
-    }, [user])
-
-
     const { data: session, status } = useSession();
 
     const loading = status === "loading"
@@ -62,7 +53,7 @@ const Cart = () => {
                         quantity: product.productQuantity
                     }
                 }),
-                email: userData ? userData.email : !loading && session && session.user.email ,                           
+                email: user ? user.user.email : !loading && session && session.user.email ,                           
             });
 
             // Redirect user to Stripe Checkout

@@ -13,7 +13,7 @@ const initialState = {
 };
 
 // Save image to storage
-export const saveImage = createAsyncThunk(
+export const saveFile = createAsyncThunk(
     "/storage/single",
     async (data, thunkAPI) => {
 
@@ -24,6 +24,49 @@ export const saveImage = createAsyncThunk(
                 }
             });
             return response.data;
+        } catch (error) {
+            const message =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+            return thunkAPI.rejectWithValue(message);
+        }
+    }
+);
+
+export const deleteFile = createAsyncThunk(
+    "/storage/delete",
+    async (id, thunkAPI) => {
+
+        try {
+            const response = await api.delete(`/storage/${id}`);
+            return response;
+        } catch (error) {
+            const message =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+            return thunkAPI.rejectWithValue(message);
+        }
+    }
+);
+
+export const saveMultiFile = createAsyncThunk(
+    "/storage/multiple",
+    async (data, thunkAPI) => {
+
+        try {
+            const response = await api.post("/storage/multiple", data, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            return response;
         } catch (error) {
             const message =
                 (error.response &&
@@ -51,15 +94,41 @@ const storageSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
-            .addCase(saveImage.pending, (state) => {
+            .addCase(saveFile.pending, (state) => {
                 state.isLoading = true;
             })
-            .addCase(saveImage.fulfilled, (state, action) => {
+            .addCase(saveFile.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
                 state.dataStore = action.payload;
             })
-            .addCase(saveImage.rejected, (state, action) => {
+            .addCase(saveFile.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.message = action.payload;
+            })
+            .addCase(saveMultiFile.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(saveMultiFile.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                state.dataStore = action.payload;
+            })
+            .addCase(saveMultiFile.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isError = true;
+                state.message = action.payload;
+            })
+            .addCase(deleteFile.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(deleteFile.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                state.dataStore = action.payload;
+            })
+            .addCase(deleteFile.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
                 state.message = action.payload;

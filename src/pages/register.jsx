@@ -1,5 +1,4 @@
 import Head from 'next/head';
-import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerUser, loginUser } from '../features/userSlice';
 import { Redirect } from './signin';
@@ -7,7 +6,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { toast } from "react-toastify";
-import { signIn, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Cookies from 'js-cookie'
 

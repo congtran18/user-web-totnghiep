@@ -1,0 +1,15 @@
+export const messages = {
+    allDay: "allDay",
+    previous: "<",
+    next: ">",
+    today: "Today",
+    month: "Month",
+    week: "Week",
+    day: "Day",
+    agenda: "agenda",
+    date: "date",
+    time: "time",
+    event: "event",
+    noEventsInRange: "Không có sự kiện nào trong khoản thời gian này",
+    showMore: (total) => `+ Ver más (${total})`,
+};

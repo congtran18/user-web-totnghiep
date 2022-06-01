@@ -15,26 +15,30 @@ import userReducer from "./userSlice";
 import wishlistReducer from "./wishlistSlice";
 import { apiSlice } from "./productSlice";
 import storageReducer from "./storageSlice"
+import registerTutorReducer from "./registerTutorSlice"
+import tutorCalendarReducer from "./tutorCalendarSlice"
+import chatTutorReducer from "./chatTutorSlice"
 // import productReducer from "./productSlice";
 import storage from 'redux-persist/lib/storage'
 
 const persistConfig = {
   key: 'root',
-  blacklist: ['user', 'apiSlice'],
+  blacklist: ['user', 'apiSlice', 'tutorCalendar', 'chatTutor'],
   version: 1,
   storage,
 }
 
-const rootReducer = combineReducers({ user: userReducer, cart: cartReducer, [apiSlice.reducerPath]: apiSlice.reducer, wishlist: wishlistReducer, storage: storageReducer })
+const rootReducer = combineReducers({ user: userReducer, cart: cartReducer, [apiSlice.reducerPath]: apiSlice.reducer, wishlist: wishlistReducer, storage: storageReducer, registerTutor: registerTutorReducer, tutorCalendar: tutorCalendarReducer, chatTutor: chatTutorReducer })
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
-      serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-      },
+      serializableCheck: false,
+      // serializableCheck: {
+      //   ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      // },
     }).concat(apiSlice.middleware)
 });
 

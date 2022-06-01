@@ -8,6 +8,7 @@ import ProgressBar from '@badrap/bar-of-progress';
 import Layout from "../components/Layout";
 import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider } from "next-themes";
+import { SocketProvider } from 'context/SocketContext'
 
 const progress = new ProgressBar({
   size: 3,
@@ -23,15 +24,17 @@ Router.events.on('routeChangeError', progress.finish);
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
 
   return (
-      <SessionProvider session={session}>
-        <Provider store={store}>
-          <PersistGate loading={null} persistor={persistor}>
+    <SessionProvider session={session}>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <SocketProvider>
             <Layout>
               <Component {...pageProps} />
             </Layout>
-          </PersistGate>
-        </Provider>
-      </SessionProvider>
+          </SocketProvider>
+        </PersistGate>
+      </Provider>
+    </SessionProvider>
   );
 }
 

@@ -10,8 +10,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import axios from "axios";
 import { useEffect } from "react";
 
-
-
 const wishlist = () => {
     const user = useSelector((state) => state.user.currentUser);
     const wishlist = useSelector((state) => state.wishlist.products);

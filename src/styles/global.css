@@ -114,3 +114,30 @@
   overflow: hidden;
   object-position: center center;
 }
+
+.react-datepicker__input-container input {
+  border: 1px solid red;
+  padding: 5px; 
+  cursor: pointer;
+  margin: 8px 0px;
+}
+/* .modal-fondo {
+  background-color: rgba(0, 0, 0, 0.3);
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  position: fixed;
+}
+
+.modal {
+  background: white;
+  border-radius: 5px;
+  color: rgb(51, 51, 51);
+  display: inline;
+  max-height: 620px;
+  max-width: 500px;
+  outline: none;
+  padding: 10px;
+} */
+

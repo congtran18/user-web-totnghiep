@@ -13,6 +13,7 @@ import { FiHeart } from "react-icons/fi";
 import { BsCheck } from "react-icons/bs";
 import SimilarProduct from 'components/SimilarProduct';
 import ImageGallery from 'react-image-gallery';
+import { useRouter } from 'next/router'
 import "react-image-gallery/styles/css/image-gallery.css";
 
 export const getStaticPaths = async () => {
@@ -61,6 +62,14 @@ export const getStaticProps = async (context) => {
 }
 
 const Product = ({ product }) => {
+
+    const router = useRouter()
+
+    if (router.isFallback) {
+        return <div className="w-full">
+            <img src="/Images/loading2.gif" alt="loading" className="text-center flex items-center justify-center mx-auto mt-3 " />
+        </div>
+    }
 
     const dispatch = useDispatch();
     const cart = useSelector((state) => state.cart);

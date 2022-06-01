@@ -137,7 +137,7 @@ const productlist = ({ types }) => {
     return (
         <>
             <Head>
-                <title>Danh sach san pham </title>
+                <title>Danh sách sản phẩm</title>
                 <link rel="icon" href="/favicon.png" />
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin={true} />
@@ -149,7 +149,7 @@ const productlist = ({ types }) => {
 
                 <section>
                     {/* title  */}
-                    <h1 className="m-5 font-bold text-xl sm:text-3xl">Danh sach san pham</h1>
+                    <h1 className="m-5 font-bold text-xl sm:text-3xl">Danh sách sản phẩm</h1>
                     {/* filtercontainer  */}
                     <div className="flex m-5 justify-between my-5 mb-10 items-center">
                         <div className="flex sm:flex-row sm:space-x-3 flex-col space-y-2 sm:space-y-0 ">

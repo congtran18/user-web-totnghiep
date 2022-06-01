@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { TextField } from '@mui/material';
 import { Controller } from 'react-hook-form';
 
-const InputField = ({ control, errors, label, name, type }) => {
+const InputField = ({ control, errors, label, name, type, row }) => {
   return (
     <>
       <Controller
@@ -16,6 +16,8 @@ const InputField = ({ control, errors, label, name, type }) => {
             fullWidth
             margin="normal"
             variant="outlined"
+            multiline
+            rows={row}
             label={label}
             type={type}
             error={!!errors[name]}
@@ -34,6 +36,7 @@ InputField.propTypes = {
   label: PropTypes.string,
   name: PropTypes.string,
   type: PropTypes.string,
+  row: PropTypes.number
 };
 
 export default InputField;

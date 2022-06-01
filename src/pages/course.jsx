@@ -10,8 +10,6 @@ import { loadStripe } from '@stripe/stripe-js';
 import { toast } from "react-toastify";
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
-const fetcher = async (url) => await axios.get(url).then(res => res.data);
-
 const course = () => {
 
     const { user } = useSelector(
@@ -21,13 +19,6 @@ const course = () => {
     const { data: session, status } = useSession();
 
     const router = useRouter();
-    const [userData, setUserData] = useState(null)
-
-    useEffect(() => {
-        if (user) {
-            setUserData(user.user ? user.user : JSON.parse(JSON.parse(user)).user)
-        }
-    }, [user])
 
     const loading = status === "loading" ? true : false
 
@@ -48,7 +39,7 @@ const course = () => {
             const checkoutSession = await axios.post(`${process.env.NEXT_PUBLIC_DB_URL}/stripe/course`, {
                 type: price === 500000 ? "1 month" : price === 1200000 ? "3 month" : "6 month",
                 cost: price / 23000,
-                email: userData ? userData.email : !loading && session && session.user.email,
+                email: user ? user.user.email : !loading && session && session.user.email,
             });
 
             // Redirect user to Stripe Checkout
@@ -76,10 +67,9 @@ const course = () => {
         }
     }
 
-    // const { data, error } = useSWR(
-    //     `${process.env.NEXT_PUBLIC_DB_URL}/order/${session && session.user.email}`,
-    //     fetcher
-    // );
+    if (user && user.role === "tutor" || session && session.role === "tutor") {
+        router.push("/")
+    }
 
     return (
         <>
@@ -96,7 +86,7 @@ const course = () => {
 
                 {/* orders section  */}
 
-                <section className="sm:w-[90%] w-[95%] h-full flex flex-wrap items-center mx-auto my-10 ">
+                <section className="sm:w-[90%] w-[95%] h-full flex flex-wrap items-center mx-auto my-5 ">
                     <div className="flex flex-col w-full -space-y-1 border-b border-gray-300 py-4">
                         <h1 className="font-semibold text-gray-800 text-lg sm:text-2xl">Đăng kí khóa học</h1>
                         {/* <p className="text-gray-700 text-xs ">{user?.username}</p> */}
@@ -112,7 +102,7 @@ const course = () => {
                                 Số ngày học còn lại: &nbsp; <span className="text-amber-700">{session ? session.daysleft : 0} ngày</span>
                             </div>
                             <div className="mb-10 mt-10 xl:w-96">
-                                <select onChange={e => handelSelect(e.target.value)} className="form-select appearance-none block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0
+                                <select onChange={e => handelSelect(e.target.value)} className="form-select block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0
       focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none" aria-label="Default select example">
                                     <option value="" selected>Chọn khóa học</option>
                                     <option value="1">30 phút/ngày, 1 tháng</option>

@@ -51,7 +51,6 @@ const Signin = () => {
 
     async function handleLogin(data) {
         try {
-            console.log("vo day hahahahahaha")
             await dispatch(loginUser(data))
         } catch (e) {
             toast.error("Kiểm tra lại thông tin đăng nhập")

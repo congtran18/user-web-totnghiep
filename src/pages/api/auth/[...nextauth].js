@@ -2,7 +2,6 @@ import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import FacebookProvider from 'next-auth/providers/facebook';
 // import GitHubProvider from 'next-auth/providers/github';
-import { toast } from "react-toastify";
 import axios from 'axios';
 
 function fixedEncodeURI(str) {
@@ -37,6 +36,8 @@ export default NextAuth({
 				session.role = getToken.data.role
 				session.accessToken = getToken.data.accessToken
 				session.daysleft = getToken.data.daysleft
+				session.uid = getToken.data.uid
+				session.online = getToken.data.online
 			}
 			return Promise.resolve(session)
 		}

@@ -30,8 +30,8 @@ const NewProduct = () => {
                 navigation={{ clickable: true }}
                 // scrollbar={{ draggable: true }}
                 pagination
-                onSlideChange={() => console.log('slide change')}
-                onSwiper={(swiper) => console.log(swiper)}
+                // onSlideChange={() => console.log('slide change')}
+                // onSwiper={(swiper) => console.log(swiper)}
             >
                 {data && data.data.product.map((product) => {
                     return (
