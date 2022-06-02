@@ -9,6 +9,8 @@ import Layout from "../components/Layout";
 import { SessionProvider } from 'next-auth/react';
 import { ThemeProvider } from "next-themes";
 import { SocketProvider } from 'context/SocketContext'
+import { WebRtProvider } from 'context/WebRtcContext'
+import { CssBaseline } from '@mui/material'
 
 const progress = new ProgressBar({
   size: 3,
@@ -28,9 +30,12 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <SocketProvider>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
+            <WebRtProvider>
+              <Layout>
+                <CssBaseline />
+                <Component {...pageProps} />
+              </Layout>
+            </WebRtProvider>
           </SocketProvider>
         </PersistGate>
       </Provider>

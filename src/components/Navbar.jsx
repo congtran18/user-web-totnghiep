@@ -97,7 +97,7 @@ const Navbar = () => {
                     <Link href="/registerStepOne"><a className="link">Đăng ký dạy</a></Link>
                 </div>}
                 {(user && user.role === "tutor" || session && session.role === "tutor") && <div>
-                    <Link href="/productlist"><a className="link" >Mua sách</a></Link>
+                    {/* <Link href="/productlist"><a className="link" >Mua sách</a></Link> */}
                     <Link href="/tutorCalendar"><a className="link" >Lịch dạy</a></Link>
                 </div>}
             </div>

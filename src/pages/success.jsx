@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { resetCart } from 'features/cartSlice';
+import { useShootFireworks } from 'hooks/useShootFireworks'
 
 const success = () => {
 
@@ -12,6 +13,7 @@ const success = () => {
     const [orderId, setOrderId] = useState(null);
 
     useEffect(() => {
+        useShootFireworks()
         dispatch(resetCart())
     }, [])
 
@@ -46,13 +48,13 @@ const success = () => {
                     {orderId !== null
                         ?
                         `Order has been created successfully. Your order number is ${orderId}`
-                        : `Successfull. Your order is being prepared...`
+                        : `Đặt mua hàng thành công, vào mục hóa đơn để kiểm tra!`
 
                     }
                 </div>
                 <div className="flex w-full mx-auto items-center justify-center space-x-6 ">
-                <button className="mt-8 px-3 py-2 outline-none bg-themePink rounded-lg" onClick={() => router.push('/')}>Go to Homepage</button>
-                <button className="mt-8 px-3 py-2 outline-none bg-themePink rounded-lg" onClick={() => router.push('/orders')}>Go to My Orders</button>
+                <button className="mt-8 px-3 py-2 outline-none bg-themePink rounded-lg" onClick={() => router.push('/')}>Trang chủ</button>
+                <button className="mt-8 px-3 py-2 outline-none bg-themePink rounded-lg" onClick={() => router.push('/orders')}>Kiểm tra hóa đơn</button>
 
                 </div>
 

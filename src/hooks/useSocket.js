@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
 import { useSession } from 'next-auth/react';
 import Cookies from 'js-cookie'
+import Peer from "simple-peer";
+import { useRouter } from "next/dist/client/router";
 
 export const useSocket = (serverPath) => {
 
@@ -15,6 +17,7 @@ export const useSocket = (serverPath) => {
     //     ),
     //     [serverPath],
     // );
+    const router = useRouter();
 
     const { data: session } = useSession();
 
@@ -37,6 +40,7 @@ export const useSocket = (serverPath) => {
                     }
                 },
             );
+            console.log("socketTemp", socketTemp)
             setSocket(socketTemp);
         },
         [serverPath],
