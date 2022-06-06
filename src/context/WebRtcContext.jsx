@@ -7,27 +7,43 @@ export const WebRtcContext = createContext();
 
 export const WebRtProvider = ({ children }) => {
 
-    const { me,
+    const { 
+        me,
         stream,
         callPeer,
         acceptCall,
         receivingCall,
         callAccepted,
         myVideo,
+        chatStatus,
+        setChatStatus,
         userVideo,
-        name,
-        setName,
+        videoRecorderRef,
+        tutorUid,
+        setTutorUid,
+        myVdoStatus,
+        setMyVdoStatus,
+        userVdoStatus,
+        setUserVdoStatus,
+        myMicStatus,
+        userMicStatus,
+        screenShare,
+        handleScreenSharing,
         caller,
+        updateVideo,
+        updateMic,
         callerSignal,
         sendMessage,
         messages,
         rejectCall,
         calling,
+        timeOut,
         cancelCall,
-        endCall } = useWebRTC();
+        endCall
+    } = useWebRTC();
 
     return (
-        <WebRtcContext.Provider value={{         
+        <WebRtcContext.Provider value={{
             me,
             stream,
             callPeer,
@@ -35,17 +51,32 @@ export const WebRtProvider = ({ children }) => {
             receivingCall,
             callAccepted,
             myVideo,
+            chatStatus,
+            setChatStatus,
             userVideo,
-            name,
-            setName,
+            videoRecorderRef,
+            tutorUid,
+            setTutorUid,
+            myVdoStatus,
+            setMyVdoStatus,
+            userVdoStatus,
+            setUserVdoStatus,
+            myMicStatus,
+            userMicStatus,
+            screenShare,
+            handleScreenSharing,
             caller,
+            updateVideo,
+            updateMic,
             callerSignal,
             sendMessage,
             messages,
             rejectCall,
             calling,
+            timeOut,
             cancelCall,
-            endCall }}>
+            endCall
+        }}>
             {children}
         </WebRtcContext.Provider>
     );

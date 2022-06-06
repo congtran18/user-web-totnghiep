@@ -18,17 +18,18 @@ import storageReducer from "./storageSlice"
 import registerTutorReducer from "./registerTutorSlice"
 import tutorCalendarReducer from "./tutorCalendarSlice"
 import chatTutorReducer from "./chatTutorSlice"
+import courseHistoryReducer from "./courseHistorySlice"
 // import productReducer from "./productSlice";
 import storage from 'redux-persist/lib/storage'
 
 const persistConfig = {
   key: 'root',
-  blacklist: ['user', 'apiSlice', 'tutorCalendar', 'chatTutor'],
+  blacklist: ['user', 'apiSlice', 'tutorCalendar', 'chatTutor', 'courseHistory'],
   version: 1,
   storage,
 }
 
-const rootReducer = combineReducers({ user: userReducer, cart: cartReducer, [apiSlice.reducerPath]: apiSlice.reducer, wishlist: wishlistReducer, storage: storageReducer, registerTutor: registerTutorReducer, tutorCalendar: tutorCalendarReducer, chatTutor: chatTutorReducer })
+const rootReducer = combineReducers({ user: userReducer, cart: cartReducer, [apiSlice.reducerPath]: apiSlice.reducer, wishlist: wishlistReducer, storage: storageReducer, registerTutor: registerTutorReducer, tutorCalendar: tutorCalendarReducer, chatTutor: chatTutorReducer, courseHistory: courseHistoryReducer})
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({

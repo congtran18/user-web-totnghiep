@@ -14,16 +14,17 @@ const Message = ({ message }) => {
             <Box
                 sx={{
                     maxWidth: "50%",
-                    bgcolor: "primary.main",
+                    bgcolor: message.bgcolor,
                     m: 1,
                     px: 2,
                     py:1,
-                    borderRadius: 20,
-                    display: 'flex',
-                    flexWrap: 'wrap'
+                    borderRadius: 5,
+                    // display: 'flex',
+                    // flexWrap: 'wrap',
+                    // alignItems: 'center'
                 }}
             >
-                <Typography sx={{wordWrap: 'break-word'}} color='#fff'>{message.text}</Typography>
+                <Box sx={{wordWrap: "break-word"}} color={message.color}>{message.text}</Box>
             </Box>
         </Box>
     );

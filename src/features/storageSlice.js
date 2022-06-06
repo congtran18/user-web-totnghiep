@@ -86,10 +86,14 @@ const storageSlice = createSlice({
     name: "storage",
     initialState,
     reducers: {
+        storeUserCourse: (state, action) => {
+            state.dataStore = { ...state.dataStore, ...action.payload };
+        },
         resetAllStorage: (state) => {
             state.isLoading = false;
             state.isError = false;
             state.isSuccess = false;
+            state.dataStore = null;
         },
     },
     extraReducers: (builder) => {
@@ -100,7 +104,7 @@ const storageSlice = createSlice({
             .addCase(saveFile.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                state.dataStore = action.payload;
+                // state.dataStore = action.payload;
             })
             .addCase(saveFile.rejected, (state, action) => {
                 state.isLoading = false;
@@ -113,7 +117,7 @@ const storageSlice = createSlice({
             .addCase(saveMultiFile.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                state.dataStore = action.payload;
+                // state.dataStore = action.payload;
             })
             .addCase(saveMultiFile.rejected, (state, action) => {
                 state.isLoading = false;
@@ -126,7 +130,7 @@ const storageSlice = createSlice({
             .addCase(deleteFile.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                state.dataStore = action.payload;
+                // state.dataStore = action.payload;
             })
             .addCase(deleteFile.rejected, (state, action) => {
                 state.isLoading = false;
@@ -137,6 +141,7 @@ const storageSlice = createSlice({
 });
 
 export const {
-    resetAllStorage
+    resetAllStorage,
+    storeUserCourse
 } = storageSlice.actions;
 export default storageSlice.reducer;

@@ -3,7 +3,6 @@ import { Redirect } from "./signin";
 import Head from 'next/head';
 import { FaCartArrowDown } from "react-icons/fa";
 import Image from 'next/image';
-import axios from "axios";
 import { useRouter } from "next/router";
 import { useSession } from 'next-auth/react';
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
@@ -42,7 +41,7 @@ const orders = () => {
         isReachingEnd,
     } = usePaginateOrders(session ? session.user.email : user.user && user.user.email)
 
-    const handleClickSimilarProduct = (id) => {
+    const handleViewProduct = (id) => {
         router.push(`/productlist/${id}`);
     };
 
@@ -115,7 +114,7 @@ const orders = () => {
 
                         {data && data.length === 0 && <div className="flex items-center justify-center w-full h-full my-16 flex-col">
                             <Image src="/Images/order.svg" objectFit="contain" width="300rem" height="200rem" />
-                            <p className="my-10 text-sm sm:text-lg tracking-wide text-center text-gray-700">There are no orders. Browser products to make a purchase.</p>
+                            <p className="my-10 text-sm sm:text-lg tracking-wide text-center text-gray-700">Không có hóa đơn nào, hãy đến danh mục sản phẩm để mua.</p>
                             <button type="button" onClick={() => router.push('/productlist')} className="bg-themePink py-2.5 px-5 w-max mx-auto text-base sm:text-lg transition shadow-md hover:font-medium">Danh sách sản phẩm</button>
                         </div>}
                         {/* main order div  */}
@@ -145,7 +144,7 @@ const orders = () => {
                                         >
                                             {order?.orderItems?.map((singleOrder) => (
                                                 <SwiperSlide className="ml-2">
-                                                    <button onClick={handleClickSimilarProduct.bind(null, singleOrder.productId._id)}>
+                                                    <button onClick={handleViewProduct.bind(null, singleOrder.productId._id)}>
                                                         <div className="flex py-2 px-1 sm:p-3 shadow-md border my-1 hover:border-black transition-all" key={singleOrder.productId}>
                                                             <Image src={singleOrder?.productId.mainImage || 'https://cdn-icons.flaticon.com/png/512/5343/premium/5343420.png?token=exp=1636715134~hmac=6fa2179ff6d39aada58b7f88da790d5b'} objectFit="contain" height="90rem" width="80rem" alt="image" />
                                                             <div className="flex flex-col flex-3">

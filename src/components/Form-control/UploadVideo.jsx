@@ -33,6 +33,7 @@ function UploadVideo({ errors, name, register, videoSource, value, cache }) {
 
   useEffect(() => {
     if (value && isFile(value[0])) {
+      console.log("value[0]",value[0])
       setVideo(URL.createObjectURL(value[0]));
       if (cache === true) {
         //Xóa ảnh hiện tại khi up ảnh mới

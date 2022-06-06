@@ -7,10 +7,11 @@ import { PersistGate } from 'redux-persist/integration/react';
 import ProgressBar from '@badrap/bar-of-progress';
 import Layout from "../components/Layout";
 import { SessionProvider } from 'next-auth/react';
-import { ThemeProvider } from "next-themes";
+// import { ThemeProvider } from "next-themes";
 import { SocketProvider } from 'context/SocketContext'
 import { WebRtProvider } from 'context/WebRtcContext'
 import { CssBaseline } from '@mui/material'
+import { createTheme, ThemeProvider, styled } from '@mui/material/styles';
 
 const progress = new ProgressBar({
   size: 3,
@@ -18,6 +19,8 @@ const progress = new ProgressBar({
   className: 'z-50',
   delay: 100,
 });
+
+const theme = createTheme();
 
 Router.events.on('routeChangeStart', progress.start);
 Router.events.on('routeChangeComplete', progress.finish);
@@ -29,14 +32,16 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
     <SessionProvider session={session}>
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <SocketProvider>
-            <WebRtProvider>
+          <WebRtProvider>
+            <SocketProvider>
               <Layout>
-                <CssBaseline />
-                <Component {...pageProps} />
+                <ThemeProvider theme={theme}>
+                  <CssBaseline />
+                  <Component {...pageProps} />
+                </ThemeProvider>
               </Layout>
-            </WebRtProvider>
-          </SocketProvider>
+            </SocketProvider>
+          </WebRtProvider>
         </PersistGate>
       </Provider>
     </SessionProvider>

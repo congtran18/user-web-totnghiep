@@ -17,6 +17,8 @@ import SelectField from 'components/Form-control/SelectField'
 import MultipleSelectField from 'components/Form-control/MultipleSelectField'
 import { saveFile, deleteFile, saveMultiFile } from 'features/storageSlice';
 import { updateTutor } from 'features/registerTutorSlice';
+import Cookies from 'js-cookie'
+import * as cookie from 'cookie'
 
 const supportedVideoFormat = ['video/mpeg', 'video/mp4']
 const SUPPORTED_FORMATS = ['image/jpg', 'image/jpeg', 'image/gif', 'image/png'];
@@ -76,7 +78,7 @@ export const getServerSideProps = async (ctx) => {
 
     const session = await getSession(ctx)
 
-    const response = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/tutor/${session.uid}`)
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/tutor/${session ? session.uid : JSON.parse(ctx.req.cookies.userInfo).user.uid}`)
 
     if (response.error) {
         return {
@@ -136,7 +138,6 @@ const tutorAccount = ({ tutorData }) => {
     const formCoverCertificates = watch('certificates')
 
     const onHandleSubmit = async (data) => {
-        console.log(data)
         try {
             //lấy token
             const token = session ? session.accessToken : Cookies.get("userInfo") && JSON.parse(Cookies.get("userInfo")).accessToken
@@ -156,7 +157,6 @@ const tutorAccount = ({ tutorData }) => {
                 saveData.imageUrl = dataimageUrl
             }
             if (isFile(data.videoUrl[0])) {
-                console.log("van vo day ak")
                 let videoData = new FormData();
                 videoData.append("file", data.videoUrl[0]);
 

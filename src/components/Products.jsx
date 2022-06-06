@@ -13,8 +13,6 @@ const Products = ({ params, handlePageChange }) => {
 
     const { data, isLoading, isFetching, isError } = useGetProductsQuery(params)
 
-    console.log("data", data)
-
     let body = null
 
     if (isLoading) {

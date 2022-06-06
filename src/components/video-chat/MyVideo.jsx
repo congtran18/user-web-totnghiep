@@ -1,31 +1,31 @@
 import React, { useState, StyleHTMLAttributes, Ref } from "react";
 import { Box } from "@mui/material";
 import Draggable from "react-draggable";
-import { useMediaQuery } from "@mui/material/useMediaQuery";
+import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 
 
 const MyVideo = ({ myVideoRef, stream }) => {
-    const theme = useTheme();
     const [cursor, setCursor] = useState("grab");
+    const theme = useTheme();
     const mobile = useMediaQuery(theme.breakpoints.down('sm'))
-    
+
     const leftPosition = () => {
-        if(!mobile) return 50
-        
-        if(typeof window === 'undefined') {
-            return 50 
-        }else {
+        if (!mobile) return 50
+
+        if (typeof window === 'undefined') {
+            return 50
+        } else {
             return window.innerWidth / 2 - 50
         }
     }
- 
+
     const bottomPosition = () => {
-        if(!mobile) return 50
-        
-        if(typeof window === 'undefined') {
-            return 50 
-        }else {
+        if (!mobile) return 50
+
+        if (typeof window === 'undefined') {
+            return 50
+        } else {
             return window.innerHeight / 2 - 50
         }
     }
@@ -38,13 +38,14 @@ const MyVideo = ({ myVideoRef, stream }) => {
         >
             <Box
                 sx={{
-                    width:  mobile ? 100 : 200,
-                    height: mobile ? 100 : 200,
+                    width: mobile ? 100 : 200,
+                    // height: mobile ? 100 : 200,
                     position: "absolute",
                     left: leftPosition(),
                     bottom: bottomPosition(),
+                    border: '2px solid #3e2723',
                     backgroundColor: "gray",
-                    borderRadius: mobile ? 50 : 100,
+                    borderRadius: 2,
                     overflow: "hidden",
                     cursor,
                     display: "flex",
@@ -52,15 +53,15 @@ const MyVideo = ({ myVideoRef, stream }) => {
                     alignItems: "center",
                 }}
             >
-                {stream && (
-                    <video
-                        ref={myVideoRef}
-                        playsInline
-                        autoPlay
-                        muted
-                        height={mobile ? 100 :  200}
-                    />
-                )}
+                {/* {stream && ( */}
+                <video
+                    ref={myVideoRef}
+                    playsInline
+                    autoPlay
+                    muted
+                    height={mobile ? 100 : 200}
+                />
+                {/* )} */}
             </Box>
         </Draggable>
     );

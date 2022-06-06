@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import io from "socket.io-client";
 import Peer from "simple-peer";
@@ -7,6 +7,10 @@ import { useTheme } from '@mui/material/styles';
 import { useRouter } from "next/dist/client/router";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Cookies from 'js-cookie'
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from "react-toastify";
+import { listTutors } from 'features/chatTutorSlice';
+import { storeUserCourse } from 'features/storageSlice';
 
 function ab2str(buf) {
     // return String.fromCharCode.apply(null, new Uint8Array(buf));
@@ -15,7 +19,8 @@ function ab2str(buf) {
 
 export const useWebRTC = () => {
     const router = useRouter();
-    const [name, setName] = useState("");
+    const dispatch = useDispatch();
+    const [tutorUid, setTutorUid] = useState("");
     const [me, setMe] = useState("");
     const [stream, setStream] = useState(null);
     const [receivingCall, setReceivingCall] = useState(false);
@@ -25,11 +30,21 @@ export const useWebRTC = () => {
     const [callerSignal, setCallerSignal] = useState(null);
     const [callAccepted, setCallAccepted] = useState(false);
 
+    const [myVdoStatus, setMyVdoStatus] = useState(true);
+    const [userVdoStatus, setUserVdoStatus] = useState();
+    const [myMicStatus, setMyMicStatus] = useState(true);
+    const [userMicStatus, setUserMicStatus] = useState();
+    const [screenShare, setScreenShare] = useState(false);
+    const [chatStatus, setChatStatus] = useState(true);
+
+    const [timeOut, setTimeOut] = useState(false);
+
+    const { user } = useSelector(
+        (state) => state.user
+    );
+
     const theme = useTheme();
     const mobile = useMediaQuery(theme.breakpoints.down('sm'))
-
-    console.log("mobile", mobile)
-
 
     const [callCancelled, setCallCancelled] = useState(false);
 
@@ -38,9 +53,12 @@ export const useWebRTC = () => {
     const socket = useRef();
     const myVideo = useRef();
     const userVideo = useRef();
+    const videoRecorderRef = useRef(null);
 
     const callerPeer = useRef();
     const answerPeer = useRef();
+    const connectionRef = useRef();
+    const screenTrackRef = useRef();
 
     const messageSound = useRef(null);
     const callSound = useRef(null);
@@ -65,7 +83,7 @@ export const useWebRTC = () => {
         const token = Cookies.get("sessionToken") ? Cookies.get("sessionToken") : Cookies.get("userInfo") && JSON.parse(Cookies.get("userInfo")).accessToken
 
         if (token) {
-            socket.current = io("http://localhost:5001/videoChat", {
+            socket.current = io("https://server-web-totnghiep.herokuapp.com/videoChat", {
                 transports: ['websocket'],
                 autoConnect: true,
                 forceNew: true,
@@ -78,19 +96,21 @@ export const useWebRTC = () => {
             });
             navigator.mediaDevices
                 .getUserMedia({
-                    video: {
-                        width: { min: 640, ideal: 1920, max: 1920 },
-                        height: { min: 400, ideal: 1080 },
-                        aspectRatio: 1.777777778,
-                        //aspectRatio: 1.777777778,
-                        frameRate: { max: 30 },
-                        facingMode: "user",
-                    },
-                    //video: false,
+                    // video: {
+                    //     width: { min: 640, ideal: 1920, max: 1920 },
+                    //     height: { min: 400, ideal: 1080 },
+                    //     aspectRatio: 1.777777778,
+                    //     //aspectRatio: 1.777777778,
+                    //     frameRate: { max: 30 },
+                    //     facingMode: "user",
+                    // },
+                    video: true,
                     audio: true,
                 })
                 .then((stream) => {
+                    // stream.getAudioTracks()[0].enabled = false;
                     setStream(stream);
+                    // myVideo.current.srcObject = stream;
                     if (myVideo.current) {
                         myVideo.current.srcObject = stream;
                     }
@@ -100,6 +120,11 @@ export const useWebRTC = () => {
                 setMe(id);
             });
 
+            socket.current.on("online-tutors", (tutors) => {
+                dispatch(listTutors(tutors[0].user_tutor));
+            });
+
+            //gia su nhan cuoc goi tu nguoi dung
             socket.current.on("user.calling", (data) => {
                 if (callCancelled) {
                     setCallCancelled(false);
@@ -126,8 +151,46 @@ export const useWebRTC = () => {
                 }
             });
 
-            socket.current.on("call.ended", () => {
-                router.reload();
+            //gia su nhan end call tu nguoi dung thi cx se ko reload
+            socket.current.on("call.ended", async () => {
+                videoRecorderRef.current?.record().stop()
+
+                await new Promise((res) => {
+                    setTimeout(() => {
+                        res();
+                    }, 500);
+                });
+
+                //khi gia su nhan thong bao end call
+                // if (videoRecorderRef.current) {
+                //     // console.log("{ tutor: me, user: caller.socket_id }", { tutor: me, user: caller })
+                //     console.log("me nekeneken nek", me)
+                //     dispatch(storeUserCourse({ tutor: me }))
+                // }
+
+                //nguoi dung se ko co record video
+                if (!videoRecorderRef.current) {
+                    router.reload()
+                }
+                // }
+                // toast.info("Buổi học kết thúc")
+            });
+
+            socket.current.on("updateUserMedia", ({ type, currentMediaStatus }) => {
+                if (currentMediaStatus !== null || currentMediaStatus !== []) {
+                    switch (type) {
+                        case "video":
+                            setUserVdoStatus(currentMediaStatus);
+                            break;
+                        case "mic":
+                            setUserMicStatus(currentMediaStatus);
+                            break;
+                        default:
+                            setUserMicStatus(currentMediaStatus[0]);
+                            setUserVdoStatus(currentMediaStatus[1]);
+                            break;
+                    }
+                }
             });
         }
     }, []);
@@ -139,22 +202,20 @@ export const useWebRTC = () => {
             callSound.current.play();
         }
         callerPeer.current = new Peer({
+            //we are answering call that's why false
             initiator: true,
             trickle: false,
             config: {
                 iceServers: [
                     {
-                        urls: "stun:numb.viagenie.ca",
-                        username: "sultan1640@gmail.com",
-                        credential: "98376683",
+                        urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'],
                     },
-                    {
-                        urls: "turn:numb.viagenie.ca",
-                        username: "sultan1640@gmail.com",
-                        credential: "98376683",
-                    },
+                    // {
+                    //     urls: 'stun:stun.l.google.com:19302'
+                    // },
                 ],
             },
+            // we have asked permission from user
             stream: stream,
         });
 
@@ -162,7 +223,7 @@ export const useWebRTC = () => {
             socket.current.emit("call.user", {
                 user_to_call: id,
                 signal: data,
-                from: { socket_id: me.toString(), name },
+                from: { socket_id: me.toString(), name: user.user.fullName },
             });
         });
 
@@ -176,7 +237,7 @@ export const useWebRTC = () => {
             console.log("caller get message >>", ab2str(m));
             setMessages((prev) => [
                 ...prev,
-                { position: "right", text: ab2str(m) },
+                { position: "left", text: ab2str(m), bgcolor: "#e1bee7", color: "#212121" },
             ]);
             if (messageSound.current) {
                 messageSound.current.play();
@@ -187,6 +248,13 @@ export const useWebRTC = () => {
             setCallAccepted(true);
             setCalling(false);
             callerPeer.current.signal(signal);
+            const interval1 = setInterval(() => {
+                toast.info("Bạn hết thời gian!")
+            }, 20000);
+            const interval2 = setInterval(() => {
+                setTimeOut(true)
+                // toast.info("Bạn còn 5s!")
+            }, 15000);
         });
 
         socket.current.on("call.rejected", ({ from }) => {
@@ -199,8 +267,11 @@ export const useWebRTC = () => {
             }
             router.reload();
         });
+
+        connectionRef.current = callerPeer.current;
     }
 
+    //gia su chap nhan call
     function acceptCall() {
         setCallAccepted(true);
         setReceivingCall(false);
@@ -226,15 +297,101 @@ export const useWebRTC = () => {
             console.log("answer got message >> ", ab2str(m));
             setMessages((prev) => [
                 ...prev,
-                { position: "right", text: ab2str(m) },
+                { position: "left", text: ab2str(m), bgcolor: "#e1bee7", color: "#212121" },
             ]);
             if (messageSound.current) {
                 messageSound.current.play();
             }
         });
 
+        videoRecorderRef.current?.record().start();
+
+        const interval1 = setInterval(() => {
+            setTimeOut(true)
+            toast.info("Học viên sắp hết thời gian!")
+            // endCall(caller.socket_id);
+        }, 15000);
+
+        const interval2 = setInterval(() => {
+            toast.info("Học viên hết thời gian!")
+            endCall(caller.socket_id);
+        }, 20000);
+
         answerPeer.current.signal(callerSignal);
+
+        connectionRef.current = answerPeer.current;
     }
+
+    const updateVideo = () => {
+        setMyVdoStatus((currentStatus) => {
+            socket.current.emit("updateMyMedia", {
+                type: "video",
+                currentMediaStatus: !currentStatus,
+            });
+            stream.getVideoTracks()[0].enabled = !currentStatus;
+            return !currentStatus;
+        });
+    };
+
+    const updateMic = () => {
+        setMyMicStatus((currentStatus) => {
+            socket.current.emit("updateMyMedia", {
+                type: "mic",
+                currentMediaStatus: !currentStatus,
+            });
+            stream.getAudioTracks()[0].enabled = !currentStatus;
+            return !currentStatus;
+        });
+    };
+
+    //SCREEN SHARING 
+    const handleScreenSharing = () => {
+
+        if (!myVdoStatus) {
+            console.log("!myVdoStatus")
+            return;
+        }
+
+        if (!screenShare) {
+            navigator.mediaDevices
+                .getDisplayMedia({ cursor: true })
+                .then((currentStream) => {
+                    const screenTrack = currentStream.getTracks()[0];
+
+
+                    // replaceTrack (oldTrack, newTrack, oldStream);
+                    connectionRef.current.replaceTrack(
+                        connectionRef.current.streams[0]
+                            .getTracks()
+                            .find((track) => track.kind === 'video'),
+                        screenTrack,
+                        stream
+                    );
+
+                    // Listen click end
+                    screenTrack.onended = () => {
+                        connectionRef.current.replaceTrack(
+                            screenTrack,
+                            connectionRef.current.streams[0]
+                                .getTracks()
+                                .find((track) => track.kind === 'video'),
+                            stream
+                        );
+
+                        myVideo.current.srcObject = stream;
+                        setScreenShare(false);
+                    };
+
+                    myVideo.current.srcObject = currentStream;
+                    screenTrackRef.current = screenTrack;
+                    setScreenShare(true);
+                }).catch((error) => {
+                    console.log("No stream for sharing")
+                });
+        } else {
+            screenTrackRef.current.onended();
+        }
+    };
 
     async function rejectCall() {
         await socket.current.emit("reject.call", {
@@ -263,12 +420,35 @@ export const useWebRTC = () => {
         router.reload();
     }
 
+    //khi nguoi dung bam end call thi chi nguoi dung reload, khi gia su bam end call gia su khong reload
     async function endCall(id) {
         await socket.current.emit("end.call", {
             from: me,
+            //callerReciever nguoi dung gui den gia su
             to: callReciever ? caller.socket_id : id,
         });
-        router.reload();
+        videoRecorderRef.current?.record().stop()
+        if (callReciever) {
+            //gia su luu thong tin nguoi dung de tao file course
+            dispatch(storeUserCourse({ tutor: me, user: caller.socket_id }))
+            await new Promise((res) => {
+                setTimeout(() => {
+                    res();
+                }, 2000);
+            });
+        }
+        if (!callReciever) {
+            //nguoi dung luu thong tin gia su de tao file course
+            // dispatch(storeUserCourse({ tutor: id, user: me }))
+            await new Promise((res) => {
+                setTimeout(() => {
+                    res();
+                }, 1000);
+            });
+            //chi reload lai trang nguoi dung vi nguoi dung thi callReciever = false
+            router.reload();
+        }
+
     }
 
     function sendMessage(message) {
@@ -277,13 +457,13 @@ export const useWebRTC = () => {
             answerPeer.current.send(message);
             setMessages((prev) => [
                 ...prev,
-                { position: "left", text: message },
+                { position: "right", text: message, bgcolor: "#2196f3", color: "#fff" },
             ]);
         } else {
             callerPeer.current.send(message);
             setMessages((prev) => [
                 ...prev,
-                { position: "left", text: message },
+                { position: "right", text: message, bgcolor: "#2196f3", color: "#fff" },
             ]);
         }
     }
@@ -296,15 +476,29 @@ export const useWebRTC = () => {
         receivingCall,
         callAccepted,
         myVideo,
+        chatStatus,
+        setChatStatus,
         userVideo,
-        name,
-        setName,
+        videoRecorderRef,
+        tutorUid,
+        setTutorUid,
+        myVdoStatus,
+        setMyVdoStatus,
+        userVdoStatus,
+        setUserVdoStatus,
+        myMicStatus,
+        userMicStatus,
+        screenShare,
+        handleScreenSharing,
         caller,
+        updateVideo,
+        updateMic,
         callerSignal,
         sendMessage,
         messages,
         rejectCall,
         calling,
+        timeOut,
         cancelCall,
         endCall,
     };

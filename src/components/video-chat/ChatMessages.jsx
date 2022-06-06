@@ -12,23 +12,24 @@ import Message from "./Message";
 const ChatMessages = ({
     messages,
     sendMessage,
+    chatStatus,
 }) => {
     const [message, setMessage] = useState("");
     return (
         <Draggable handle="strong" bounds="parent">
             <Resizable
-                defaultSize={{ width: 240, height: "100vh" }}
+                defaultSize={{ width: chatStatus ? 0 : 550, height: "100vh" }}
                 style={{
                     position: "absolute",
-                    right: 20,
-                    top: 0,
+                    right: '30%',
+                    top: '5%',
                     backgroundColor: "#fff",
-                    borderRadius: 20,
+                    borderRadius: 10,
                 }}
-                minWidth={240}
+                minWidth={chatStatus ? 0 : 550}
                 minHeight={400}
                 maxHeight={"80vh"}
-                maxWidth={500}
+                maxWidth={chatStatus ? 0 : 550}
             >
                 <Box
                     sx={{
@@ -46,7 +47,7 @@ const ChatMessages = ({
                             p: 1,
                         }}
                     >
-                        <Typography>Send Message</Typography>
+                        <Typography>Gửi tin nhắn</Typography>
                         <strong>
                             <DragHandleIcon sx={{ cursor: "move" }} />
                         </strong>
