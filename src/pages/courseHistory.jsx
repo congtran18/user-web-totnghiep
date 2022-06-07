@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { Redirect } from "./signin";
 import Head from 'next/head';
-import { FaCartArrowDown } from "react-icons/fa";
 import Image from 'next/image';
 import { useRouter } from "next/router";
 import { useSession } from 'next-auth/react';
 import moment from 'moment'
-import SortOrder from 'components/FilterOrder/SortOrder'
 import SortCourseHistory from 'components/FilterCourseHistory/SortCourseHistory'
 import SearchCourseHistory from 'components/FilterCourseHistory/SearchCourseHistory'
 import { usePaginateCourseHistory } from 'hooks/usePaginateCourseHistory'

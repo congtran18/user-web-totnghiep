@@ -1,10 +1,10 @@
+import React, { useContext, useEffect, useState } from 'react';
 import Head from 'next/head';
 import Banner from 'components/Banner';
 import Newsletter from 'components/Newsletter';
 import StaticUtility from 'components/StaticUtility'
 import NewProduct from 'components/NewProduct';
 import Link from "next/link";
-import React, { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getTotals } from 'features/cartSlice';
 // import VideoChat from "components/video-chat/VideoChat";
@@ -53,18 +53,20 @@ export default function Home() {
 
   const dispatch = useDispatch();
 
-  const handleSaveHistoryCourse = async (dataStore) =>{
+  const handleSaveHistoryCourse = async (dataStore) => {
     const token = Cookies.get("sessionToken") ? Cookies.get("sessionToken") : Cookies.get("userInfo") && JSON.parse(Cookies.get("userInfo")).accessToken
-    await dispatch(saveCourseHistory({...dataStore, token}))
+    await dispatch(saveCourseHistory({ ...dataStore, token }))
   }
 
-  useEffect(async () => {
-    console.log("dataStore", dataStore)
-    // dispatch(storeUserCourse({ tutor: me }))
-    if (dataStore && dataStore.videoUrl) {
-      handleSaveHistoryCourse(dataStore)
-      dispatch(resetAllStorage())
-    }
+  useEffect(() => {
+    (async () => {
+      console.log("dataStore", dataStore)
+      // dispatch(storeUserCourse({ tutor: me }))
+      if (dataStore && dataStore.videoUrl) {
+        handleSaveHistoryCourse(dataStore)
+        dispatch(resetAllStorage())
+      }
+    })();
   }, []);
 
   useEffect(() => {

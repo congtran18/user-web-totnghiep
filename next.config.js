@@ -1,4 +1,5 @@
 module.exports = {
+    // reactStrictMode: true,
     images: {
         domains : ['eitrawmaterials.eu','platform-lookaside.fbsbx.com','lh3.googleusercontent.com', 'firebasestorage.googleapis.com', 'www.mdcfoundation.com', 'images.pexels.com',"d3o2e4jr3mxnm3.cloudfront.net", "cdn.shopify.com", "www.prada.com","www.burdastyle.com","images.ctfassets.net","www.kindpng.com","www.pngarts.com", "m.media-amazon.com","assets.ajio.com","static.zara.net","images.unsplash.com", "cdn-icons.flaticon.com","trueveda.in", "lmsin.net"]
     },
