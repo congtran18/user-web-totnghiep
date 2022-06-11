@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import { saveFile, deleteFile } from 'features/storageSlice';
 import { addStepOneUrl } from 'features/registerTutorSlice'
 import { useDispatch, useSelector } from 'react-redux';
-import { isFile } from 'helper/validateFile'
+import { isFile } from 'helpers/validateFile'
 
 function UploadImage({ errors, name, register, imageSource, value, cache }) {
 

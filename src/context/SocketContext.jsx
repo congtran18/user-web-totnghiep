@@ -6,7 +6,7 @@ import { useSocket } from '../hooks/useSocket';
 
 import Cookies from 'js-cookie'
 
-import { listTutors, activeChat, newMessage, loadMessages } from 'features/chatTutorSlice';
+import { listTutors, listUsers, activeChat, newMessage, loadMessages } from 'features/chatTutorSlice';
 
 const initialContext = {
     online: false,
@@ -41,8 +41,9 @@ export const SocketProvider = ({ children }) => {
 
     // listen  connected tutors
     useEffect(() => {
-        socket?.on('online-tutors', (tutors) => {
-            dispatch(listTutors(tutors[0].user_tutor));
+        socket?.on('online-users', (users) => {
+            dispatch(listTutors(users[0].users));
+            dispatch(listUsers(users[0].users))
         });
     }, [socket, dispatch]);
 

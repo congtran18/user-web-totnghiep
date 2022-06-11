@@ -12,7 +12,7 @@ import { useRouter } from 'next/router'
 import { deleteProduct, decreaseQuantity, increaseQuantity, getTotals } from '../features/cartSlice';
 import { BsCheck } from "react-icons/bs";
 import { GoPrimitiveDot } from "react-icons/go"
-import CostFormat from 'helper/CostFormat'
+import CostFormat from 'helpers/CostFormat'
 import { useSession } from 'next-auth/react';
 import { loadStripe } from '@stripe/stripe-js';
 import { toast } from "react-toastify";

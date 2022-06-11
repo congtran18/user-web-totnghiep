@@ -60,7 +60,6 @@ export default function Home() {
 
   useEffect(() => {
     (async () => {
-      console.log("dataStore", dataStore)
       // dispatch(storeUserCourse({ tutor: me }))
       if (dataStore && dataStore.videoUrl) {
         handleSaveHistoryCourse(dataStore)

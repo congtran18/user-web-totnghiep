@@ -27,9 +27,6 @@ export const usePaginateCourseHistory = (uid) => {
         }
     )
 
-    console.log("uid", uid)
-    console.log("usePaginateCourseHistory", data && data[0].data[0].count)
-
     const totalVideocalls = data ? data[0].data[0].count.length > 0 && data[0].data[0].count[0].totalCount : 0
 
     // let videocalls = data ? [].concat(...data) : []

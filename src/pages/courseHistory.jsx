@@ -111,6 +111,16 @@ const courseHistory = () => {
                 <img src="/Images/loading2.gif" alt="loading" className="text-center flex items-center justify-center mx-auto mt-3 " />
             </div>)
 
+    } else if (data && data.length === 0) {
+        body = (
+            <>
+                <div className="flex items-center justify-center w-full h-full my-16 flex-col">
+                    <Image src="/Images/history-course.png" objectFit="contain" width="300rem" height="200rem" />
+                    <p className="my-10 text-sm sm:text-lg tracking-wide text-center text-gray-700">Lịch sử buổi học đang trống.</p>
+                    {/* <button type="button" onClick={() => router.push('/productlist')} className="bg-themePink py-2.5 px-5 w-max mx-auto text-base sm:text-lg transition shadow-md hover:font-medium">Danh sách sản phẩm</button> */}
+                </div>
+            </>
+        )
     } else {
         body = (
             <>
@@ -127,12 +137,6 @@ const courseHistory = () => {
                                 </>
                             }
                         </div>
-
-                        {data && data.length === 0 && <div className="flex items-center justify-center w-full h-full my-16 flex-col">
-                            <Image src="/Images/order.svg" objectFit="contain" width="300rem" height="200rem" />
-                            <p className="my-10 text-sm sm:text-lg tracking-wide text-center text-gray-700">Lịch sử buổi học đang trống.</p>
-                            <button type="button" onClick={() => router.push('/productlist')} className="bg-themePink py-2.5 px-5 w-max mx-auto text-base sm:text-lg transition shadow-md hover:font-medium">Danh sách sản phẩm</button>
-                        </div>}
                         {/* main order div  */}
                         <div class="flex items-center justify-center overflow-x-auto w-[85%] shadow-md sm:rounded-lg mt-10 mb-5 ml-[5%]">
                             <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
@@ -229,8 +233,8 @@ const courseHistory = () => {
                         </div>
                     </div>}
 
-                    <button
-                        className={`rounded-lg custombutton ml-[45%] p-2 ${isReachingEnd ?
+                    {data && data.length > 0 && <button
+                        className={`rounded-lg custombutton2 ml-[45%] p-2 ${isReachingEnd ?
                             'cursor-not-allowed'
                             : data.length === 0 && 'invisible'}`}
                         disabled={isLoadingMore || isReachingEnd || data.length === 0}
@@ -241,7 +245,7 @@ const courseHistory = () => {
                             : isReachingEnd
                                 ? "No more"
                                 : `Tải thêm (${totalVideocalls - data.length})`}
-                    </button>
+                    </button>}
                 </section>
             </main>
         </>

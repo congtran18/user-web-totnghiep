@@ -6,7 +6,7 @@ import axios from "axios";
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { addProduct, getTotals } from 'features/cartSlice';
-import CostFormat from 'helper/CostFormat'
+import CostFormat from 'helpers/CostFormat'
 import { addToWishlist } from "features/wishlistSlice";
 import { BsBag } from "react-icons/bs";
 import { FiHeart } from "react-icons/fi";

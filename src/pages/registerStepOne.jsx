@@ -16,7 +16,7 @@ import SelectField from 'components/Form-control/SelectField'
 import UploadMultiFile from 'components/Form-control/UploadMultiFile'
 import { confirmStepOne } from 'features/registerTutorSlice';
 import { toast } from "react-toastify";
-import { isFile, checkIfFilesAreTooBig, checkIfFilesAreCorrectType, checkIfFilesLength } from 'helper/validateFile'
+import { isFile, checkIfFilesAreTooBig, checkIfFilesAreCorrectType, checkIfFilesLength } from 'helpers/validateFile'
 
 const supportedVideoFormat = ['video/mpeg', 'video/mp4']
 const SUPPORTED_FORMATS = ['image/jpg', 'image/jpeg', 'image/gif', 'image/png'];
@@ -224,7 +224,7 @@ const registerTutor = () => {
                                         include={dataInclude}
                                     />
                                     <UploadImage control={control} register={register} errors={errors} imageSource={stepOne.imageUrl && stepOne.imageUrl} cache={true} name="imageUrl" value={formCoverImageValue}></UploadImage>
-                                    <UploadVideo control={control} register={register} errors={errors} videoSource={stepOne.videoUrl && stepOne.videoUrl} cache={true} name="videoUrl" value={formCoverVideoValue} />
+                                    <UploadVideo control={control} register={register} errors={errors} videoSource={stepOne.videoUrl && stepOne.videoUrl} cache={true} name="videoUrl" value={formCoverVideoValue} label={"Upload video giới thiệu bản thân"} />
                                     <UploadMultiFile control={control} register={register} errors={errors} cache={true} name="certificates" value={formCoverCertificates} certificatesData={[]} />
                                     <button
                                         className="w-full rounded-lg text-red-100 bg-red-500 h-10 transition-colors duration-150 hover:bg-red-800"

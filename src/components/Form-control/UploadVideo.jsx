@@ -6,9 +6,9 @@ import { saveFile, deleteFile } from 'features/storageSlice';
 import { addStepOneUrl } from 'features/registerTutorSlice'
 import { useDispatch, useSelector } from 'react-redux';
 import ReactPlayer from 'react-player'
-import { isFile } from 'helper/validateFile'
+import { isFile } from 'helpers/validateFile'
 
-function UploadVideo({ errors, name, register, videoSource, value, cache }) {
+function UploadVideo({ errors, name, register, videoSource, value, cache, label }) {
 
   const { stepOne } = useSelector(
     (state) => state.registerTutor
@@ -53,7 +53,7 @@ function UploadVideo({ errors, name, register, videoSource, value, cache }) {
     <div className='mb-5'>
       <div className="flex justify-center">
         <div className="mb-1 w-full border-2 border-neutral-200 flex flex-col justify-center items-center pt-3 pb-5">
-          <label className="inline-block text-gray-700 content-center">Upload video giới thiệu bản thân</label>
+          <label className="inline-block text-gray-700 content-center">{label}</label>
           <div className="mb-4 ml-6">
             <ReactPlayer
               url={video || uploadImage}

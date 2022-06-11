@@ -7,10 +7,17 @@ import { WebRtcContext } from 'context/WebRtcContext';
 import { Box } from "@mui/material";
 import AcceptCallDialog from "components/AcceptCallDialog";
 import CallingDialog from "components/CallingDialog";
+import { getReviewTutor } from 'features/reviewTutorSlice';
+import { averageRating } from 'helpers/calculator-rating'
+import { useDispatch, useSelector } from 'react-redux';
 
 const SingleTutor = ({ tutor }) => {
 
-    const [disable, setDisable] = React.useState(false);
+    const [disable, setDisable] = useState(false);
+    const dispatch = useDispatch();
+
+    const [reviewResult, setReviewResult] = useState();
+    const [reviewCount, setReviewCount] = useState();
 
     const { tutorUid,
         setTutorUid,
@@ -41,9 +48,17 @@ const SingleTutor = ({ tutor }) => {
 
     const router = useRouter();
 
-    // useEffect(() => {
-    //     console.log("tutor.calling", tutor)
-    // }, [tutor]);
+
+    useEffect(() => {
+        // const uid = user ? user.user.uid : session && session.uid
+        (async () => {
+           const resultReview = await dispatch(getReviewTutor(tutor.uid));
+           console.log("resultReview.payload", resultReview.payload)
+           setReviewResult(resultReview.payload.all_review)
+           setReviewCount(resultReview.payload.count.length  > 0 ? resultReview.payload.count[0].totalCount : 0)
+        })();
+        // console.log(percentRating(reviewTutors).filter((value) => value.rating === 4)[0].percent)
+    }, []);
 
     useEffect(() => {
         if (calling) {
@@ -61,7 +76,7 @@ const SingleTutor = ({ tutor }) => {
                     {/* image  */}
                     {/* large screen  */}
                     <div className="flex flex-col p-2">
-                        {tutor.user_tutor.imageUrl && <Image src={tutor.user_tutor.imageUrl} width="150rem" height="170rem" className="border-2 border-solid border-zinc-800" objectFit="contain" />}
+                        {tutor.user_tutor[0].imageUrl && <Image src={tutor.user_tutor[0].imageUrl} width="150rem" height="170rem" className="border-2 border-solid border-zinc-800" objectFit="contain" />}
                         {tutor.online === true && <div className="flex items-center justify-center gap-2 text-green-500 font-medium"><GoPrimitiveDot />Online</div>}
                         {tutor.online === false && <div className="flex items-center justify-center gap-2 text-red-800 font-medium"><VscError />Offline</div>}
                     </div>
@@ -72,15 +87,17 @@ const SingleTutor = ({ tutor }) => {
                     {/* details div  */}
                     <div className=" sm:p-2 sm:flex-1 my-3 flex flex-col text-left gap-5 items-start sm:space-y-0 space-y-0 tracking-wide">
                         {/* tutor name  */}
-                        <h1 className="text-sm sm:text-base w-[10rem] truncate"><b>{tutor.user_tutor.fullName}</b></h1>
+                        <h1 className="text-sm sm:text-base w-[10rem] truncate"><b>{tutor.user_tutor[0].fullName}</b></h1>
                         {/* color  */}
-                        <div class="flex items-center">
-                            <svg class="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
-                            <p class="ml-2 text-sm font-bold text-gray-900 dark:text-white">4.95</p>
-                            <span class="w-1 h-1 mx-1.5 bg-gray-500 rounded-full dark:bg-gray-400"></span>
-                            <a href="#" class="text-sm font-medium text-gray-900 dark:text-white">73 reviews</a>
-                        </div>
-                        <div className="flex items-center gap-1 text-[13px] sm:text-base"><GoPrimitiveDot className="text-lg text-gray-600" />{(tutor.user_tutor.status[tutor.user_tutor.status.length - 1] === "New") && "Mới gia nhập"}</div>
+                        {!reviewResult ? 
+                        <div className="w-5 h-5"></div>
+                        : <div className="flex items-center">
+                            <svg className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
+                            <p className="ml-2 text-sm font-bold text-gray-900 dark:text-white">{averageRating(reviewResult)}</p>
+                            <span className="w-1 h-1 mx-1.5 bg-gray-500 rounded-full dark:bg-gray-400"></span>
+                            <p className="text-sm font-medium text-gray-900 dark:text-white">{reviewCount} reviews</p>
+                        </div>}
+                        <div className="flex items-center gap-1 text-[13px] sm:text-base"><GoPrimitiveDot className="text-lg text-gray-600" />{(tutor.user_tutor[0].status[tutor.user_tutor[0].status.length - 1] === "New") && "Mới gia nhập"}</div>
                         <div className="flex gap-2">
                             <button class="flex gap-2 justify-center items-center bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 inline-flex items-center cursor-pointer" onClick={() => router.push(`/tutorlist/${tutor.uid}`)}>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-person-fill" viewBox="0 0 16 16">

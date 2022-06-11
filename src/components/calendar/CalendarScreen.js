@@ -2,7 +2,7 @@ import moment from "moment";
 import "moment/locale/vi";
 import React, { useEffect, useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
-import { messages } from "helper/calendar-messages-es";
+import { messages } from "helpers/calendar-messages-es";
 import CandelarEvent from "./CandelarEvent";
 import CalendarModal from "./CalendarModal";
 import { useDispatch, useSelector } from "react-redux";

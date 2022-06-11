@@ -4,7 +4,7 @@ import Image from "next/image";
 // Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Scrollbar, A11y } from 'swiper';
-import CostFormat from 'helper/CostFormat'
+import CostFormat from 'helpers/CostFormat'
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';

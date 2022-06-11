@@ -72,10 +72,6 @@ export const courseHistorySlice = createSlice({
     name: "courseHistory",
     initialState,
     reducers: {
-        // logout: (state) => {
-        //     state.currentUser = null;
-        //     Cookies.remove("userInfo")
-        // },
         resetAll: (state) => {
             state.courseHistory = null;
             state.isLoading = false;
@@ -97,7 +93,6 @@ export const courseHistorySlice = createSlice({
                 state.isLoading = false;
                 state.isError = true;
                 state.message = action.payload;
-                state.user = null;
                 toast.error("Lỗi khi lưu course!");
             })
             .addCase(deleteCourseHistory.pending, (state) => {
@@ -106,14 +101,12 @@ export const courseHistorySlice = createSlice({
             .addCase(deleteCourseHistory.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                state.user = action.payload;
                 toast.success("Xóa buổi học thành công!");
             })
             .addCase(deleteCourseHistory.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isError = true;
                 state.message = action.payload;
-                state.user = null;
                 toast.error("Lỗi khi xóa!");
             })
     },

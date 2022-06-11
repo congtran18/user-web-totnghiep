@@ -13,7 +13,10 @@ const Tutors = () => {
     const { tutors } = useSelector(
         (state) => state.chatTutor
     );
-    
+
+    const { users } = useSelector(
+        (state) => state.chatTutor
+    );
 
     // const ListTutors = tutors
     const [filterTutor, setFilterTutor] = useState(tutors)
@@ -34,7 +37,7 @@ const Tutors = () => {
 
     const handelSelect = (value) => {
         if (value) {
-            setFilterTutor(tutors.filter(filterTutor => filterTutor.user_tutor.status.includes(value)))
+            setFilterTutor(tutors.filter(filterTutor => filterTutor.user_tutor[0].status.includes(value)))
         } else {
             setFilterTutor(tutors)
         }
@@ -42,7 +45,7 @@ const Tutors = () => {
 
     const handelSearch = (value) => {
         if (value) {
-            setFilterTutor(tutors.filter(filterTutor => filterTutor.user_tutor.fullName.includes(value)))
+            setFilterTutor(tutors.filter(filterTutor => filterTutor.user_tutor[0].fullName.includes(value)))
         } else {
             setFilterTutor(tutors)
         }

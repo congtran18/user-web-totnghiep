@@ -101,6 +101,8 @@ const VideoChat = ({ onReady, isTutor }) => {
             // recordedData is a blob object containing the recorded data that
             // can be downloaded by the user, stored on server etc.
             console.log('Finished recording: ', videoRecorder.recordedData);
+
+            // Lưu lại file record
             var file = new File([videoRecorder.recordedData], "my-call.mp4", { type: "video/mp4", lastModified: new Date().getTime() })
             var videoData = new FormData();
             videoData.append("file", file);

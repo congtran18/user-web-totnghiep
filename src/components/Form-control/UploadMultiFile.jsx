@@ -6,7 +6,7 @@ import { saveMultiFile, deleteFile } from 'features/storageSlice';
 import { addStepOneUrl } from 'features/registerTutorSlice'
 import { useDispatch, useSelector } from 'react-redux';
 import { AiOutlineFileText } from "react-icons/ai";
-import { checkListfile } from 'helper/validateFile'
+import { checkListfile } from 'helpers/validateFile'
 
 
 function UploadMultiFile({ errors, name, register, value, certificatesData, cache, setDefaultCertificates }) {

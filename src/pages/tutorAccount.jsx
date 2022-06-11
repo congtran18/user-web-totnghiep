@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
-import { isFile, checkIfFilesAreTooBig, checkIfFilesAreCorrectType, checkIfFilesLength, checkListfile } from 'helper/validateFile'
+import { isFile, checkIfFilesAreTooBig, checkIfFilesAreCorrectType, checkIfFilesLength, checkListfile } from 'helpers/validateFile'
 import UploadImage from 'components/Form-control/UploadImage'
 import UploadMultiFile from 'components/Form-control/UploadMultiFile'
 import UploadVideo from 'components/Form-control/UploadVideo'
@@ -229,7 +229,7 @@ const tutorAccount = ({ tutorData }) => {
                         <form onSubmit={handleSubmit(onHandleSubmit)}>
                             <div class="grid grid-cols-2 gap-10">
                                 <div>
-                                    <UploadVideo control={control} register={register} errors={errors} videoSource={tutorData.videoUrl} cache={false} name="videoUrl" value={formCoverVideoValue} />
+                                    <UploadVideo control={control} register={register} errors={errors} videoSource={tutorData.videoUrl} cache={false} name="videoUrl" value={formCoverVideoValue} label={"Upload video giới thiệu bản thân"} />
                                     <UploadImage control={control} register={register} errors={errors} imageSource={tutorData.imageUrl} cache={false} name="imageUrl" value={formCoverImageValue}></UploadImage>
                                 </div>
                                 <div>

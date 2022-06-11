@@ -7,7 +7,7 @@ import { useState } from "react";
 import { getWishlist } from "features/wishlistSlice";
 import axios from "axios";
 import { toast } from "react-toastify";
-import CostFormat from 'helper/CostFormat'
+import CostFormat from 'helpers/CostFormat'
 
 const SingleProduct = ({ product }) => {
 

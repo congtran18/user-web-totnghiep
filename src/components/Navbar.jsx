@@ -7,7 +7,7 @@ import { logout } from "features/userSlice";
 import { useState } from "react";
 import { VscPackage } from "react-icons/vsc";
 import { FiHeart } from "react-icons/fi";
-import { BiLogOut } from "react-icons/bi";
+import { BiLogOut, BiMessageDetail } from "react-icons/bi";
 import { AiOutlineProfile } from "react-icons/ai";
 import { resetWishlist } from 'features/wishlistSlice';
 import Image from "next/image";
@@ -121,9 +121,10 @@ const Navbar = () => {
                         <p className="text-xs sm:text-[14px] tracking-wide mb-2">Welcome <strong>{session ? session.user.name.toUpperCase() : user.user.fullName.toUpperCase()}</strong></p>
                         <hr />
                         {(user && user.role === "tutor" || session && session.role === "tutor") && <div className="w-full flex items-center my-3 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={() => router.push('/tutorAccount')}><AiOutlineProfile size="1.1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">Tài khoản</p></div>}
+                        <div className="w-full flex items-center my-3 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={() => router.push('/chatPage')}><BiMessageDetail size="1.1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">Tin nhắn</p></div>
                         <div className="w-full flex items-center my-3 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={() => router.push('/courseHistory')}><RiFolderHistoryLine size="1.1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">Lịch sử học</p></div>
                         <div className="w-full flex items-center my-3 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={() => router.push('/orders')}><VscPackage size="1.1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">Hóa đơn</p></div>
-                        <div className="w-full flex items-center my-2 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={() => router.push('/wishlist')}><FiHeart size="1.1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">Yêu thích ({wishlist.length})</p></div>
+                        {/* <div className="w-full flex items-center my-2 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={() => router.push('/wishlist')}><FiHeart size="1.1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">Yêu thích ({wishlist.length})</p></div> */}
                         <div className="w-full flex items-center my-2 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={handleLogout}><BiLogOut size="1.1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">Đăng xuất</p></div>
                     </div>}
 

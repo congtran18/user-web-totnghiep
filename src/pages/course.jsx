@@ -5,7 +5,7 @@ import { Component, useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useSession } from 'next-auth/react';
-import CostFormat from 'helper/CostFormat'
+import CostFormat from 'helpers/CostFormat'
 import { loadStripe } from '@stripe/stripe-js';
 import { toast } from "react-toastify";
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);

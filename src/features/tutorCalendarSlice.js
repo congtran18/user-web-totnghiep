@@ -4,7 +4,7 @@ import {
 } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import api from "./api"
-import { prepareEvents, prepareEvent } from "helper/prepareEvents";
+import { prepareEvents, prepareEvent } from "helpers/prepareEvents";
 
 export const getEvents = createAsyncThunk("/calendar/get", async (uid, thunkAPI) => {
     try {

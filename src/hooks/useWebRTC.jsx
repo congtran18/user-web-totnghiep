@@ -120,8 +120,8 @@ export const useWebRTC = () => {
                 setMe(id);
             });
 
-            socket.current.on("online-tutors", (tutors) => {
-                dispatch(listTutors(tutors[0].user_tutor));
+            socket.current.on("online-users", (users) => {
+                dispatch(listTutors(users[0].users));
             });
 
             //gia su nhan cuoc goi tu nguoi dung
