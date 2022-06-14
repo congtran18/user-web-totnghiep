@@ -60,13 +60,45 @@ export const registerUser = createAsyncThunk(
     }
 );
 
+export const updateCallingUser = createAsyncThunk(
+    "/user/calling",
+    async (data, thunkAPI) => {
+        try {
+
+            console.log("updateCallingUser", data)
+
+            const { token, id } = data
+
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            };
+
+            const response = await api.get(`/users/update/update-calling/${id}`, config);
+
+            return response
+
+        } catch (error) {
+            console.log("error", error)
+            const message =
+                (error.response &&
+                    error.response.data &&
+                    error.response.data.message) ||
+                error.message ||
+                error.toString();
+            return thunkAPI.rejectWithValue(message);
+        }
+    }
+);
+
 
 export const logout = createAsyncThunk("/auth/logout", async () => {
     if (Cookies.get("userInfo")) {
         Cookies.remove("userInfo")
     } else {
+        await Cookies.remove("sessionToken")
         signOut()
-        Cookies.remove("sessionToken")
     }
 
 });
@@ -102,6 +134,21 @@ export const userSlice = createSlice({
                 state.message = action.payload;
                 state.user = null;
                 toast.error("Lỗi khi đăng kí!");
+            })
+            .addCase(updateCallingUser.pending, (state) => {
+                // state.isLoading = true;
+            })
+            .addCase(updateCallingUser.fulfilled, (state, action) => {
+                // state.isLoading = false;
+                // state.isSuccess = true;
+                // state.user = action.payload;
+            })
+            .addCase(updateCallingUser.rejected, (state, action) => {
+                // state.isLoading = false;
+                // state.isError = true;
+                // state.message = action.payload;
+                // state.user = null;
+                toast.error("Lỗi cập nhật calling!");
             })
             .addCase(loginUser.pending, (state) => {
                 state.isLoading = true;

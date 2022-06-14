@@ -18,6 +18,30 @@ export const getReviewTutor = createAsyncThunk("/reviewTutor/get", async (uid, t
     }
 });
 
+export const deleteReviewTutor = createAsyncThunk("/reviewTutor/delete", async (data, thunkAPI) => {
+    try {
+
+        const { token, id } = data
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+
+        const response = await api.delete(`/reviewTutor/delete-review/${id}`, config);
+
+        return response
+
+    } catch (error) {
+        const message =
+            (error.response && error.response.data && error.response.data.message) ||
+            error.message ||
+            error.toString();
+        return thunkAPI.rejectWithValue(message);
+    }
+});
+
 export const createReviewTutor = createAsyncThunk("/reviewTutor/post", async (data, thunkAPI) => {
     try {
 
@@ -101,7 +125,7 @@ export const reviewTutorSlice = createSlice({
                 state.isLoading = false;
                 // state.user = action.payload;
                 state.reviewTutors = action.payload.all_review
-                state.total = action.payload.count.length  > 0 ? action.payload.count[0].totalCount : 0 ;
+                state.total = action.payload.count.length > 0 ? action.payload.count[0].totalCount : 0;
             })
             .addCase(getReviewTutor.rejected, (state, action) => {
                 state.isLoading = false;
@@ -115,6 +139,18 @@ export const reviewTutorSlice = createSlice({
                 // action.payload && state.reviewTutors.push(action.payload)
             })
             .addCase(createReviewTutor.rejected, (state, action) => {
+                state.isLoading = false;
+            })
+            .addCase(deleteReviewTutor.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(deleteReviewTutor.fulfilled, (state, action) => {
+                state.isLoading = false;
+                toast.success("Xóa review thành công!")
+                // state.user = action.payload;
+                // action.payload && state.reviewTutors.push(action.payload)
+            })
+            .addCase(deleteReviewTutor.rejected, (state, action) => {
                 state.isLoading = false;
             })
             .addCase(createWarningTutor.pending, (state) => {

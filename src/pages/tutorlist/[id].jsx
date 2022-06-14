@@ -13,6 +13,7 @@ import SingleVote from 'components/SingleVote'
 import { getReviewTutor } from 'features/reviewTutorSlice';
 import { percentRating, averageRating } from 'helpers/calculator-rating'
 import { LinearProgress } from '@mui/material';
+import { useSession } from 'next-auth/react';
 
 export const getStaticPaths = async () => {
     const response = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/tutor`);
@@ -63,6 +64,12 @@ const Tutor = ({ tutor }) => {
 
     const router = useRouter()
     const dispatch = useDispatch();
+
+    const { user } = useSelector(
+        (state) => state.user
+    );
+
+    const { data: session } = useSession();
 
     const [showModalVote, setShowModalVote] = useState(false)
     const [showModalAccuse, setShowModalAccuse] = useState(false)
@@ -186,7 +193,7 @@ const Tutor = ({ tutor }) => {
                                                     <svg className="w-5 h-5 text-gray-300 dark:text-gray-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path></svg>
                                                 </>
                                             ))}
-                                            <p className="ml-2 text-sm font-medium text-gray-900 dark:text-white">{averageRating(reviewTutors)} trên 5</p>
+                                            <p className="ml-2 text-sm font-medium text-gray-900 dark:text-white">{averageRating(reviewTutors).toFixed(2)} trên 5</p>
                                         </div>
                                         <p className="text-sm font-medium text-gray-500 dark:text-gray-400">{total} lượt đánh giá</p>
                                         <div className="flex items-center gap-3 mt-4">
@@ -216,9 +223,11 @@ const Tutor = ({ tutor }) => {
                                         </div>
                                     </div>
                                     <div className="col-span-6 border-2 overflow-scroll">
-                                        {reviewTutors.map((vote) => (
-                                            <SingleVote vote={vote} />
-                                        ))}
+                                        {reviewTutors.map((vote) => {
+
+                                            return (vote.user_vote.uid === (user ? user.user.uid : session && session.uid)) ? <SingleVote vote={vote} ableDelete = {true}/> : <SingleVote vote={vote} ableDelete = {false}/>
+
+                                        })}
                                     </div>
                                 </div>
                             </div>

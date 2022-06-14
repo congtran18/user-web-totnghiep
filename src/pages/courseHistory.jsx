@@ -11,6 +11,7 @@ import SearchCourseHistory from 'components/FilterCourseHistory/SearchCourseHist
 import { usePaginateCourseHistory } from 'hooks/usePaginateCourseHistory'
 import { toast } from "react-toastify";
 import { RiDeleteBin2Fill } from "react-icons/ri";
+import ModalViewComment from 'components/showModal/ModalViewComment'
 import Cookies from 'js-cookie'
 
 import { deleteFile } from 'features/storageSlice';
@@ -26,6 +27,8 @@ const courseHistory = () => {
     );
 
     const [showModal, setShowModal] = useState(false);
+    const [showModalViewComment, setShowModalViewComment] = useState(false);
+    const [commentData, setCommentData] = useState();
     const [idVideo, setIdVideo] = useState();
     const [urlVideo, setUrlVideo] = useState();
 
@@ -52,8 +55,13 @@ const courseHistory = () => {
         setUrlVideo(url)
     }
 
+    const handleChooseComment = (data) => {
+        setCommentData(data)
+        setShowModalViewComment(true)
+    }
+
     const handleDeleteCourse = async (id, videoUrl) => {
-        const token = Cookies.get("sessionToken") ? Cookies.get("sessionToken") : Cookies.get("userInfo") && JSON.parse(Cookies.get("userInfo")).accessToken
+        const token = Cookies.get("userInfo") ? JSON.parse(Cookies.get("userInfo")).accessToken : Cookies.get("sessionToken") && Cookies.get("sessionToken")
         await dispatch(deleteCourseHistory({ token: token, id: id }))
         const idDelete = videoUrl.split("/", 8)[7].split("?")[0]
         await dispatch(deleteFile(idDelete))
@@ -155,6 +163,9 @@ const courseHistory = () => {
                                             Link buổi học
                                         </th>
                                         <th scope="col" class="px-6 py-3">
+                                            Đánh giá
+                                        </th>
+                                        <th scope="col" class="px-6 py-3">
                                             Xóa
                                         </th>
                                     </tr>
@@ -173,6 +184,9 @@ const courseHistory = () => {
                                             </td>
                                             <td onClick={() => window.open(videocall.videoUrl.toString())} class="hover:underline hover:text-red-500 cursor-pointer px-6 py-4">
                                                 Link
+                                            </td>
+                                            <td onClick={handleChooseComment.bind(null, videocall.comment)} class="hover:underline hover:text-red-500 cursor-pointer px-6 py-4">
+                                                Xem
                                             </td>
                                             <td class="px-6 py-4 hover:text-red-500 cursor-pointer" onClick={handleChooseCourse.bind(null, videocall._id, videocall.videoUrl)}>
                                                 <RiDeleteBin2Fill size="1.4rem" />
@@ -232,6 +246,9 @@ const courseHistory = () => {
                             </div>
                         </div>
                     </div>}
+
+                    <ModalViewComment comment={commentData} showModal={showModalViewComment} setShowModal={setShowModalViewComment} />
+                    
 
                     {data && data.length > 0 && <button
                         className={`rounded-lg custombutton2 ml-[45%] p-2 ${isReachingEnd ?

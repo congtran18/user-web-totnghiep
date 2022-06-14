@@ -8,7 +8,7 @@ import { useState } from "react";
 import { VscPackage } from "react-icons/vsc";
 import { FiHeart } from "react-icons/fi";
 import { BiLogOut, BiMessageDetail } from "react-icons/bi";
-import { AiOutlineProfile } from "react-icons/ai";
+import { AiOutlineProfile, AiOutlineMessage } from "react-icons/ai";
 import { resetWishlist } from 'features/wishlistSlice';
 import Image from "next/image";
 import { useSession } from 'next-auth/react';
@@ -25,6 +25,10 @@ const Navbar = () => {
     const quantity = useSelector((state) => state.cart.cartTotalQuantity);
     const { user } = useSelector(
         (state) => state.user
+    );
+
+    const { unread } = useSelector(
+        (state) => state.chatTutor
     );
 
     const { data: session, status } = useSession();
@@ -81,8 +85,9 @@ const Navbar = () => {
         dispatch(resetWishlist());
     }
 
-    if (session && !Cookies.get("session")) {
+    if (session && !Cookies.get("sessionToken")) {
         Cookies.set("sessionToken", session.accessToken)
+        router.reload()
     }
 
 
@@ -107,13 +112,20 @@ const Navbar = () => {
             <div className="flex flex-grow items-center md:hidden justify-center cursor-pointer ">
                 <Link href="/"><Image src="/Images/mlogo.png" objectFit='cover' height={50} width={70} /></Link>
             </div>
-            <div className="flex-grow items-center flex sm:space-x-7 space-x-4 sm:justify-end justify-end sm:tracking-wide sm:text-base text-xs relative">
-                {!user && !session && !loading && <>
+            <div className="flex-grow gap-20 items-center flex sm:space-x-7 space-x-4 sm:justify-end justify-end sm:tracking-wide sm:text-base text-xs relative">
+                {!user && !session && !loading && <div className = "absolute flex gap-2 right-[0%]">
                     <Link href="/register" >Đăng ký</Link>
                     <Link href="/signin" >Đăng nhập</Link>
-                </>
+                </div>
                 }
                 {/* user logo or avatar  */}
+
+                <BsBag fontSize="1.5rem" cursor="pointer" className="absolute right-[40%] sm:w-7 w-[18px]" onClick={() => router.push('/cart')} />
+                {quantity > 0 && <span className="hidden absolute right-[38%] -top-2 h-6 w-6 rounded-full  bg-purple-600 text-white font-semibold text-xs sm:flex items-center justify-center transition">{quantity}</span>}
+
+                <AiOutlineMessage fontSize="1.8rem" cursor="pointer" className="absolute right-[30%] sm:w-7 w-[18px]" onClick={() => router.push('/chatPage')} />
+                { unread && unread.count > 0 && <span className="hidden absolute right-[28%] -top-2 h-6 w-6 rounded-full  bg-red-600 text-white font-semibold text-xs sm:flex items-center justify-center transition">{unread.count}</span>}
+
                 {session && !loading && < Image onClick={() => setProfiletoggle(!profiletoggle)} src={session.user.image} height="40rem" width="40rem" objectFit="cover" className="cursor-pointer rounded-full flex items-center justify-center" />}
                 {(user) && < Image onClick={() => setProfiletoggle(!profiletoggle)} src={user.user.imageUrl} height="40rem" width="40rem" objectFit="cover" className="cursor-pointer rounded-full flex items-center justify-center" />}
                 {(user || session) && profiletoggle &&
@@ -128,10 +140,9 @@ const Navbar = () => {
                         <div className="w-full flex items-center my-2 cursor-pointer hover:bg-themePink p-1 rounded-lg transition-all" onClick={handleLogout}><BiLogOut size="1.1rem" /> <p className="sm:text-sm text-xs font-medium ml-3">Đăng xuất</p></div>
                     </div>}
 
-                <BsBag fontSize="1.5rem" cursor="pointer" className="sm:w-7 w-[18px]" onClick={() => router.push('/cart')} />
 
                 {/* custom badge for cart quantity  */}
-                {quantity > 0 && <span className="hidden absolute -right-2 -top-2 h-6 w-6 rounded-full  bg-purple-600 text-white font-semibold text-xs sm:flex items-center justify-center transition">{quantity}</span>}
+                {/* ko can  */}
                 {quantity > 0 && <span className="flex absolute -right-2 -top-1 h-4 w-4 rounded-full  bg-purple-600 text-white font-semibold text-[9px] sm:hidden items-center justify-center transition ">{quantity}</span>}
 
 

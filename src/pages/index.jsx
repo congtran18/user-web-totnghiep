@@ -13,9 +13,10 @@ import { Box } from "@mui/material";
 import { WebRtcContext } from 'context/WebRtcContext';
 import dynamic from 'next/dynamic';
 import Cookies from 'js-cookie'
-
+import ModalComment from 'components/showModal/ModalComment'
 import { resetAllStorage } from 'features/storageSlice';
 import { saveCourseHistory } from 'features/courseHistorySlice';
+import axios from 'axios';
 
 const VideoChat = dynamic(
   () => import('components/video-chat/VideoChat'),
@@ -45,25 +46,35 @@ export default function Home() {
     endCall } = useContext(WebRtcContext);
 
   const [openAcceptDialog, setOpenAccepDialog] = useState(false);
+  const [showModalComment, setShowModalComment] = useState(false);
   // const [openCallingDialog, setOpenCallingDialog] = useState(false);
 
   const cart = useSelector((state) => state.cart);
 
   const { dataStore } = useSelector((state) => state.storage);
 
+  const { videoId } = useSelector((state) => state.courseHistory);
+
   const dispatch = useDispatch();
 
   const handleSaveHistoryCourse = async (dataStore) => {
-    const token = Cookies.get("sessionToken") ? Cookies.get("sessionToken") : Cookies.get("userInfo") && JSON.parse(Cookies.get("userInfo")).accessToken
-    await dispatch(saveCourseHistory({ ...dataStore, token }))
+    const token = Cookies.get("userInfo") ? JSON.parse(Cookies.get("userInfo")).accessToken : Cookies.get("sessionToken") && Cookies.get("sessionToken")
+    await dispatch(saveCourseHistory({ ...dataStore, token }))// lưu lại thông tin buổi học
+    // await dispatch(updateCallingUser({ token: token, id: dataStore.user.toString() }))
   }
 
   useEffect(() => {
     (async () => {
       // dispatch(storeUserCourse({ tutor: me }))
+      //nếu có buổi học vừa mới xong thì lưu lại thông tin bữa học và tính thời gian học cho học viên và gia sư
       if (dataStore && dataStore.videoUrl) {
+        console.log("vo timeStartCalls")
+        const timeCall = (new Date().getTime() - new Date(dataStore.timeStartCall).getTime())
+        await axios.patch(`${process.env.NEXT_PUBLIC_DB_URL}/users/update-user-minutes/${dataStore.user.toString()}`, { value: Math.round(timeCall) })
+        await axios.patch(`${process.env.NEXT_PUBLIC_DB_URL}/tutor/update-tutor-minutes/${dataStore.tutor.toString()}`, { value: Math.round(timeCall) })
         handleSaveHistoryCourse(dataStore)
-        dispatch(resetAllStorage())
+        await dispatch(resetAllStorage())
+        setShowModalComment(true)
       }
     })();
   }, []);
@@ -110,6 +121,7 @@ export default function Home() {
         {/* <Categories /> */}
         <h1 className="text-center tracking-wider font-medium mt-10 mb-10 bg-themePink p-2.5 text-base sm:text-xl ">Sản phẩm mới</h1>
         <NewProduct />
+        <ModalComment id={videoId} showModal={showModalComment} setShowModal={setShowModalComment} />
         <Link href="/productlist" >
           <a className="flex items-center justify-center underline tracking-wide py-3 px-5 mx-auto bg-themePink hover:font-medium transition w-max my-6">Xem tất cả sản phẩm</a>
         </Link>

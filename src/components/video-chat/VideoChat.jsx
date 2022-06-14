@@ -107,7 +107,7 @@ const VideoChat = ({ onReady, isTutor }) => {
             var videoData = new FormData();
             videoData.append("file", file);
             const dataVideo = await dispatch(saveFile(videoData))
-            dispatch(storeUserCourse({ videoUrl: dataVideo.payload }))
+            await dispatch(storeUserCourse({ videoUrl: dataVideo.payload }))
 
             await new Promise((res) => {
                 setTimeout(() => {
@@ -139,7 +139,7 @@ const VideoChat = ({ onReady, isTutor }) => {
             record: {
                 audio: true,
                 video: true,
-                maxLength: 15,
+                maxLength: 500,
                 debug: true,
             },
         },

@@ -11,6 +11,7 @@ import { createWarningTutor } from 'features/reviewTutorSlice'
 import { isFile } from 'helpers/validateFile'
 import { saveFile } from 'features/storageSlice';
 import Cookies from 'js-cookie'
+import axios from 'axios';
 
 const supportedVideoFormat = ['video/mpeg', 'video/mp4']
 
@@ -29,14 +30,6 @@ const schema = yup.object().shape({
         .required('Cần có góp ý')
         .test('checkDescription', 'Miêu tả cần nhỏ hơn 1000 ký tự', (value) => value.trim().length > 0 && value.trim().length <= 1000),
 });
-
-const selectVote = [
-    { 'realname': 'Tệ', '_id': 1 },
-    { 'realname': 'Nhàm chán', '_id': 2 },
-    { 'realname': 'Bình thường', '_id': 3 },
-    { 'realname': 'Tốt', '_id': 4 },
-    { 'realname': 'Xuất sắc', '_id': 5 }
-]
 
 const ModalAccuse = ({ tutorUid, showModal, setShowModal }) => {
 
@@ -69,19 +62,35 @@ const ModalAccuse = ({ tutorUid, showModal, setShowModal }) => {
     const onHandleSubmit = async (data) => {
         try {
 
-            const token = Cookies.get("sessionToken") ? Cookies.get("sessionToken") : Cookies.get("userInfo") && JSON.parse(Cookies.get("userInfo")).accessToken
+            const token = Cookies.get("userInfo") ? JSON.parse(Cookies.get("userInfo")).accessToken : Cookies.get("sessionToken") && Cookies.get("sessionToken")
 
-            var videoData = new FormData();
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            };
 
-            videoData.append("file", data.videoUrl[0]);
+            const check = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/videocall/check-called/${tutorUid}`, config);
 
-            let dataVideo = await dispatch(saveFile(videoData));
+            console.log("check", check.data.data)
+            if (check.data.data) {
 
-            dataVideo = dataVideo.payload
 
-            data.videoUrl = dataVideo
-            
-            await dispatch(createWarningTutor({ ...{token : token }, ...{ to: tutorUid }, ...data }))
+                var videoData = new FormData();
+
+                videoData.append("file", data.videoUrl[0]);
+
+                let dataVideo = await dispatch(saveFile(videoData));
+
+                dataVideo = dataVideo.payload
+
+                data.videoUrl = dataVideo
+
+                await dispatch(createWarningTutor({ ...{ token: token }, ...{ to: tutorUid }, ...data }))
+
+            } else {
+                toast.error("Bạn chưa từng học gia sư này")
+            }
 
         } catch (error) {
             toast.error(error)
@@ -108,7 +117,7 @@ const ModalAccuse = ({ tutorUid, showModal, setShowModal }) => {
                                 <path d="M4.285 12.433a.5.5 0 0 0 .683-.183A3.498 3.498 0 0 1 8 10.5c1.295 0 2.426.703 3.032 1.75a.5.5 0 0 0 .866-.5A4.498 4.498 0 0 0 8 9.5a4.5 4.5 0 0 0-3.898 2.25.5.5 0 0 0 .183.683zm6.991-8.38a.5.5 0 1 1 .448.894l-1.009.504c.176.27.285.64.285 1.049 0 .828-.448 1.5-1 1.5s-1-.672-1-1.5c0-.247.04-.48.11-.686a.502.502 0 0 1 .166-.761l2-1zm-6.552 0a.5.5 0 0 0-.448.894l1.009.504A1.94 1.94 0 0 0 5 6.5C5 7.328 5.448 8 6 8s1-.672 1-1.5c0-.247-.04-.48-.11-.686a.502.502 0 0 0-.166-.761l-2-1z" /></svg>
                             <h3 class="mb-5 text-md font-normal text-gray-500 dark:text-gray-400">Tố cáo gia sư</h3>
                             <form onSubmit={handleSubmit(onHandleSubmit)}>
-                                <UploadVideo control={control} register={register} errors={errors} videoSource={null} cache={false} name="videoUrl" value={formCoverVideoValue} label={"Upload video làm bằng chứng"}/>
+                                <UploadVideo control={control} register={register} errors={errors} videoSource={null} cache={false} name="videoUrl" value={formCoverVideoValue} label={"Upload video làm bằng chứng"} />
                                 <InputField
                                     control={control}
                                     errors={errors}

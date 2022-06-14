@@ -5,7 +5,7 @@ import { OutgoingMessage } from './OutgoingMessage'
 import { IncomingMessage } from './IncomingMessage'
 import { scrollToBottom } from 'helpers/scrollToBottom'
 import { useDispatch, useSelector } from "react-redux";
-import { getMessages, loadMessages } from 'features/chatTutorSlice';
+import { getMessages, loadMessages, getUnreadMessages } from 'features/chatTutorSlice';
 import { GoPrimitiveDot } from "react-icons/go";
 import { VscError } from "react-icons/vsc";
 import Cookies from 'js-cookie'
@@ -30,10 +30,10 @@ export const Messages = () => {
 
     const fetchMessages = useCallback(
         async () => {
-            const token = Cookies.get("sessionToken") ? Cookies.get("sessionToken") : Cookies.get("userInfo") && JSON.parse(Cookies.get("userInfo")).accessToken
+            const token = Cookies.get("userInfo") ? JSON.parse(Cookies.get("userInfo")).accessToken : Cookies.get("sessionToken") && Cookies.get("sessionToken")
             const response = await dispatch(getMessages({ token: token, uid: activeChat.uid }))
-
             await dispatch(loadMessages(response.payload))
+            await dispatch(getUnreadMessages({ token: token }))
             scrollToBottom('messages');
         },
         [activeChat, dispatch],
@@ -61,12 +61,12 @@ export const Messages = () => {
                 >
 
                     {
-                        (isLoading || loading)?
+                        (isLoading || loading) ?
                             <div className="w-full">
                                 <img src="/Images/loading8.gif" alt="loading" className="w-[8rem] h-[8rem] text-center flex items-center justify-center mx-auto mt-[20%] text-xs" />
                             </div>
                             :
-                            messages.length === 0 ?
+                            messages.filter(({ from }) => from !== activeChat.uid).length === 0 ?
                                 <div className="flex items-center justify-center mt-[30%] right-0 width-[60%] text-center">
                                     <div className="alert alert-info">
                                         {/* <hr /> */}
@@ -78,10 +78,13 @@ export const Messages = () => {
                                 </div>
                                 :
                                 messages.map(
-                                    (msg) => ( session ? (msg.to !== session.uid) : (msg.to !== user.user.uid))
-                                        ? <OutgoingMessage key={msg.id} message={msg} />
-                                        : <IncomingMessage key={msg.id} message={msg} imageUrl={activeChat.imageUrl} />
-
+                                    (msg) =>
+                                    (session ? (msg.to !== session.uid) : (msg.to !== user.user.uid))
+                                        ? <OutgoingMessage key={msg.id} message={msg} />//minh gui di
+                                        : (msg.from === activeChat.uid) && <IncomingMessage key={msg.id} message={msg} imageUrl={activeChat.imageUrl} />//tin nhan nhan lai
+                                    // {
+                                    //     console.log(msg)
+                                    // }
                                 )
 
                     }

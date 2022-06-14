@@ -96,7 +96,14 @@ export const deleteEvent = createAsyncThunk("/calendar/delete", async (data, thu
 
         const response = await api.delete(`/calendar/${id}`, config);
 
-        return response
+        if (response.error) {
+            toast.error(response.error.message)
+            return null
+        }
+
+        toast.success("Xóa lịch thành công!");
+
+        return response.data
 
     } catch (error) {
         const message =
@@ -179,9 +186,8 @@ export const tutorCalendarSlice = createSlice({
             .addCase(deleteEvent.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.listCalendar = state.listCalendar.filter(
-                    (calendarData) => calendarData._id !== action.payload._id
+                    (calendarData) => calendarData._id !== (action.payload ? action.payload._id : '')
                 );
-                toast.success("Xóa lịch thành công!");
             })
             .addCase(deleteEvent.rejected, (state, action) => {
                 state.isLoading = false;

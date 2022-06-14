@@ -10,6 +10,7 @@ import SelectField from 'components/Form-control/SelectField'
 import { toast } from "react-toastify";
 import { createReviewTutor } from 'features/reviewTutorSlice'
 import Cookies from 'js-cookie'
+import axios from 'axios';
 
 const schema = yup.object().shape({
     rating: yup
@@ -57,9 +58,25 @@ const ModalVote = ({ tutorUid, showModal, setShowModal }) => {
 
     const onHandleSubmit = async (data) => {
         try {
-            const token = Cookies.get("sessionToken") ? Cookies.get("sessionToken") : Cookies.get("userInfo") && JSON.parse(Cookies.get("userInfo")).accessToken
 
-            await dispatch(createReviewTutor({ ...{token : token }, ...{ to: tutorUid }, ...data }))
+            const token = Cookies.get("userInfo") ? JSON.parse(Cookies.get("userInfo")).accessToken : Cookies.get("sessionToken") && Cookies.get("sessionToken")
+
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            };
+
+            const check = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/videocall/check-called/${tutorUid}`, config);
+
+            console.log("check", check.data)
+            if (check.data) {
+
+                await dispatch(createReviewTutor({ ...{ token: token }, ...{ to: tutorUid }, ...data }))
+
+            } else {
+                toast.error("Bạn chưa từng học gia sư này")
+            }
 
         } catch (error) {
             toast.error(error)

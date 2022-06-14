@@ -6,7 +6,7 @@ import { useSocket } from '../hooks/useSocket';
 
 import Cookies from 'js-cookie'
 
-import { listTutors, listUsers, activeChat, newMessage, loadMessages } from 'features/chatTutorSlice';
+import { listTutors, listUsers, activeChat, newMessage, loadMessages, getUnreadMessages, resetUnread } from 'features/chatTutorSlice';
 
 const initialContext = {
     online: false,
@@ -28,29 +28,37 @@ export const SocketProvider = ({ children }) => {
     );
 
     useEffect(() => {
-        if (user || Cookies.get("sessionToken")) {
-            connectSocket();
-        }
+        (async () => {
+            if (user || Cookies.get("sessionToken")) {
+                await dispatch(getUnreadMessages({ token: Cookies.get("userInfo") ? JSON.parse(Cookies.get("userInfo")).accessToken : Cookies.get("sessionToken") && Cookies.get("sessionToken") }))
+                connectSocket();
+            }
+        })();
     }, [user, Cookies.get("sessionToken"), connectSocket]);
 
     useEffect(() => {
-        if (!user && !Cookies.get("sessionToken")) {
-            disconnectSocket();
-        }
+        (async () => {
+            if (!user && !Cookies.get("sessionToken")) {
+                await dispatch(resetUnread())
+                disconnectSocket();
+            }
+        })();
     }, [user, Cookies.get("sessionToken"), disconnectSocket]);
 
     // listen  connected tutors
     useEffect(() => {
         socket?.on('online-users', (users) => {
             dispatch(listTutors(users[0].users));
-            dispatch(listUsers(users[0].users))
+            dispatch(listUsers(users[0].users));
         });
     }, [socket, dispatch]);
 
     useEffect(() => {
         socket?.on('private-message', (message) => {
 
+            const token = Cookies.get("userInfo") ? JSON.parse(Cookies.get("userInfo")).accessToken : Cookies.get("sessionToken") && Cookies.get("sessionToken")
             dispatch(newMessage(message));
+            dispatch(getUnreadMessages({ token }))
             // Move scroll to final
         });
     }, [socket, dispatch]);

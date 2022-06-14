@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 import Peer from "simple-peer";
 import { useTheme } from '@mui/material/styles';
-
+import axios from 'axios';
 import { useRouter } from "next/dist/client/router";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import Cookies from 'js-cookie'
@@ -43,6 +43,8 @@ export const useWebRTC = () => {
         (state) => state.user
     );
 
+    const [minitesLeft, setMinutesLeft] = useState()
+
     const theme = useTheme();
     const mobile = useMediaQuery(theme.breakpoints.down('sm'))
 
@@ -80,7 +82,8 @@ export const useWebRTC = () => {
     }, [callAccepted]);
 
     useEffect(() => {
-        const token = Cookies.get("sessionToken") ? Cookies.get("sessionToken") : Cookies.get("userInfo") && JSON.parse(Cookies.get("userInfo")).accessToken
+        // const token = Cookies.get("sessionToken") ? Cookies.get("sessionToken") : Cookies.get("userInfo") && JSON.parse(Cookies.get("userInfo")).accessToken
+        const token = Cookies.get("userInfo") ? JSON.parse(Cookies.get("userInfo")).accessToken : Cookies.get("sessionToken") && Cookies.get("sessionToken")
 
         if (token) {
             socket.current = io("https://server-web-totnghiep.herokuapp.com/videoChat", {
@@ -160,6 +163,7 @@ export const useWebRTC = () => {
                         res();
                     }, 500);
                 });
+
 
                 //khi gia su nhan thong bao end call
                 // if (videoRecorderRef.current) {
@@ -244,17 +248,20 @@ export const useWebRTC = () => {
             }
         });
 
-        socket.current.on("call.accepted", ({ signal }) => {
+        socket.current.on("call.accepted", async ({ signal }) => {
             setCallAccepted(true);
             setCalling(false);
             callerPeer.current.signal(signal);
+            console.log("me nek nek", me)
+            const response = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/users/check-minutes/${me}`);
+            const endTime = parseInt(response.data.data.minutes) - 10000
             const interval1 = setInterval(() => {
                 toast.info("Bạn hết thời gian!")
-            }, 20000);
+            }, parseInt(response.data.data.minutes));
+
             const interval2 = setInterval(() => {
                 setTimeOut(true)
-                // toast.info("Bạn còn 5s!")
-            }, 15000);
+            }, endTime);
         });
 
         socket.current.on("call.rejected", ({ from }) => {
@@ -272,7 +279,7 @@ export const useWebRTC = () => {
     }
 
     //gia su chap nhan call
-    function acceptCall() {
+    async function acceptCall() {
         setCallAccepted(true);
         setReceivingCall(false);
         answerPeer.current = new Peer({
@@ -306,20 +313,28 @@ export const useWebRTC = () => {
 
         videoRecorderRef.current?.record().start();
 
+        answerPeer.current.signal(callerSignal);
+
+        connectionRef.current = answerPeer.current;
+
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/users/check-minutes/${caller.socket_id.toString()}`);
+
+        const timeEnd = parseInt(response.data.data.minutes) - 10000
+
+        // localStorage.setItem('timeStartCall', (new Date()).toString())
+
+        await dispatch(storeUserCourse({ timeStartCall: (new Date()).toString() }))
+
         const interval1 = setInterval(() => {
             setTimeOut(true)
             toast.info("Học viên sắp hết thời gian!")
             // endCall(caller.socket_id);
-        }, 15000);
+        }, timeEnd);
 
         const interval2 = setInterval(() => {
             toast.info("Học viên hết thời gian!")
             endCall(caller.socket_id);
-        }, 20000);
-
-        answerPeer.current.signal(callerSignal);
-
-        connectionRef.current = answerPeer.current;
+        }, parseInt(response.data.data.minutes));
     }
 
     const updateVideo = () => {
@@ -431,13 +446,17 @@ export const useWebRTC = () => {
         if (callReciever) {
             //gia su luu thong tin nguoi dung de tao file course
             dispatch(storeUserCourse({ tutor: me, user: caller.socket_id }))
+
+            //xu ly khi gia su end call thi luu thoi gian call vao hoc vien va gia su
+            // const timeCall = (new Date().getTime() - new Date(localStorage.getItem('timeStartCall')).getTime())
+            // await axios.patch(`${process.env.NEXT_PUBLIC_DB_URL}/users/update-minutes/${caller.socket_id.toString()}`, { value: Math.round(timeCall) })
             await new Promise((res) => {
                 setTimeout(() => {
                     res();
-                }, 2000);
+                }, 1000);
             });
         }
-        if (!callReciever) {
+        if (!callReciever) {//la hoc vien end call 
             //nguoi dung luu thong tin gia su de tao file course
             // dispatch(storeUserCourse({ tutor: id, user: me }))
             await new Promise((res) => {
@@ -445,6 +464,7 @@ export const useWebRTC = () => {
                     res();
                 }, 1000);
             });
+
             //chi reload lai trang nguoi dung vi nguoi dung thi callReciever = false
             router.reload();
         }
@@ -499,6 +519,7 @@ export const useWebRTC = () => {
         rejectCall,
         calling,
         timeOut,
+        setMinutesLeft,
         cancelCall,
         endCall,
     };

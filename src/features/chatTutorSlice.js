@@ -25,6 +25,30 @@ export const getMessages = createAsyncThunk("/message/get", async (data, thunkAP
     }
 });
 
+export const getUnreadMessages = createAsyncThunk("/message/getunread", async (data, thunkAPI) => {
+    try {
+
+        const { token } = data
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+
+        const response = await api.get(`/message/check/unread`, config);
+
+        return response
+
+    } catch (error) {
+        const message =
+            (error.response && error.response.data && error.response.data.message) ||
+            error.message ||
+            error.toString();
+        return thunkAPI.rejectWithValue(message);
+    }
+});
+
 export const chatTutorSlice = createSlice({
     name: "chatTutor",
     initialState: {
@@ -34,6 +58,7 @@ export const chatTutorSlice = createSlice({
         tutors: [],
         users: [],
         messages: [],
+        unread: null,
     },
     reducers: {
         listTutors: (state, action) => {
@@ -54,6 +79,9 @@ export const chatTutorSlice = createSlice({
         loadMessages: (state, action) => {
             state.messages = [...action.payload]
         },
+        resetUnread: (state) => {
+            state.unread = null
+        },
         resetAll: (state) => {
             state.id = ''
             state.activeChat = ''
@@ -61,6 +89,7 @@ export const chatTutorSlice = createSlice({
             state.tutors = []
             state.users = []
             state.messages = []
+            unread = null
         },
     },
     extraReducers: (builder) => {
@@ -76,10 +105,21 @@ export const chatTutorSlice = createSlice({
                 state.isLoading = false;
                 state.messages = [...action.payload]
             })
+            .addCase(getUnreadMessages.pending, (state) => {
+                // state.isLoading = true;
+            })
+            .addCase(getUnreadMessages.fulfilled, (state, action) => {
+                // state.isLoading = false;
+                state.unread = action.payload
+            })
+            .addCase(getUnreadMessages.rejected, (state, action) => {
+                // state.isLoading = false;
+                // state.messages = action.payload
+            })
     },
 
 });
 
 
-export const { listTutors, listUsers, ActiveChat, newMessage, loadMessages, resetAll } = chatTutorSlice.actions;
+export const { listTutors, listUsers, ActiveChat, newMessage, loadMessages, resetUnread, resetAll } = chatTutorSlice.actions;
 export default chatTutorSlice.reducer;

@@ -4,13 +4,33 @@ import Head from 'next/head';
 import { Component, useEffect, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
-import { useSession } from 'next-auth/react';
+import { useSession, getSession } from 'next-auth/react';
 import CostFormat from 'helpers/CostFormat'
 import { loadStripe } from '@stripe/stripe-js';
 import { toast } from "react-toastify";
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 
-const course = () => {
+export const getServerSideProps = async (ctx) => {
+
+    const session = await getSession(ctx)
+
+    const response = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/users/check-minutes/${session ? session.uid : JSON.parse(ctx.req.cookies.userInfo).user.uid}`)
+
+    // axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/users/check-minutes/${me}`);
+    if (response.error) {
+        return {
+            props: null,
+        }
+    }
+
+    const dataLeft = response.data.data
+    return {
+        props: { dataLeft },
+    }
+
+}
+
+const course = ({ dataLeft }) => {
 
     const { user } = useSelector(
         (state) => state.user
@@ -99,7 +119,10 @@ const course = () => {
                     : <div className="flex flex-col justify-center items-center">
                         <div className="m-auto">
                             <div className="my-5 max-w-sm font-bold">
-                                Số ngày học còn lại: &nbsp; <span className="text-amber-700">{session ? session.daysleft : 0} ngày</span>
+                                Số ngày học còn lại: &nbsp; <span className="text-amber-700">{dataLeft.daysleft} ngày</span>
+                            </div>
+                            <div className="my-5 max-w-sm font-bold">
+                                Thời gian còn lại trong ngày: &nbsp; <span className="text-amber-700">{dataLeft.daysleft < 1 ? 0 : Math.round(dataLeft.minutes/1000) < 0 ? 0 : Math.round(dataLeft.minutes/1000)} giây</span>
                             </div>
                             <div className="mb-10 mt-10 xl:w-96">
                                 <select onChange={e => handelSelect(e.target.value)} className="form-select block w-full px-3 py-1.5 text-base font-normal text-gray-700 bg-white bg-clip-padding bg-no-repeat border border-solid border-gray-300 rounded transition ease-in-out m-0

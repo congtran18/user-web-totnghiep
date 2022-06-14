@@ -19,6 +19,7 @@ import { saveFile, deleteFile, saveMultiFile } from 'features/storageSlice';
 import { updateTutor } from 'features/registerTutorSlice';
 import Cookies from 'js-cookie'
 import * as cookie from 'cookie'
+import CostFormat from 'helpers/CostFormat'
 
 const supportedVideoFormat = ['video/mpeg', 'video/mp4']
 const SUPPORTED_FORMATS = ['image/jpg', 'image/jpeg', 'image/gif', 'image/png'];
@@ -191,7 +192,7 @@ const tutorAccount = ({ tutorData }) => {
                 saveData.certificates = listcertificates
             }
 
-            await dispatch(updateTutor({ ...saveData, ...{token: token}, ...{uid: tutorData.uid} }));
+            await dispatch(updateTutor({ ...saveData, ...{ token: token }, ...{ uid: tutorData.uid } }));
 
         }
         catch (error) {
@@ -226,6 +227,16 @@ const tutorAccount = ({ tutorData }) => {
                     </div>
                     :
                     <div class="container mx-auto px-10 mb-10">
+                        <div className='my-8'>
+                            <div className='flex gap-5 mb-4'>
+                                <div><span className="font-bold">Tổng thời gian dạy trong tháng: </span> <span>{Math.round(tutorData.teachingMinutesMonth/1000)} giây</span></div>
+                                <div><span className="font-bold">Doanh thu trong tháng: </span><span>{CostFormat((tutorData.teachingMinutesMonth).toString())}đ</span></div>
+                            </div>
+                            <div className='flex gap-5'>
+                                <div><span className="font-bold">Tổng thời gian dạy: </span><span>{Math.round(tutorData.totalTeachingMinutes/1000)} giây</span></div>
+                                <div><span className="font-bold">Doanh thu tổng: </span><span>{CostFormat((tutorData.totalTeachingMinutes).toString())}đ</span></div>
+                            </div>
+                        </div>
                         <form onSubmit={handleSubmit(onHandleSubmit)}>
                             <div class="grid grid-cols-2 gap-10">
                                 <div>

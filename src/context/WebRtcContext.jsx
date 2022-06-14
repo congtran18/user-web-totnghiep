@@ -38,6 +38,7 @@ export const WebRtProvider = ({ children }) => {
         rejectCall,
         calling,
         timeOut,
+        setMinutesLeft,
         cancelCall,
         endCall
     } = useWebRTC();
@@ -74,6 +75,7 @@ export const WebRtProvider = ({ children }) => {
             rejectCall,
             calling,
             timeOut,
+            setMinutesLeft,
             cancelCall,
             endCall
         }}>

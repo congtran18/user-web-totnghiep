@@ -19,7 +19,7 @@ export const useSocket = (serverPath) => {
 
     const connectSocket = useCallback(
         () => {
-            const token = Cookies.get("sessionToken") ? Cookies.get("sessionToken") : Cookies.get("userInfo") && JSON.parse(Cookies.get("userInfo")).accessToken
+            const token = Cookies.get("userInfo") ? JSON.parse(Cookies.get("userInfo")).accessToken : Cookies.get("sessionToken") && Cookies.get("sessionToken")
             const socketTemp = io(
                 serverPath,
                 {
