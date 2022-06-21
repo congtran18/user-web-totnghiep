@@ -98,6 +98,7 @@ export const logout = createAsyncThunk("/auth/logout", async () => {
         Cookies.remove("userInfo")
     } else {
         await Cookies.remove("sessionToken")
+        await Cookies.remove("sessionRole")
         signOut()
     }
 

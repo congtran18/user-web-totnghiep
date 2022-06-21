@@ -87,6 +87,7 @@ const Navbar = () => {
 
     if (session && !Cookies.get("sessionToken")) {
         Cookies.set("sessionToken", session.accessToken)
+        Cookies.set("sessionRole", session.role)
         router.reload()
     }
 
@@ -95,11 +96,11 @@ const Navbar = () => {
         <header className="flex sm:h-18 h-14 sm:px-5 px-2 py-5 justify-between items-center shadow-md " >
             <div className="flex-grow flex items-center ">
                 <Link href="/"><h2 className='text-gray-800 font-heading uppercase font-bold mx-5 text-xl cursor-pointer'>DO AN TN</h2></Link>
-                <Link href="/productlist"><a className="link" >Mua sách</a></Link>
-                {(user && user.role !== "tutor" || session && session.role !== "tutor") && <div>
-                    <Link href="/course"><a className="link" >Mua khóa học</a></Link>
-                    <Link href="/tutorlist"><a className="link">Học tiếng anh</a></Link>
-                    <Link href="/registerStepOne"><a className="link">Đăng ký dạy</a></Link>
+                {<div>
+                    <Link href="/productlist"><a className="link" >Mua sách</a></Link>
+                    <Link href="/course"><a className={`link ${(user && user.role === "tutor" || Cookies.get("sessionRole") === "tutor") && "hidden"}`} >Mua khóa học</a></Link>
+                    <Link href="/tutorlist"><a className={`link ${(user && user.role === "tutor" || Cookies.get("sessionRole") === "tutor") && "hidden"}`}>Học tiếng anh</a></Link>
+                    <Link href="/registerStepOne"><a className={`link ${(user && user.role === "tutor" || Cookies.get("sessionRole") === "tutor") && "hidden"}`}>Đăng ký dạy</a></Link>
                 </div>}
                 {(user && user.role === "tutor" || session && session.role === "tutor") && <div>
                     {/* <Link href="/productlist"><a className="link" >Mua sách</a></Link> */}
@@ -113,18 +114,18 @@ const Navbar = () => {
                 <Link href="/"><Image src="/Images/mlogo.png" objectFit='cover' height={50} width={70} /></Link>
             </div>
             <div className="flex-grow gap-20 items-center flex sm:space-x-7 space-x-4 sm:justify-end justify-end sm:tracking-wide sm:text-base text-xs relative">
-                {!user && !session && !loading && <div className = "absolute flex gap-2 right-[0%]">
+                {!user && !session && !loading && <div className="flex gap-2 right-[0%] py-1">
                     <Link href="/register" >Đăng ký</Link>
                     <Link href="/signin" >Đăng nhập</Link>
                 </div>
                 }
                 {/* user logo or avatar  */}
 
-                <BsBag fontSize="1.5rem" cursor="pointer" className="absolute right-[40%] sm:w-7 w-[18px]" onClick={() => router.push('/cart')} />
-                {quantity > 0 && <span className="hidden absolute right-[38%] -top-2 h-6 w-6 rounded-full  bg-purple-600 text-white font-semibold text-xs sm:flex items-center justify-center transition">{quantity}</span>}
+                <BsBag fontSize="1.5rem" cursor="pointer" className={`absolute right-[${!user && !session && !loading ? "60%" : "40%"}] sm:w-7 w-[18px]`} onClick={() => router.push('/cart')} />
+                {quantity > 0 && <span className={`hidden absolute right-[${!user && !session && !loading ? "58%" : "38%"}] -top-2 h-6 w-6 rounded-full  bg-purple-600 text-white font-semibold text-xs sm:flex items-center justify-center transition`}>{quantity}</span>}
 
-                <AiOutlineMessage fontSize="1.8rem" cursor="pointer" className="absolute right-[30%] sm:w-7 w-[18px]" onClick={() => router.push('/chatPage')} />
-                { unread && unread.count > 0 && <span className="hidden absolute right-[28%] -top-2 h-6 w-6 rounded-full  bg-red-600 text-white font-semibold text-xs sm:flex items-center justify-center transition">{unread.count}</span>}
+                <AiOutlineMessage fontSize="1.8rem" cursor="pointer" className={`absolute right-[${!user && !session && !loading ? "50%" : "30%"}] sm:w-7 w-[18px]`} onClick={() => router.push('/chatPage')} />
+                {unread && unread.count > 0 && <span className={`hidden absolute right-[${!user && !session && !loading ? "48%" : "28%"}] -top-2 h-6 w-6 rounded-full  bg-red-600 text-white font-semibold text-xs sm:flex items-center justify-center transition`}>{unread.count}</span>}
 
                 {session && !loading && < Image onClick={() => setProfiletoggle(!profiletoggle)} src={session.user.image} height="40rem" width="40rem" objectFit="cover" className="cursor-pointer rounded-full flex items-center justify-center" />}
                 {(user) && < Image onClick={() => setProfiletoggle(!profiletoggle)} src={user.user.imageUrl} height="40rem" width="40rem" objectFit="cover" className="cursor-pointer rounded-full flex items-center justify-center" />}

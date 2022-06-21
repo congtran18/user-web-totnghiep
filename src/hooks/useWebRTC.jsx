@@ -252,14 +252,13 @@ export const useWebRTC = () => {
             setCallAccepted(true);
             setCalling(false);
             callerPeer.current.signal(signal);
-            console.log("me nek nek", me)
             const response = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/users/check-minutes/${me}`);
             const endTime = parseInt(response.data.data.minutes) - 10000
-            const interval1 = setInterval(() => {
+            const timeout1 = setTimeout(() => {
                 toast.info("Bạn hết thời gian!")
             }, parseInt(response.data.data.minutes));
 
-            const interval2 = setInterval(() => {
+            const timeout2 = setTimeout(() => {
                 setTimeOut(true)
             }, endTime);
         });
@@ -325,13 +324,13 @@ export const useWebRTC = () => {
 
         await dispatch(storeUserCourse({ timeStartCall: (new Date()).toString() }))
 
-        const interval1 = setInterval(() => {
+        const timeout1 = setTimeout(() => {
             setTimeOut(true)
             toast.info("Học viên sắp hết thời gian!")
             // endCall(caller.socket_id);
         }, timeEnd);
 
-        const interval2 = setInterval(() => {
+        const timeout2 = setTimeout(() => {
             toast.info("Học viên hết thời gian!")
             endCall(caller.socket_id);
         }, parseInt(response.data.data.minutes));
