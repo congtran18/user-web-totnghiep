@@ -23,7 +23,7 @@ const errorPage = () => {
 
                 </div>
                 <p className="mt-0 mb-4 text-gray-700 font-medium text-sm sm:text-lg text-center w-[90%] mx-auto">The page you are looking for has been removed or is temporarily unavailable.</p>
-                <Link href="/">Homepage </Link>
+                <Link href="/">Trang chủ </Link>
             </main>
         </>
     )
