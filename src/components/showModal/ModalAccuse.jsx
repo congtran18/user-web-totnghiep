@@ -72,8 +72,7 @@ const ModalAccuse = ({ tutorUid, showModal, setShowModal }) => {
 
             const check = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/videocall/check-called/${tutorUid}`, config);
 
-            console.log("check", check.data.data)
-            if (check.data.data) {
+            if (check.data) {
 
 
                 var videoData = new FormData();

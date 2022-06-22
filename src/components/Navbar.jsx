@@ -113,22 +113,22 @@ const Navbar = () => {
             <div className="flex flex-grow items-center md:hidden justify-center cursor-pointer ">
                 <Link href="/"><Image src="/Images/mlogo.png" objectFit='cover' height={50} width={70} /></Link>
             </div>
-            <div className="flex-grow gap-20 items-center flex sm:space-x-7 space-x-4 sm:justify-end justify-end sm:tracking-wide sm:text-base text-xs relative">
-                {!user && !session && !loading && <div className="flex gap-2 right-[0%] py-1">
+            <div className="flex-grow items-center flex sm:space-x-7 space-x-4 sm:justify-end justify-end sm:tracking-wide sm:text-base text-xs relative w-[45%]">
+                <BsBag fontSize="1.5rem" cursor="pointer" className={`absolute ${!user && !session && !loading ? "right-[40%]" : "right-[20%]"} sm:w-7 w-[18px]`} onClick={() => router.push('/cart')} />
+                {quantity > 0 && <span className={`absolute hidden ${!user && !session && !loading ? "right-[38%]" : "right-[19%]"} -top-2 h-6 w-6 rounded-full  bg-purple-600 text-white font-semibold text-xs sm:flex items-center justify-center transition`}>{quantity}</span>}
+
+                <AiOutlineMessage fontSize="1.8rem" cursor="pointer" className={`absolute ${!user && !session && !loading ? "right-[30%]" : "right-[10%]"} sm:w-7 w-[18px]`} onClick={() => router.push('/chatPage')} />
+                {unread && unread.count > 0 && <span className={`absolute hidden ${!user && !session && !loading ? "right-[28%]" : "right-[9%]"} -top-2 h-6 w-6 rounded-full  bg-red-600 text-white font-semibold text-xs sm:flex items-center justify-center transition`}>{unread.count}</span>}
+
+                {!user && !session && !loading && <div className=" flex gap-3 py-1">
                     <Link href="/register" >Đăng ký</Link>
                     <Link href="/signin" >Đăng nhập</Link>
                 </div>
                 }
                 {/* user logo or avatar  */}
 
-                <BsBag fontSize="1.5rem" cursor="pointer" className={`absolute right-[${!user && !session && !loading ? "60%" : "40%"}] sm:w-7 w-[18px]`} onClick={() => router.push('/cart')} />
-                {quantity > 0 && <span className={`hidden absolute right-[${!user && !session && !loading ? "58%" : "38%"}] -top-2 h-6 w-6 rounded-full  bg-purple-600 text-white font-semibold text-xs sm:flex items-center justify-center transition`}>{quantity}</span>}
-
-                <AiOutlineMessage fontSize="1.8rem" cursor="pointer" className={`absolute right-[${!user && !session && !loading ? "50%" : "30%"}] sm:w-7 w-[18px]`} onClick={() => router.push('/chatPage')} />
-                {unread && unread.count > 0 && <span className={`hidden absolute right-[${!user && !session && !loading ? "48%" : "28%"}] -top-2 h-6 w-6 rounded-full  bg-red-600 text-white font-semibold text-xs sm:flex items-center justify-center transition`}>{unread.count}</span>}
-
-                {session && !loading && < Image onClick={() => setProfiletoggle(!profiletoggle)} src={session.user.image} height="40rem" width="40rem" objectFit="cover" className="cursor-pointer rounded-full flex items-center justify-center" />}
-                {(user) && < Image onClick={() => setProfiletoggle(!profiletoggle)} src={user.user.imageUrl} height="40rem" width="40rem" objectFit="cover" className="cursor-pointer rounded-full flex items-center justify-center" />}
+                {session && !loading && < Image onClick={() => setProfiletoggle(!profiletoggle)} src={session.user.image} height="40rem" width="40rem" objectFit="cover" className="cursor-pointer rounded-full flex items-center justify-center ml-4" />}
+                {(user) && < Image onClick={() => setProfiletoggle(!profiletoggle)} src={user.user.imageUrl} height="40rem" width="40rem" objectFit="cover" className="cursor-pointer rounded-full flex items-center justify-center ml-4" />}
                 {(user || session) && profiletoggle &&
                     <div className="absolute flex flex-col sm:w-48 w-40 drop-shadow-md p-3 sm:right-0 sm:top-14 right-0 top-10 z-50 rounded-lg bg-white transition-all ">
                         <p className="text-xs sm:text-[14px] tracking-wide mb-2">Welcome <strong>{session ? session.user.name.toUpperCase() : user.user.fullName.toUpperCase()}</strong></p>
