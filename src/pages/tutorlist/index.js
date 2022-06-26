@@ -3,6 +3,7 @@ import Tutors from 'components/Tutors';
 import { useRouter } from 'next/dist/client/router';
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from 'react-redux';
+import { Redirect } from "../signin";
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 // import VideoChat from "components/video-chat/VideoChat";
