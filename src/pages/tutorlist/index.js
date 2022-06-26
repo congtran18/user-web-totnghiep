@@ -30,6 +30,10 @@ const tutorlist = () => {
     // store the filters in a state with an empty object
     const [filters, setFilters] = useState({});
 
+    if (!user && !session && !loading) {
+        return <Redirect to="/signin" />
+    }
+
     if (user && user.role === "tutor" || session && session.role === "tutor") {
         router.push("/")
     }
