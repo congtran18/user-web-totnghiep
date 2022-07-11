@@ -8,7 +8,7 @@ import { useState } from "react";
 import { VscPackage } from "react-icons/vsc";
 import { FiHeart } from "react-icons/fi";
 import { BiLogOut, BiMessageDetail } from "react-icons/bi";
-import { AiOutlineProfile, AiOutlineMessage } from "react-icons/ai";
+import { AiOutlineProfile, AiOutlineMessage, AiTwotoneCalendar } from "react-icons/ai";
 import { resetWishlist } from 'features/wishlistSlice';
 import Image from "next/image";
 import { useSession } from 'next-auth/react';
@@ -27,7 +27,7 @@ const Navbar = () => {
         (state) => state.user
     );
 
-    const { unread } = useSelector(
+    const { unread, unreadLesson } = useSelector(
         (state) => state.chatTutor
     );
 
@@ -114,11 +114,17 @@ const Navbar = () => {
                 <Link href="/"><Image src="/Images/mlogo.png" objectFit='cover' height={50} width={70} /></Link>
             </div>
             <div className="flex-grow items-center flex sm:space-x-7 space-x-4 sm:justify-end justify-end sm:tracking-wide sm:text-base text-xs relative w-[45%]">
-                <BsBag fontSize="1.5rem" cursor="pointer" className={`absolute ${!user && !session && !loading ? "right-[40%]" : "right-[20%]"} sm:w-7 w-[18px]`} onClick={() => router.push('/cart')} />
-                {quantity > 0 && <span className={`absolute hidden ${!user && !session && !loading ? "right-[38%]" : "right-[19%]"} -top-2 h-6 w-6 rounded-full  bg-purple-600 text-white font-semibold text-xs sm:flex items-center justify-center transition`}>{quantity}</span>}
+                {/* <BsBag fontSize="1.5rem" cursor="pointer" className={`absolute ${!user && !session && !loading ? "right-[40%]" : "right-[20%]"} sm:w-7 w-[18px]`} onClick={() => router.push('/cart')} />
+                {quantity > 0 && <span className={`absolute hidden ${!user && !session && !loading ? "right-[38%]" : "right-[19%]"} -top-2 h-6 w-6 rounded-full  bg-purple-600 text-white font-semibold text-xs sm:flex items-center justify-center transition`}>{quantity}</span>} */}
 
-                <AiOutlineMessage fontSize="1.8rem" cursor="pointer" className={`absolute ${!user && !session && !loading ? "right-[30%]" : "right-[10%]"} sm:w-7 w-[18px]`} onClick={() => router.push('/chatPage')} />
-                {unread && unread.count > 0 && <span className={`absolute hidden ${!user && !session && !loading ? "right-[28%]" : "right-[9%]"} -top-2 h-6 w-6 rounded-full  bg-red-600 text-white font-semibold text-xs sm:flex items-center justify-center transition`}>{unread.count}</span>}
+                <BsBag fontSize="1.5rem" cursor="pointer" className={`absolute ${!user && !session && !loading ? "right-[30%]" : "right-[10%]"} sm:w-7 w-[18px]`} onClick={() => router.push('/cart')} />
+                {quantity > 0 && <span className={`absolute hidden ${!user && !session && !loading ? "right-[28%]" : "right-[9%]"} -top-2 h-6 w-6 rounded-full  bg-purple-600 text-white font-semibold text-xs sm:flex items-center justify-center transition`}>{quantity}</span>}
+
+                <AiOutlineMessage fontSize="1.8rem" cursor="pointer" className={`absolute ${!user && !session && !loading ? "right-[40%] hidden" : "right-[20%]"} sm:w-7 w-[18px]`} onClick={() => router.push('/chatPage')} />
+                {unread && unread.count > 0 && <span className={`absolute hidden ${!user && !session && !loading ? "right-[38%]" : "right-[19%]"} -top-2 h-6 w-6 rounded-full  bg-red-600 text-white font-semibold text-xs sm:flex items-center justify-center transition`}>{unread.count}</span>}
+
+                <AiTwotoneCalendar fontSize="1.8rem" cursor="pointer" className={`absolute ${!user && !session && !loading ? "right-[50%] hidden" : "right-[30%]"} sm:w-7 w-[18px]`} onClick={() => router.push('/lessonMessage')} />
+                {unreadLesson && unreadLesson > 0 && <span className={`absolute hidden ${!user && !session && !loading ? "right-[48%]" : "right-[29%]"} -top-2 h-6 w-6 rounded-full  bg-red-600 text-white font-semibold text-xs sm:flex items-center justify-center transition`}>{unreadLesson}</span>}
 
                 {!user && !session && !loading && <div className=" flex gap-3 py-1">
                     <Link href="/register" >Đăng ký</Link>

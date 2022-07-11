@@ -49,6 +49,30 @@ export const getUnreadMessages = createAsyncThunk("/message/getunread", async (d
     }
 });
 
+export const getUnreadLessonMessages = createAsyncThunk("/lessonMessage/getunread", async (data, thunkAPI) => {
+    try {
+
+        const { token } = data
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+
+        const response = await api.get(`/lessonMessage`, config);
+
+        return response.data
+
+    } catch (error) {
+        const message =
+            (error.response && error.response.data && error.response.data.message) ||
+            error.message ||
+            error.toString();
+        return thunkAPI.rejectWithValue(message);
+    }
+});
+
 export const chatTutorSlice = createSlice({
     name: "chatTutor",
     initialState: {
@@ -81,6 +105,10 @@ export const chatTutorSlice = createSlice({
         },
         resetUnread: (state) => {
             state.unread = null
+            state.unreadLesson = null
+        },
+        setUnreadLesson: (state) => {
+            state.unreadLesson = null
         },
         resetAll: (state) => {
             state.id = ''
@@ -90,6 +118,7 @@ export const chatTutorSlice = createSlice({
             state.users = []
             state.messages = []
             unread = null
+            unreadLesson = null
         },
     },
     extraReducers: (builder) => {
@@ -116,10 +145,21 @@ export const chatTutorSlice = createSlice({
                 // state.isLoading = false;
                 // state.messages = action.payload
             })
+            .addCase(getUnreadLessonMessages.pending, (state) => {
+                // state.isLoading = true;
+            })
+            .addCase(getUnreadLessonMessages.fulfilled, (state, action) => {
+                // state.isLoading = false;
+                state.unreadLesson = action.payload
+            })
+            .addCase(getUnreadLessonMessages.rejected, (state, action) => {
+                // state.isLoading = false;
+                // state.messages = action.payload
+            })
     },
 
 });
 
 
-export const { listTutors, listUsers, ActiveChat, newMessage, loadMessages, resetUnread, resetAll } = chatTutorSlice.actions;
+export const { listTutors, listUsers, ActiveChat, newMessage, loadMessages, resetUnread, setUnreadLesson, resetAll } = chatTutorSlice.actions;
 export default chatTutorSlice.reducer;

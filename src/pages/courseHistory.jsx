@@ -47,7 +47,7 @@ const courseHistory = () => {
         size,
         setSize,
         isReachingEnd
-    } = usePaginateCourseHistory(session ? session.uid : user.user && user.user.uid)
+    } = usePaginateCourseHistory(session ? session.uid : user && user.user.uid)
 
     const handleChooseCourse = (id, url) => {
         setShowModal(true)
@@ -204,13 +204,13 @@ const courseHistory = () => {
     }
 
     if (!user && !session && !loading) {
-        return <Redirect to="/" />
+        return <Redirect to="/signin" />
     }
 
     return (
         <>
             <Head>
-                <title>Orders</title>
+                <title>Course history</title>
                 <link rel="icon" href="/favicon.png" />
                 <link rel="preconnect" href="https://fonts.googleapis.com" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin={true} />

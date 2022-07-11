@@ -6,7 +6,7 @@ import { useSocket } from '../hooks/useSocket';
 
 import Cookies from 'js-cookie'
 
-import { listTutors, listUsers, activeChat, newMessage, loadMessages, getUnreadMessages, resetUnread } from 'features/chatTutorSlice';
+import { listTutors, listUsers, activeChat, newMessage, loadMessages, getUnreadMessages, getUnreadLessonMessages, resetUnread } from 'features/chatTutorSlice';
 
 const initialContext = {
     online: false,
@@ -63,6 +63,14 @@ export const SocketProvider = ({ children }) => {
         });
     }, [socket, dispatch]);
 
+    useEffect(() => {
+        socket?.on('private-lesson-message', () => {
+
+            const token = Cookies.get("userInfo") ? JSON.parse(Cookies.get("userInfo")).accessToken : Cookies.get("sessionToken") && Cookies.get("sessionToken")
+            dispatch(getUnreadLessonMessages({ token }))
+            // Move scroll to final
+        });
+    }, [socket, dispatch]);
 
     return (
         <SocketContext.Provider value={{ socket, online }}>

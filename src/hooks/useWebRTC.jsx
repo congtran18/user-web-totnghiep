@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from "react-toastify";
 import { listTutors } from 'features/chatTutorSlice';
 import { storeUserCourse } from 'features/storageSlice';
+import { useSpeechRecognition } from 'react-speech-kit'
 
 function ab2str(buf) {
     // return String.fromCharCode.apply(null, new Uint8Array(buf));
@@ -36,6 +37,23 @@ export const useWebRTC = () => {
     const [userMicStatus, setUserMicStatus] = useState();
     const [screenShare, setScreenShare] = useState(false);
     const [chatStatus, setChatStatus] = useState(true);
+    const [translateStatus, setTranslateStatus] = useState(true);
+
+    const deboundRef = useRef(null);
+    const { listen, listening, stop } = useSpeechRecognition({
+        onResult: result => {
+            const currentTimestamp = deboundRef.current;
+
+            if (currentTimestamp) {
+                clearTimeout(currentTimestamp);
+            }
+
+            deboundRef.current = setTimeout(() => {
+                sendTextTranslate(result)
+            }, 300);
+            // setText(result)
+        }
+    });
 
     const [timeOut, setTimeOut] = useState(false);
 
@@ -51,6 +69,8 @@ export const useWebRTC = () => {
     const [callCancelled, setCallCancelled] = useState(false);
 
     const [messages, setMessages] = useState([]);
+    const [textTutorAudio, setTextTutorAudio] = useState([]);// chuyen giong noi gia su thanh van ban
+    const [textTutorTranslate, setTextTutorTranslate] = useState([]);// dich giong noi gia su sang tieng viet
 
     const socket = useRef();
     const myVideo = useRef();
@@ -175,6 +195,13 @@ export const useWebRTC = () => {
                 //nguoi dung se ko co record video
                 if (!videoRecorderRef.current) {
                     router.reload()
+                } else {
+                    stop()
+                    await new Promise((res) => {
+                        setTimeout(() => {
+                            res();
+                        }, 300);
+                    });
                 }
                 // }
                 // toast.info("Buổi học kết thúc")
@@ -237,14 +264,23 @@ export const useWebRTC = () => {
             }
         });
 
+        //nguoi dung se nhan translate text
         callerPeer.current.on("data", (m) => {
             console.log("caller get message >>", ab2str(m));
-            setMessages((prev) => [
-                ...prev,
-                { position: "left", text: ab2str(m), bgcolor: "#e1bee7", color: "#212121" },
-            ]);
-            if (messageSound.current) {
-                messageSound.current.play();
+            if (ab2str(m).includes("handle translate to")) {
+                setTextTutorAudio((prev) => [
+                    ...prev,
+                    ab2str(m).split("handle translate to")[1]
+                ]);
+                Translate(ab2str(m).split("handle translate to")[1])
+            } else {
+                setMessages((prev) => [
+                    ...prev,
+                    { position: "left", text: ab2str(m), bgcolor: "#e1bee7", color: "#212121" },
+                ]);
+                if (messageSound.current) {
+                    messageSound.current.play();
+                }
             }
         });
 
@@ -254,6 +290,9 @@ export const useWebRTC = () => {
             callerPeer.current.signal(signal);
             const response = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/users/check-minutes/${me}`);
             const endTime = parseInt(response.data.data.minutes) - 10000
+
+            // listen()
+
             const timeout1 = setTimeout(() => {
                 toast.info("Bạn hết thời gian!")
             }, parseInt(response.data.data.minutes));
@@ -299,6 +338,7 @@ export const useWebRTC = () => {
             }
         });
 
+        //gia su se ko nhan translate text
         answerPeer.current.on("data", (m) => {
             console.log("answer got message >> ", ab2str(m));
             setMessages((prev) => [
@@ -318,11 +358,27 @@ export const useWebRTC = () => {
 
         const response = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/users/check-minutes/${caller.socket_id.toString()}`);
 
+        const token = Cookies.get("userInfo") ? JSON.parse(Cookies.get("userInfo")).accessToken : Cookies.get("sessionToken") && Cookies.get("sessionToken")
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+        
+        const checkLesson = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/lesson/tutorCheckLesson/${caller.socket_id}`, config);
+
+        if(checkLesson.data.data === "call lesson"){
+            await dispatch(storeUserCourse({ callLesson: true }))
+        }
+
         const timeEnd = parseInt(response.data.data.minutes) - 10000
 
         // localStorage.setItem('timeStartCall', (new Date()).toString())
 
         await dispatch(storeUserCourse({ timeStartCall: (new Date()).toString() }))
+
+        listen()
 
         const timeout1 = setTimeout(() => {
             setTimeOut(true)
@@ -445,7 +501,7 @@ export const useWebRTC = () => {
         if (callReciever) {
             //gia su luu thong tin nguoi dung de tao file course
             dispatch(storeUserCourse({ tutor: me, user: caller.socket_id }))
-
+            stop()
             //xu ly khi gia su end call thi luu thoi gian call vao hoc vien va gia su
             // const timeCall = (new Date().getTime() - new Date(localStorage.getItem('timeStartCall')).getTime())
             // await axios.patch(`${process.env.NEXT_PUBLIC_DB_URL}/users/update-minutes/${caller.socket_id.toString()}`, { value: Math.round(timeCall) })
@@ -487,6 +543,39 @@ export const useWebRTC = () => {
         }
     }
 
+    function sendTextTranslate(message) {
+        if (message === '') return
+        if (callReciever) {
+            answerPeer.current.send("handle translate to" + message);
+            // setTextTutorTranslate((prev) => [
+            //     ...prev,
+            //     message
+            // ]);
+        } else {
+            callerPeer.current.send("handle translate to" + message);
+            // setTextTutorTranslate((prev) => [
+            //     ...prev,
+            //     message
+            // ]);
+        }
+    }
+
+    function Translate(textToTranslate) {
+        const data = {
+            q: textToTranslate,
+            source: "en",
+            target: "vi",
+        };
+
+        axios
+            .post("https://libretranslate.de/translate", data)
+            .then((res) => setTextTutorTranslate((prev) => [
+                ...prev,
+                res.data.translatedText,
+            ]));
+
+    }
+
     return {
         me,
         stream,
@@ -497,6 +586,12 @@ export const useWebRTC = () => {
         myVideo,
         chatStatus,
         setChatStatus,
+        translateStatus,
+        setTranslateStatus,
+        textTutorAudio,
+        setTextTutorAudio,
+        textTutorTranslate,
+        setTextTutorTranslate,
         userVideo,
         videoRecorderRef,
         tutorUid,

@@ -55,7 +55,8 @@ const registerStepThree = () => {
                     <div className="w-full">
                         <img src="/Images/loading2.gif" alt="loading" className="text-center flex items-center justify-center mx-auto mt-3 " />
                     </div>
-                    : (user && user.role === "waitingtutor" || session && session.role === "waitingtutor") &&
+                    : 
+                    // (user && user.role === "waitingtutor" || session && session.role === "waitingtutor") &&
                     <>
                         <CheckoutWizard activeStep={3} />
                         <div className="flex flex-col justify-center items-center mb-20">

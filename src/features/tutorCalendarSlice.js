@@ -22,6 +22,24 @@ export const getEvents = createAsyncThunk("/calendar/get", async (uid, thunkAPI)
     }
 });
 
+export const getLessons = createAsyncThunk("/lesson/get", async (data, thunkAPI) => {
+    try {
+
+        const { id, ...res } = data
+
+        const response = await api.get(`/lesson/${id}`, res);
+
+        return response.data
+
+    } catch (error) {
+        const message =
+            (error.response && error.response.data && error.response.data.message) ||
+            error.message ||
+            error.toString();
+        return thunkAPI.rejectWithValue(message);
+    }
+});
+
 export const createEvent = createAsyncThunk("/calendar/post", async (data, thunkAPI) => {
     try {
 
@@ -41,6 +59,37 @@ export const createEvent = createAsyncThunk("/calendar/post", async (data, thunk
         }
 
         toast.success("Thêm lịch thành công!");
+
+        return prepareEvent(response.data)
+
+    } catch (error) {
+        const message =
+            (error.response && error.response.data && error.response.data.message) ||
+            error.message ||
+            error.toString();
+        return thunkAPI.rejectWithValue(message);
+    }
+});
+
+export const createLesson = createAsyncThunk("/lesson/post", async (data, thunkAPI) => {
+    try {
+
+        const { token, ...res } = data
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        };
+
+        const response = await api.post("/lesson", res, config);
+
+        if (response.error) {
+            toast.error(response.error.message)
+            return null
+        }
+
+        toast.success("Đặt lịch thành công!");
 
         return prepareEvent(response.data)
 
@@ -119,6 +168,9 @@ export const tutorCalendarSlice = createSlice({
     name: "tutorCalendar",
     initialState: {
         openModal: false,
+        openLessonModal: false,
+        openModalAllLesson: false,
+        listLesson: [],
         listCalendar: [],
         calendarData: null,
         activeEvent: null,
@@ -137,6 +189,18 @@ export const tutorCalendarSlice = createSlice({
         uiCloseModal: (state) => {
             state.openModal = false
         },
+        uiOpenLessonModal: (state) => {
+            state.openLessonModal = true
+        },
+        uiCloseLessonModal: (state) => {
+            state.openLessonModal = false
+        },
+        uiOpenAllLessonModal: (state) => {
+            state.openModalAllLesson = true
+        },
+        uiCloseAllLessonModal: (state) => {
+            state.openModalAllLesson = false
+        },
         resetAll: (state) => {
             state.isLoading = false;
         },
@@ -154,6 +218,17 @@ export const tutorCalendarSlice = createSlice({
                 state.isLoading = false;
                 toast.error("Kiểm tra lại thông tin!");
             })
+            .addCase(getLessons.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getLessons.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.listLesson = prepareEvents(action.payload);
+            })
+            .addCase(getLessons.rejected, (state, action) => {
+                state.isLoading = false;
+                toast.error("Kiểm tra lại thông tin!");
+            })
             .addCase(createEvent.pending, (state) => {
                 state.isLoading = true;
             })
@@ -163,6 +238,18 @@ export const tutorCalendarSlice = createSlice({
                 action.payload && state.listCalendar.push(action.payload)
             })
             .addCase(createEvent.rejected, (state, action) => {
+                state.isLoading = false;
+                toast.error("Kiểm tra lại thông tin!");
+            })
+            .addCase(createLesson.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(createLesson.fulfilled, (state, action) => {
+                state.isLoading = false;
+                // state.calendarData = action.payload;
+                // action.payload && state.listCalendar.push(action.payload)
+            })
+            .addCase(createLesson.rejected, (state, action) => {
                 state.isLoading = false;
                 toast.error("Kiểm tra lại thông tin!");
             })
@@ -198,5 +285,5 @@ export const tutorCalendarSlice = createSlice({
 });
 
 
-export const { uiOpenModal, uiCloseModal, resetAll, eventSetActive, eventClearActiveEvent } = tutorCalendarSlice.actions;
+export const { uiOpenModal, uiCloseModal, uiOpenLessonModal, uiCloseLessonModal, uiCloseAllLessonModal, uiOpenAllLessonModal, resetAll, eventSetActive, eventClearActiveEvent } = tutorCalendarSlice.actions;
 export default tutorCalendarSlice.reducer;

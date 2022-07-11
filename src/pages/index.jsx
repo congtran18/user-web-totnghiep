@@ -71,7 +71,9 @@ export default function Home() {
         console.log("vo timeStartCalls")
         const timeCall = (new Date().getTime() - new Date(dataStore.timeStartCall).getTime())
         await axios.patch(`${process.env.NEXT_PUBLIC_DB_URL}/users/update-user-minutes/${dataStore.user.toString()}`, { value: Math.round(timeCall) })
-        await axios.patch(`${process.env.NEXT_PUBLIC_DB_URL}/tutor/update-tutor-minutes/${dataStore.tutor.toString()}`, { value: Math.round(timeCall) })
+        if (!dataStore.callLesson) {
+          await axios.patch(`${process.env.NEXT_PUBLIC_DB_URL}/tutor/update-tutor-minutes/${dataStore.tutor.toString()}`, { value: Math.round(timeCall) })
+        }
         handleSaveHistoryCourse(dataStore)
         await dispatch(resetAllStorage())
         setShowModalComment(true)

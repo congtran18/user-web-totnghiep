@@ -3,6 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import { Box, Fab, useMediaQuery } from "@mui/material";
 
 import ChatMessages from "./ChatMessages";
+import TranslateAudio from "./TranslateAudio";
 import MyVideo from "./MyVideo";
 import PhoneDisabledIcon from '@mui/icons-material/PhoneDisabled';
 import ScreenShareIcon from '@mui/icons-material/ScreenShare';
@@ -13,6 +14,8 @@ import MicOffIcon from '@mui/icons-material/MicOff';
 import StopScreenShareIcon from '@mui/icons-material/StopScreenShare';
 import CommentIcon from '@mui/icons-material/Comment';
 import CommentsDisabledIcon from '@mui/icons-material/CommentsDisabled';
+import MicExternalOffIcon from '@mui/icons-material/MicExternalOff';
+import MicExternalOnIcon from '@mui/icons-material/MicExternalOn';
 import { WebRtcContext } from 'context/WebRtcContext';
 import { useRouter } from "next/dist/client/router";
 
@@ -47,6 +50,10 @@ const VideoChat = ({ onReady, isTutor }) => {
         myVideo,
         chatStatus,
         setChatStatus,
+        translateStatus,
+        setTranslateStatus,
+        textTutorAudio,
+        textTutorTranslate,
         userVideo,
         videoRecorderRef,
         tutorUid,
@@ -232,6 +239,16 @@ const VideoChat = ({ onReady, isTutor }) => {
                 >
                     {isTutor ? "Học viên chỉ còn 30 giây học!" : "Bạn chỉ còn 30 giây học!"}
                 </Box>}
+                {!isTutor && <Fab
+                    sx={{
+                        bgcolor: "red",
+                        ":hover": { bgcolor: "red", opacity: 0.7 },
+                    }}
+                    aria-label="add"
+                    onClick={() => setTranslateStatus(!translateStatus)}
+                >
+                    {translateStatus ? <MicExternalOnIcon sx={{ color: "#fff" }} /> : <MicExternalOffIcon sx={{ color: "#fff" }} />}
+                </Fab>}
                 <Fab
                     sx={{
                         bgcolor: "red",
@@ -285,6 +302,7 @@ const VideoChat = ({ onReady, isTutor }) => {
             </Box>
 
             {!mobile && <ChatMessages messages={messages} sendMessage={sendMessage} chatStatus={chatStatus} />}
+            {!mobile && <TranslateAudio textTutorAudio={textTutorAudio} textTutorTranslate={textTutorTranslate} translateStatus={translateStatus} />}
 
             <MyVideo stream={stream} myVideoRef={myVideo} />
         </Box>

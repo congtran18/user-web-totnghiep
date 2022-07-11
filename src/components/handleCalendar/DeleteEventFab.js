@@ -1,14 +1,27 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteEvent, eventClearActiveEvent } from 'features/tutorCalendarSlice';
+import { SocketContext } from 'context/SocketContext';
 
 const DeleteEventFab = ({ token }) => {
     const dispatch = useDispatch();
 
-    const { activeEvent } = useSelector((state) => state.tutorCalendar);
+    const { activeEvent, listLesson } = useSelector((state) => state.tutorCalendar);
+
+    const { socket } = useContext(SocketContext);
 
     const handleDelete = () => {
-        dispatch(deleteEvent({ token : token , id : activeEvent._id}));
+        const listuid = []
+        listuid.push(listLesson[0].tutoruid)
+        for (let i = 0; i < listLesson.length; i++) {
+            listuid.push(listLesson[i].user)
+        }
+        const messageToSend = {
+            uid: listuid
+        };
+        // Emit a websocket
+        socket?.emit('private-lesson-message', messageToSend);
+        dispatch(deleteEvent({ token: token, id: activeEvent._id }));
         dispatch(eventClearActiveEvent());
     };
 

@@ -90,6 +90,18 @@ const Tutors = () => {
                                 </select>
                             </div>
                         </div>
+                        <div class="flex justify-center mt-3">
+                            <div class="mb-3 w-[80%]">
+                                <button
+                                    // role='link'
+                                    // onClick={createCheckoutSession}
+                                    // disabled={!session}
+                                    className={`custombutton text-sm w-full my-2 ml-0 `}
+                                >
+                                    Call ngẫu nhiên
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div className="flex flex-wrap gap-3 ml-2 item2 col-span-9 h-[16rem]">
                         {filterTutor.map((tutor) => (

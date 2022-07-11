@@ -149,7 +149,7 @@ const productlist = ({ types }) => {
 
                 <section>
                     {/* title  */}
-                    <h1 className="m-5 font-bold text-xl sm:text-3xl">Danh sách sản phẩm</h1>
+                    <h1 className="m-5 font-bold text-xl sm:text-3xl">Danh sách sách tiếng anh</h1>
                     {/* filtercontainer  */}
                     <div className="flex m-5 justify-between my-5 mb-10 items-center">
                         <div className="flex sm:flex-row sm:space-x-3 flex-col space-y-2 sm:space-y-0 ">

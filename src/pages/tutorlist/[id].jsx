@@ -112,7 +112,7 @@ const Tutor = ({ tutor }) => {
                         {/* <p className="text-gray-700 text-xs ">{user?.username}</p> */}
                     </div>
                 </section>
-                <div className='p-10 flex flex-col justify-center items-center'>
+                <div className='p-10 flex flex-col justify-center items-center mb-[8rem]'>
                     <div className="m-auto w-[60rem] space-y-4">
                         <div className="mb-4">
                             {tutor && <ReactPlayer
@@ -233,7 +233,7 @@ const Tutor = ({ tutor }) => {
                             </div>
                         }
 
-                        <div>
+                        <div >
                             <div className="text-xl mt-8 mb-4 font-medium text-neutral-700">Lịch làm việc </div>
                             <CalendarScreen uidTutor={tutor?.uid} action={false} />
                         </div>

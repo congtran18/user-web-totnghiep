@@ -12,6 +12,7 @@ import { averageRating } from 'helpers/calculator-rating'
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from "react-toastify";
 import axios from 'axios';
+import Cookies from 'js-cookie'
 
 const SingleTutor = ({ tutor }) => {
 
@@ -44,19 +45,46 @@ const SingleTutor = ({ tutor }) => {
     const [openCallingDialog, setOpenCallingDialog] = useState(false);
 
     const handleCall = async (uid) => {
-        console.log("vo day")
-        setDisable(true)
-        console.log("me nek", me)
         const response = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/users/check-minutes/${me}`);
-        console.log("me nek", response.data.data.minutes)
-        if(response.data.data.daysleft < 1){
+        if (response.data.data.daysleft < 1) {
+            setDisable(true)
             toast.error("Bạn đã hết ngày học!")
-        }else if (response.data.data.minutes < 20000) {
+        } else if (response.data.data.minutes < 20000) {
+            setDisable(true)
             toast.error("Bạn đã hết thời gian học!")
-        } else {
-            await setMinutesLeft(response.data.data.minutes)
-            callPeer(uid)
-            setTutorUid(uid)
+        }
+        else {
+            const token = Cookies.get("userInfo") ? JSON.parse(Cookies.get("userInfo")).accessToken : Cookies.get("sessionToken") && Cookies.get("sessionToken")
+
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            };
+
+            const checkLesson = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/lesson/checkCallTutor/${uid}`, config);
+
+            if (checkLesson.data.data === "not true tutor") {
+                //khi nguoi dung co lich hoc truoc va call ko dung gia su
+                toast.error("Bạn có lịch đặt trước với gia sư khác hôm nay!")
+            } else if (checkLesson.data.data === "not true time") {
+                // khi nguoi dung co lich hoc truoc, call dung gia su nhung ko dung thoi gian dat truoc
+                toast.error("Bạn call không đúng lịch đã đặt trước!")
+            }else if (checkLesson.data.data === "tutor calling") {
+                // khi nguoi dung ko dat lich truoc => call thong thuong     
+                toast.error("Gia sư đang có lịch với người khác!")
+            }
+            else if (checkLesson.data.data === "call lesson") {
+                // khi nguoi dung co lich hoc truoc, call dung gia su va trong thoi gian dat truoc    
+                // await setMinutesLeft(response.data.data.minutes)
+                callPeer(uid)
+                setTutorUid(uid)
+            } else if (checkLesson.data.data === "regular call") {
+                // khi nguoi dung ko dat lich truoc => call thong thuong     
+                // await setMinutesLeft(response.data.data.minutes)
+                callPeer(uid)
+                setTutorUid(uid)
+            }
         }
     }
 
@@ -67,7 +95,6 @@ const SingleTutor = ({ tutor }) => {
         // const uid = user ? user.user.uid : session && session.uid
         (async () => {
             const resultReview = await dispatch(getReviewTutor(tutor.uid));
-            console.log("resultReview.payload", resultReview.payload)
             setReviewResult(resultReview.payload.all_review)
             setReviewCount(resultReview.payload.count.length > 0 ? resultReview.payload.count[0].totalCount : 0)
         })();

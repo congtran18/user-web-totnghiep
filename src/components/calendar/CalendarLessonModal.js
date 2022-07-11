@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import Modal from "react-modal";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from "moment";
 import Swal from "sweetalert2";
 import { useDispatch, useSelector } from "react-redux";
-import { uiCloseModal, eventClearActiveEvent, createEvent } from 'features/tutorCalendarSlice';
+import { uiCloseLessonModal, eventClearActiveEvent, createLesson } from 'features/tutorCalendarSlice';
 import { useSession } from 'next-auth/react';
 import Cookies from 'js-cookie'
+import { toast } from "react-toastify";
+import axios from "axios";
+import { SocketContext } from 'context/SocketContext';
 
 const customStyles = {
     overlay: {
@@ -43,12 +46,14 @@ const initEvent = {
     end: nowEnd.toDate(),
 };
 
-const CalendarModal = () => {
-    const { openModal } = useSelector((state) => state.tutorCalendar);
+const CalendarLessonModal = ({ uidTutor }) => {
+    const { openLessonModal } = useSelector((state) => state.tutorCalendar);
 
     const { user } = useSelector(
         (state) => state.user
     );
+
+    const { socket } = useContext(SocketContext);
 
     const { data: session } = useSession();
 
@@ -80,7 +85,7 @@ const CalendarModal = () => {
     };
 
     const closeModal = () => {
-        dispatch(uiCloseModal());
+        dispatch(uiCloseLessonModal());
         dispatch(eventClearActiveEvent());
         setFormValues(initEvent);
     };
@@ -88,10 +93,10 @@ const CalendarModal = () => {
     const handleStartDateChange = (e) => {
         setDateStart(e);
         const fixEnd = dateEnd;
-        if (moment(e).isSameOrAfter(dateEnd)) {
-            fixEnd = new Date(e.getTime() + 30 * 60 * 1000)
-            setDateEnd(new Date(e.getTime() + 30 * 60 * 1000))
-        }
+        // if (moment(e).isSameOrAfter(dateEnd)) {
+        fixEnd = new Date(e.getTime() + 30 * 60 * 1000)
+        setDateEnd(new Date(e.getTime() + 30 * 60 * 1000))
+        // }
         if (!moment(e).isSame(dateEnd, 'day')) {
             fixEnd = new Date(e.getTime() + 30 * 60 * 1000)
             setDateEnd(new Date(e.getTime() + 30 * 60 * 1000))
@@ -109,16 +114,26 @@ const CalendarModal = () => {
             end: e,
         });
     };
-    const handleSubmitForm = (e) => {
+    const handleSubmitForm = async (e) => {
         e.preventDefault();
-        const token = session ? session.accessToken : Cookies.get("userInfo") && JSON.parse(Cookies.get("userInfo")).accessToken
-        const uid = user ? user.user.uid : session && session.uid
-        dispatch(createEvent({ ...formValues, ...{ token: token }, ...{ user: user ? user.user.email : session && session.user.email }, ...{ tutoruid: uid } }));
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/users/check-minutes/${user ? user.user.uid : session && session.user.uid}`)
+        if (parseInt(response.data.data.daysleft) > 1) {
+            const token = session ? session.accessToken : Cookies.get("userInfo") && JSON.parse(Cookies.get("userInfo")).accessToken
+            await dispatch(createLesson({ ...formValues, ...{ token: token }, ...{ user: user ? user.user.uid : session && session.user.uid }, ...{ username: user ? user.user.fullName : session && session.user.name }, ...{ tutoruid: uidTutor } }));
+            const messageToSend = {
+                uid : [uidTutor, user ? user.user.uid : session && session.user.uid]
+            };
+            // Emit a websocket
+            socket?.emit('private-lesson-message', messageToSend);
+        } else {
+            toast.error("Bạn ko có thời gian học!")
+        }
+
         closeModal();
     };
     return (
         <Modal
-            isOpen={openModal}
+            isOpen={openLessonModal}
             // onAfterOpen={afterOpenModal}
             onRequestClose={closeModal}
             style={customStyles}
@@ -126,7 +141,7 @@ const CalendarModal = () => {
         // className="modal"
         // overlayClassName="modal-fondo"
         >
-            <h1 className="mb-3 text-lg"> {"Thêm lịch dạy"} </h1>
+            <h1 className="mb-3 text-lg"> {"Đặt trước lịch học"} </h1>
             <hr />
             <form className="container my-4 " onSubmit={handleSubmitForm}>
                 <div className="flex flex-col justify-center items-center">
@@ -155,13 +170,14 @@ const CalendarModal = () => {
                             showTimeSelect
                             dateFormat="Pp"
                             minDate={dateStart}
+                            disabled={true}
                             filterTime={filterPassedTime}
                             onKeyDown={(e) => {
                                 e.preventDefault();
                             }}
                         />
                     </div>
-
+                    {/* 
                     <div className="form-group mt-4 mb-6">
                         <div>Thêm mô tả (có hoặc không)</div>
                         <input
@@ -173,11 +189,11 @@ const CalendarModal = () => {
                             value={notes}
                             onChange={handleInputChange}
                         />
-                    </div>
+                    </div> */}
 
-                    <div className="flex gap-3">
+                    <div className="flex gap-3 mt-20">
                         <button type="submit" class="cursor-pointer bg-white text-gray-800 font-bold rounded border border-b-4 border-green-500 hover:border-red-500 hover:bg-red-500 hover:text-white shadow-md py-1 px-3 inline-flex items-center">
-                            <span class="mr-2">Thêm</span>
+                            <span class="mr-2">Đặt lịch</span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
                                 <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                                 <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
@@ -197,4 +213,4 @@ const CalendarModal = () => {
     );
 };
 
-export default CalendarModal;
+export default CalendarLessonModal;

@@ -5,9 +5,12 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import { messages } from "helpers/calendar-messages-es";
 import CandelarEvent from "./CandelarEvent";
 import CalendarModal from "./CalendarModal";
+import ModalAllLesson from "./ModalAllLesson"
+import CalendarLessonModal from "./CalendarLessonModal";
 import { useDispatch, useSelector } from "react-redux";
-import { uiOpenModal, eventClearActiveEvent, eventSetActive, getEvents } from 'features/tutorCalendarSlice';
+import { uiOpenModal, eventClearActiveEvent, eventSetActive, getEvents, uiOpenAllLessonModal } from 'features/tutorCalendarSlice';
 import AddNewFab from "../handleCalendar/AddNewFab";
+import AddNewLesson from "../handleCalendar/AddNewLesson";
 import DeleteEventFab from "../handleCalendar/DeleteEventFab";
 import { useSession } from 'next-auth/react';
 import Cookies from 'js-cookie'
@@ -16,7 +19,7 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 moment.locale("vi");
 const localizer = momentLocalizer(moment);
 
-const CalendarScreen = ({uidTutor, action}) => {
+const CalendarScreen = ({ uidTutor, action }) => {
     console.log("uidTutor", uidTutor)
     const dispatch = useDispatch();
     const { listCalendar, activeEvent } = useSelector((state) => state.tutorCalendar);
@@ -49,7 +52,7 @@ const CalendarScreen = ({uidTutor, action}) => {
         };
     };
     const onDoubleClick = (e) => {
-        // dispatch(uiOpenModal());
+        dispatch(uiOpenAllLessonModal());
     };
     const onSelectEvent = (e) => {
         dispatch(eventSetActive(e));
@@ -67,7 +70,17 @@ const CalendarScreen = ({uidTutor, action}) => {
                 startAccessor="start"
                 endAccessor="end"
                 messages={messages}
-                eventPropGetter={eventStyleGetter}
+                eventPropGetter={(listCalendar) => {
+                    const backgroundColor = listCalendar.color ? listCalendar.color : 'blue';
+                    const style = {
+                        backgroundColor: backgroundColor,
+                        borderRadius: "0px",
+                        opacity: "0.8",
+                        display: "block",
+                        color: "white",
+                    };
+                    return { style, }
+                }}
                 // components={{
                 //     event: CandelarEvent,
                 // }}
@@ -79,9 +92,12 @@ const CalendarScreen = ({uidTutor, action}) => {
             />
             {activeEvent && action && <DeleteEventFab token={session ? session.accessToken : Cookies.get("userInfo") && JSON.parse(Cookies.get("userInfo")).accessToken} />}
             <div className="flex justify-center items-center mt-5">
-                {action && <AddNewFab />}
+                {action ? <AddNewFab /> : <AddNewLesson />}
+                {/* {action && <AddNewFab />} */}
             </div>
             <CalendarModal />
+            <CalendarLessonModal uidTutor={uidTutor} />
+            <ModalAllLesson />
         </div>
     );
 };

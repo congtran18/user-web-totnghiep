@@ -98,7 +98,7 @@ const registerTutor = () => {
     const router = useRouter();
 
     const defaultValues = {
-        fullName:  stepOne.infomation ? stepOne.infomation : '',
+        fullName:  stepOne.infomation ? stepOne.fullName : '',
         infomation: stepOne.infomation ? stepOne.infomation : '',
         phone: stepOne.infomation ? stepOne.phone : '',
         account: stepOne.infomation ? stepOne.account : '',
