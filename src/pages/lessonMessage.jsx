@@ -121,10 +121,10 @@ const lessonMessage = () => {
                                                     </td>
                                                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
                                                         {lessonMessage.type === "booked" && lessonMessage.tutor.uid === user.user.uid &&
-                                                            <span><span className="font-semibold">{lessonMessage.user.fullName}</span>{"  đặt lịch với bạn từ " + moment(new Date(lessonMessage.start)).format('DD/MM/YYYY, h:mm:ss a') + " đến " + moment(new Date(lessonMessage.start)).format('DD/MM/YYYY, h:mm:ss a')}</span>
+                                                            <span><span className="font-semibold">{lessonMessage.user.fullName}</span>{"  đặt lịch với bạn từ " + moment(new Date(lessonMessage.start)).format('DD/MM/YYYY, h:mm:ss a') + " đến " + moment(new Date(lessonMessage.end)).format('DD/MM/YYYY, h:mm:ss a')}</span>
                                                         }
                                                         {lessonMessage.type === "tutorremoved" && lessonMessage.tutor.uid === user.user.uid &&
-                                                            <span>{"Bạn đã hủy lịch học từ " + moment(new Date(lessonMessage.start)).format('DD/MM/YYYY, h:mm:ss a') + " đến " + moment(new Date(lessonMessage.start)).format('DD/MM/YYYY, h:mm:ss a')}</span>
+                                                            <span>{"Bạn đã hủy lịch học từ " + moment(new Date(lessonMessage.start)).format('DD/MM/YYYY, h:mm:ss a') + " đến " + moment(new Date(lessonMessage.end)).format('DD/MM/YYYY, h:mm:ss a')}</span>
                                                         }
                                                     </th>
                                                 </tr>
@@ -137,10 +137,10 @@ const lessonMessage = () => {
                                                     </td>
                                                     <th scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap">
                                                         {lessonMessage.type === "booked" && lessonMessage.user.uid === user.user.uid &&
-                                                            <span>{"Bạn đặt lịch từ " + moment(new Date(lessonMessage.start)).format('DD/MM/YYYY, h:mm:ss a') + " đến " + moment(new Date(lessonMessage.start)).format('DD/MM/YYYY, h:mm:ss a') + " với gia sư "}<span className="font-semibold">{lessonMessage.tutor.fullName}</span></span>
+                                                            <span>{"Bạn đặt lịch từ " + moment(new Date(lessonMessage.start)).format('DD/MM/YYYY, h:mm:ss a') + " đến " + moment(new Date(lessonMessage.end)).format('DD/MM/YYYY, h:mm:ss a') + " với gia sư "}<span className="font-semibold">{lessonMessage.tutor.fullName}</span></span>
                                                         }
                                                         {lessonMessage.type === "removed" && lessonMessage.user.uid === user.user.uid &&
-                                                            <span>{"Gia sư "}<span className="font-semibold">{lessonMessage.tutor.fullName}</span>{" đã hủy lịch học với bạn từ " + moment(new Date(lessonMessage.start)).format('DD/MM/YYYY, h:mm:ss a') + " đến " + moment(new Date(lessonMessage.start)).format('DD/MM/YYYY, h:mm:ss a')}</span>
+                                                            <span>{"Gia sư "}<span className="font-semibold">{lessonMessage.tutor.fullName}</span>{" đã hủy lịch học với bạn từ " + moment(new Date(lessonMessage.start)).format('DD/MM/YYYY, h:mm:ss a') + " đến " + moment(new Date(lessonMessage.end)).format('DD/MM/YYYY, h:mm:ss a')}</span>
                                                         }
                                                     </th>
                                                 </tr>

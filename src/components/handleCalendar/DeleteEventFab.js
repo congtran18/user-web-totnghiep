@@ -12,15 +12,17 @@ const DeleteEventFab = ({ token }) => {
 
     const handleDelete = () => {
         const listuid = []
-        listuid.push(listLesson[0].tutoruid)
-        for (let i = 0; i < listLesson.length; i++) {
-            listuid.push(listLesson[i].user)
+        if (listLesson.length > 0) {
+            listuid.push(listLesson[0].tutoruid)
+            for (let i = 0; i < listLesson.length; i++) {
+                listuid.push(listLesson[i].user)
+            }
+            const messageToSend = {
+                uid: listuid
+            };
+            // Emit a websocket
+            socket?.emit('private-lesson-message', messageToSend);
         }
-        const messageToSend = {
-            uid: listuid
-        };
-        // Emit a websocket
-        socket?.emit('private-lesson-message', messageToSend);
         dispatch(deleteEvent({ token: token, id: activeEvent._id }));
         dispatch(eventClearActiveEvent());
     };
