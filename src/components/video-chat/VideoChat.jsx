@@ -237,7 +237,7 @@ const VideoChat = ({ onReady, isTutor }) => {
                         marginRight: '4px',
                     }}
                 >
-                    {isTutor ? "Học viên chỉ còn 30 giây học!" : "Bạn chỉ còn 30 giây học!"}
+                    {isTutor ? "Học viên chỉ còn 15 giây học!" : "Bạn chỉ còn 15 giây học!"}
                 </Box>}
                 {!isTutor && <Fab
                     sx={{

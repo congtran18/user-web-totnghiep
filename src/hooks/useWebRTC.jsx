@@ -289,7 +289,7 @@ export const useWebRTC = () => {
             setCalling(false);
             callerPeer.current.signal(signal);
             const response = await axios.get(`${process.env.NEXT_PUBLIC_DB_URL}/users/check-minutes/${me}`);
-            const endTime = parseInt(response.data.data.minutes) - 10000
+            const endTime = parseInt(response.data.data.minutes) - 15000
 
             // listen()
 
@@ -372,7 +372,7 @@ export const useWebRTC = () => {
             await dispatch(storeUserCourse({ callLesson: true }))
         }
 
-        const timeEnd = parseInt(response.data.data.minutes) - 10000
+        const timeEnd = parseInt(response.data.data.minutes) - 15000
 
         // localStorage.setItem('timeStartCall', (new Date()).toString())
 
